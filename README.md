@@ -1,24 +1,5 @@
 # 팀 근무시간 대시보드 (WorkDash)
 
-## Netlify 배포 방법 (무료, 5분 소요)
-
-### 방법 1 — 드래그앤드롭 (가장 쉬움)
-
-1. https://app.netlify.com 접속 → 구글/GitHub로 무료 가입
-2. 대시보드에서 **"Add new site" → "Deploy manually"** 클릭
-3. 이 폴더(`workdash`) 전체를 드래그해서 브라우저에 놓기
-4. 배포 완료! 자동으로 URL 생성됨 (예: https://amazing-site-abc123.netlify.app)
-5. "Site settings → Domain management"에서 URL 이름 변경 가능
-
-### 방법 2 — GitHub 연동 (자동 업데이트)
-
-1. GitHub에 새 레포지터리 만들기
-2. 이 폴더의 파일들 올리기
-3. Netlify에서 "Import from Git" → GitHub 연동
-4. 이후 파일 수정 시 자동으로 재배포됨
-
----
-
 ## 사용 방법
 
 ### 1. 팀원 설정
