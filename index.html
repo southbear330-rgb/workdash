@@ -65,6 +65,9 @@ label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px}
 .tab-bar{display:flex;gap:4px;margin-bottom:16px;background:var(--surface2);padding:4px;border-radius:var(--radius-sm);width:fit-content}
 .tab{padding:6px 16px;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:none;color:var(--text2);font-family:inherit;transition:all .15s}
 .tab.on{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.3)}
+/* 정규 근무 기준선 */
+.std-line{position:absolute;top:0;bottom:0;width:2px;background:#ef4444;z-index:20;pointer-events:none}
+.std-line::before{content:attr(data-label);position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:10px;color:#ef4444;font-family:'DM Mono',monospace;white-space:nowrap;font-weight:600}
 /* Timeline */
 .tl-wrap{overflow-x:auto;padding-bottom:4px}
 .tl-axis{display:flex;position:relative;height:18px;margin-left:110px;margin-bottom:4px}
@@ -73,6 +76,7 @@ label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px}
 .tl-name{width:110px;flex-shrink:0;font-size:12px;color:var(--text2);padding-right:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:6px}
 .tl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .tl-track{flex:1;height:28px;background:var(--surface2);border-radius:4px;position:relative;overflow:visible}
+.tl-body-wrap{position:relative}
 .tl-block{position:absolute;top:4px;bottom:4px;border-radius:3px;opacity:.82;cursor:default;transition:opacity .15s}
 .tl-block:hover{opacity:1;z-index:10}
 /* Overlap row */
@@ -121,21 +125,41 @@ label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px}
 ::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:3px}
 @media(max-width:700px){.app{grid-template-columns:1fr}.sidebar{display:none}.stats-grid{grid-template-columns:1fr 1fr}.g2,.g3{grid-template-columns:1fr}}
 @media print{
+  @page{size:A4 landscape;margin:10mm 12mm}
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}
-  .sidebar,.topbar,#btn-export,#btn-print,#btn-prev-week,#btn-next-week,.tab-bar{display:none!important}
-  .app{display:block!important}
-  .main{padding:12px!important}
+  .sidebar,.topbar,#btn-export,#btn-print,#btn-prev-week,#btn-next-week,.tab-bar,#btn-add-member,#btn-clear-all{display:none!important}
+  .app{display:block!important;width:100%!important}
+  .main{padding:8px 0!important;width:100%!important}
   .page{display:none!important}
   .page.on{display:block!important}
-  .card{break-inside:avoid;border:1px solid #ddd!important;margin-bottom:12px}
-  .scard{border:1px solid #ddd!important}
-  .stats-grid{grid-template-columns:repeat(4,1fr)!important}
-  .g2{grid-template-columns:1fr 1fr!important}
-  body,html{background:#fff!important}
-  .sval,.slabel,.ssub,.ptitle,.psub,.ctitle{color:#111!important}
+  .card{break-inside:avoid;border:1px solid #ccc!important;margin-bottom:8px;padding:12px!important}
+  .scard{border:1px solid #ccc!important;padding:12px 14px!important}
+  .stats-grid{grid-template-columns:repeat(4,1fr)!important;gap:8px!important;margin-bottom:10px!important}
+  .g2{grid-template-columns:1fr 1fr!important;gap:10px!important;margin-bottom:8px!important}
+  body,html{background:#fff!important;font-size:12px!important}
+  .sval{font-size:24px!important}
+  .sval small{font-size:13px!important}
+  .slabel{font-size:11px!important}
+  .ssub{font-size:10px!important}
+  .ptitle{font-size:16px!important;margin-bottom:2px!important}
+  .psub{font-size:11px!important;margin-bottom:10px!important}
+  .sval,.slabel,.ssub,.ptitle,.psub{color:#111!important}
+  .ctitle{color:#555!important;font-size:10px!important;margin-bottom:8px!important}
   .scard.blue .sval{color:#2563eb!important}
   .scard.green .sval{color:#059669!important}
   .scard.amber .sval{color:#d97706!important}
+  .tl-track{height:22px!important}
+  .tl-name{font-size:11px!important;width:90px!important}
+  .tl-axis{margin-left:90px!important}
+  .tl-tick{font-size:9px!important}
+  .tl-row{margin-bottom:2px!important}
+  .tl-ov-track{height:12px!important}
+  .tl-body-wrap{margin-left:90px!important}
+  .std-line{background:#ef4444!important;width:2px!important}
+  .std-line::before{color:#ef4444!important;font-size:9px!important}
+  .tl-block{opacity:0.9!important}
+  .tl-ov-seg{opacity:1!important}
+  .week-bars div{height:14px!important}
 }
 </style>
 </head>
@@ -538,6 +562,10 @@ function renderDash() {
 // ═══════════════════════════════════
 // 타임라인 공통 렌더
 // ═══════════════════════════════════
+// 정규 근무 기준선 시간 (HH:MM)
+const STD_START = '08:30';
+const STD_END   = '17:30';
+
 function renderTLInto(containerId, entries, compact=false) {
   const el = document.getElementById(containerId);
   if(!entries.length) { el.innerHTML='<div class="empty"><div class="ei">⏱</div><p>데이터가 없습니다</p></div>'; return; }
@@ -545,6 +573,12 @@ function renderTLInto(containerId, entries, compact=false) {
   const totalMin = (T_E-T_S)*60;
   const hours = [];
   for(let h=T_S; h<=T_E; h++) hours.push(h);
+
+  // 기준선 위치 계산
+  const stdSMin = toMin(STD_START);
+  const stdEMin = toMin(STD_END);
+  const stdSPct = (stdSMin - T_S*60) / totalMin * 100;
+  const stdEPct = (stdEMin - T_S*60) / totalMin * 100;
 
   // 시간축
   let html = `<div class="tl-axis">`;
@@ -554,10 +588,17 @@ function renderTLInto(containerId, entries, compact=false) {
   });
   html += `</div>`;
 
-  // 팀원 행
+  // 팀원 행 감싸는 컨테이너 (기준선 오버레이용)
+  html += `<div class="tl-body-wrap" style="position:relative;margin-left:110px">`;
+
+  // 기준선 (출근/퇴근) — 전체 높이에 걸쳐 표시
+  html += `<div class="std-line" style="left:${stdSPct}%" data-label="${STD_START}"></div>`;
+  html += `<div class="std-line" style="left:${stdEPct}%" data-label="${STD_END}"></div>`;
+
+  // 팀원 행 (margin-left 제거, 컨테이너가 처리)
   S.members.forEach(m => {
     const me = entries.filter(e => e.memberId===m.id);
-    html += `<div class="tl-row"><div class="tl-name"><span class="tl-dot" style="background:${m.color}"></span>${m.name}</div><div class="tl-track">`;
+    html += `<div class="tl-row" style="margin-left:0"><div class="tl-name" style="margin-left:-110px"><span class="tl-dot" style="background:${m.color}"></span>${m.name}</div><div class="tl-track">`;
     me.forEach(e => {
       const s=toMin(e.start), en=toMin(e.end);
       const left = (s-T_S*60)/totalMin*100;
@@ -571,6 +612,8 @@ function renderTLInto(containerId, entries, compact=false) {
     });
     html += `</div></div>`;
   });
+
+  html += `</div>`; // tl-body-wrap 닫기
 
   // 겹침 행
   const seg = calcOverlap(entries);
