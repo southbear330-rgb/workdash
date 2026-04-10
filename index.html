@@ -574,46 +574,46 @@ function renderTLInto(containerId, entries, compact=false) {
   const hours = [];
   for(let h=T_S; h<=T_E; h++) hours.push(h);
 
-  // 기준선 위치 계산
-  const stdSMin = toMin(STD_START);
-  const stdEMin = toMin(STD_END);
-  const stdSPct = (stdSMin - T_S*60) / totalMin * 100;
-  const stdEPct = (stdEMin - T_S*60) / totalMin * 100;
+  // 기준선 위치 (각 track 안에 넣을 % 값)
+  const stdSPct = (toMin(STD_START) - T_S*60) / totalMin * 100;
+  const stdEPct = (toMin(STD_END)   - T_S*60) / totalMin * 100;
 
-  // 시간축
-  let html = `<div class="tl-axis">`;
+  // 기준선 HTML 조각 — track 안에 반복 삽입
+  const stdLines = `
+    <div style="position:absolute;top:0;bottom:0;left:${stdSPct}%;width:2px;background:#ef4444;z-index:20;pointer-events:none"></div>
+    <div style="position:absolute;top:0;bottom:0;left:${stdEPct}%;width:2px;background:#ef4444;z-index:20;pointer-events:none"></div>`;
+
+  // 시간축 (기준선 라벨 포함)
+  let html = `<div class="tl-axis" style="position:relative">`;
   hours.forEach(h => {
     const pct = (h-T_S)/(T_E-T_S)*100;
     html += `<span class="tl-tick" style="left:${pct}%">${h}</span>`;
   });
+  // 시간축에 기준선 라벨
+  html += `<span style="position:absolute;left:${stdSPct}%;transform:translateX(-50%);font-size:10px;color:#ef4444;font-family:'DM Mono',monospace;font-weight:700;top:0">${STD_START}</span>`;
+  html += `<span style="position:absolute;left:${stdEPct}%;transform:translateX(-50%);font-size:10px;color:#ef4444;font-family:'DM Mono',monospace;font-weight:700;top:0">${STD_END}</span>`;
   html += `</div>`;
 
-  // 팀원 행 감싸는 컨테이너 (기준선 오버레이용)
-  html += `<div class="tl-body-wrap" style="position:relative;margin-left:110px">`;
-
-  // 기준선 (출근/퇴근) — 전체 높이에 걸쳐 표시
-  html += `<div class="std-line" style="left:${stdSPct}%" data-label="${STD_START}"></div>`;
-  html += `<div class="std-line" style="left:${stdEPct}%" data-label="${STD_END}"></div>`;
-
-  // 팀원 행 (margin-left 제거, 컨테이너가 처리)
+  // 팀원 행 — 각 track 안에 기준선 삽입
   S.members.forEach(m => {
     const me = entries.filter(e => e.memberId===m.id);
-    html += `<div class="tl-row" style="margin-left:0"><div class="tl-name" style="margin-left:-110px"><span class="tl-dot" style="background:${m.color}"></span>${m.name}</div><div class="tl-track">`;
+    html += `<div class="tl-row"><div class="tl-name"><span class="tl-dot" style="background:${m.color}"></span>${m.name}</div><div class="tl-track">`;
+    // 기준선 먼저
+    html += stdLines;
+    // 근무 블록
     me.forEach(e => {
       const s=toMin(e.start), en=toMin(e.end);
       const left = (s-T_S*60)/totalMin*100;
       const width = (en-s)/totalMin*100;
       const hrs = ((en-s)/60).toFixed(1);
       if(left<0||width<=0) return;
-      html += `<div class="tip-wrap" style="left:${left}%;width:${width}%">
+      html += `<div class="tip-wrap" style="left:${left}%;width:${width}%;z-index:10">
         <div class="tl-block" style="position:absolute;inset:0;background:${m.color}"></div>
         <div class="tip-box">${m.name} ${e.start}~${e.end} (${hrs}h)</div>
       </div>`;
     });
     html += `</div></div>`;
   });
-
-  html += `</div>`; // tl-body-wrap 닫기
 
   // 겹침 행
   const seg = calcOverlap(entries);
