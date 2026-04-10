@@ -42,11 +42,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
-.scard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px}
-.slabel{font-size:11px;color:var(--text2);margin-bottom:6px;font-weight:500}
-.sval{font-size:26px;font-weight:700;letter-spacing:-.04em;font-family:'DM Mono',monospace}
-.sval small{font-size:14px;font-weight:400}
-.ssub{font-size:11px;color:var(--text3);margin-top:3px}
+.scard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px}
+.slabel{font-size:12px;color:var(--text2);margin-bottom:8px;font-weight:500}
+.sval{font-size:32px;font-weight:700;letter-spacing:-.04em;font-family:'DM Mono',monospace;display:flex;align-items:baseline;gap:4px}
+.sval small{font-size:16px;font-weight:400;margin-left:3px}
+.ssub{font-size:12px;color:var(--text3);margin-top:5px}
 .scard.blue .sval{color:var(--accent)}
 .scard.green .sval{color:var(--green)}
 .scard.amber .sval{color:var(--amber)}
@@ -120,6 +120,23 @@ label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px}
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:3px}
 @media(max-width:700px){.app{grid-template-columns:1fr}.sidebar{display:none}.stats-grid{grid-template-columns:1fr 1fr}.g2,.g3{grid-template-columns:1fr}}
+@media print{
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}
+  .sidebar,.topbar,#btn-export,#btn-print,#btn-prev-week,#btn-next-week,.tab-bar{display:none!important}
+  .app{display:block!important}
+  .main{padding:12px!important}
+  .page{display:none!important}
+  .page.on{display:block!important}
+  .card{break-inside:avoid;border:1px solid #ddd!important;margin-bottom:12px}
+  .scard{border:1px solid #ddd!important}
+  .stats-grid{grid-template-columns:repeat(4,1fr)!important}
+  .g2{grid-template-columns:1fr 1fr!important}
+  body,html{background:#fff!important}
+  .sval,.slabel,.ssub,.ptitle,.psub,.ctitle{color:#111!important}
+  .scard.blue .sval{color:#2563eb!important}
+  .scard.green .sval{color:#059669!important}
+  .scard.amber .sval{color:#d97706!important}
+}
 </style>
 </head>
 <body>
@@ -129,9 +146,14 @@ label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px}
   <div class="logo">Work<span>Dash</span></div>
   <span class="badge">● 실시간</span>
   <div class="topbar-right">
-    <span class="week-label" id="wklabel"></span>
+    <div style="display:flex;align-items:center;gap:6px">
+      <button class="btn sm" id="btn-prev-week">‹</button>
+      <span class="week-label" id="wklabel" style="min-width:130px;text-align:center"></span>
+      <button class="btn sm" id="btn-next-week">›</button>
+    </div>
     <span id="sync-status" style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text3)">연결 중…</span>
     <button class="btn sm" id="btn-export">↓ 내보내기</button>
+    <button class="btn sm" id="btn-print" onclick="window.print()">🖨 인쇄</button>
   </div>
 </header>
 
@@ -271,6 +293,7 @@ let S = {
   entries: [],
   curDay: 0,
   curStatTab: 'week',
+  weekOffset: 0,
   nid: 100,
 };
 
@@ -283,10 +306,11 @@ const norm  = s => s.replace(/[.\-\/]/g,'-').replace(/-(\d)(?=-)/g,'-0$1').repla
 const mById = id => S.members.find(m => m.id===id);
 const isWknd = d => { const w=new Date(d).getDay(); return w===0||w===6; };
 
-function getWeekDates() {
+function getWeekDates(offset) {
+  const off = (offset !== undefined ? offset : S.weekOffset) || 0;
   const now = new Date();
   const mon = new Date(now);
-  mon.setDate(now.getDate() - ((now.getDay()+6)%7));
+  mon.setDate(now.getDate() - ((now.getDay()+6)%7) + off*7);
   return Array.from({length:5},(_,i)=>{ const d=new Date(mon); d.setDate(mon.getDate()+i); return d.toISOString().slice(0,10); });
 }
 
@@ -421,6 +445,12 @@ function initEvents() {
   });
   // export
   document.getElementById('btn-export').addEventListener('click', exportData);
+  document.getElementById('btn-prev-week').addEventListener('click', () => {
+    S.weekOffset--; setWeekLabel(); renderDash(); renderTL(); renderStats();
+  });
+  document.getElementById('btn-next-week').addEventListener('click', () => {
+    S.weekOffset++; setWeekLabel(); renderDash(); renderTL(); renderStats();
+  });
   // paste
   document.getElementById('paste-txt').addEventListener('input', parsePaste);
   document.getElementById('btn-import').addEventListener('click', importPaste);
@@ -446,7 +476,10 @@ function initEvents() {
 function setWeekLabel() {
   const w = getWeekDates();
   const fmt = d => d.slice(5).replace('-','.');
-  document.getElementById('wklabel').textContent = `${fmt(w[0])} ~ ${fmt(w[4])}`;
+  const label = S.weekOffset === 0 ? `이번 주  ${fmt(w[0])}~${fmt(w[4])}`
+              : S.weekOffset < 0  ? `${Math.abs(S.weekOffset)}주 전  ${fmt(w[0])}~${fmt(w[4])}`
+              :                     `${S.weekOffset}주 후  ${fmt(w[0])}~${fmt(w[4])}`;
+  document.getElementById('wklabel').textContent = label;
 }
 
 // ═══════════════════════════════════
@@ -466,10 +499,10 @@ function renderDash() {
   const avgH = vals.length ? vals.reduce((a,b)=>a+b,0)/vals.length : 0;
 
   document.getElementById('sg').innerHTML = `
-    <div class="scard blue"><div class="slabel">주간 팀 총 근무</div><div class="sval">${totalH.toFixed(1)}<small>h</small></div><div class="ssub">${S.members.length}명 합산</div></div>
-    <div class="scard green"><div class="slabel">오늘 겹치는 시간</div><div class="sval">${ovH.toFixed(1)}<small>h</small></div><div class="ssub">2명+ 동시 근무</div></div>
-    <div class="scard amber"><div class="slabel">1인 주간 평균</div><div class="sval">${avgH.toFixed(1)}<small>h</small></div><div class="ssub">활성 팀원 기준</div></div>
-    <div class="scard"><div class="slabel">팀원 수</div><div class="sval">${S.members.length}<small>명</small></div><div class="ssub">등록된 팀원</div></div>`;
+    <div class="scard blue"><div class="slabel">주간 팀 총 근무</div><div class="sval">${totalH.toFixed(1)}<small> h</small></div><div class="ssub">${S.members.length}명 합산</div></div>
+    <div class="scard green"><div class="slabel">오늘 겹치는 시간</div><div class="sval">${ovH.toFixed(1)}<small> h</small></div><div class="ssub">2명+ 동시 근무</div></div>
+    <div class="scard amber"><div class="slabel">1인 주간 평균</div><div class="sval">${avgH.toFixed(1)}<small> h</small></div><div class="ssub">활성 팀원 기준</div></div>
+    <div class="scard"><div class="slabel">팀원 수</div><div class="sval">${S.members.length}<small> 명</small></div><div class="ssub">등록된 팀원</div></div>`;
 
   // 오늘 타임라인
   renderTLInto('today-tl', todayEnt, true);
