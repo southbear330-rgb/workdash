@@ -788,7 +788,7 @@ function renderMembers() {
   document.querySelectorAll('.mname-inp').forEach(inp => {
     inp.addEventListener('change', function() {
       const m=S.members.find(x=>x.id===parseInt(this.getAttribute('data-mid')));
-      if(m){m.name=this.value;saveS();updateMCnt();}
+      if(m){m.name=this.value;saveS();updateMCnt();renderPaste();}
     });
   });
   document.querySelectorAll('.cpick').forEach(el => {
@@ -805,7 +805,7 @@ function renderMembers() {
       const id=parseInt(this.getAttribute('data-del-m'));
       S.members=S.members.filter(m=>m.id!==id);
       S.entries=S.entries.filter(e=>e.memberId!==id);
-      saveS();renderAll();
+      saveS();renderAll();renderPaste();
     });
   });
   document.querySelectorAll('[data-sk]').forEach(inp => {
@@ -822,7 +822,7 @@ function addMember() {
   if(S.members.length>=14){toast('최대 14명까지 가능합니다');return;}
   const idx=S.members.length;
   S.members.push({id:S.nid++,name:`팀원${idx+1}`,color:COLORS[idx%COLORS.length],ds:{s:'09:00',e:'18:00'}});
-  saveS();renderMembers();updateMCnt();
+  saveS();renderMembers();updateMCnt();renderPaste();
 }
 
 // ═══════════════════════════════════
