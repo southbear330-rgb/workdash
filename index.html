@@ -4,904 +4,840 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>팀 근무시간 대시보드</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #0f1117;
-  --surface: #1a1d27;
-  --surface2: #222536;
-  --surface3: #2a2e42;
-  --border: rgba(255,255,255,0.07);
-  --border2: rgba(255,255,255,0.12);
-  --text: #e8eaf0;
-  --text2: #8b90a7;
-  --text3: #555a72;
-  --accent: #4f8ef7;
-  --accent2: #7c5ef7;
-  --green: #34d399;
-  --green-dim: rgba(52,211,153,0.12);
-  --amber: #fbbf24;
-  --red: #f87171;
-  --radius: 12px;
-  --radius-sm: 8px;
+:root{
+  --bg:#0f1117;--surface:#1a1d27;--surface2:#222536;--surface3:#2a2e42;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --text:#e8eaf0;--text2:#8b90a7;--text3:#555a72;
+  --accent:#4f8ef7;--accent2:#7c5ef7;
+  --green:#34d399;--green-dim:rgba(52,211,153,0.12);
+  --amber:#fbbf24;--red:#f87171;
+  --radius:12px;--radius-sm:8px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:14px;line-height:1.5}
-
-/* Layout */
-.app{display:grid;grid-template-columns:220px 1fr;grid-template-rows:auto 1fr;min-height:100vh}
-.topbar{grid-column:1/-1;display:flex;align-items:center;gap:16px;padding:0 24px;height:56px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
-.topbar-logo{font-weight:700;font-size:15px;letter-spacing:-.03em;color:var(--text)}
-.topbar-logo span{color:var(--accent)}
-.topbar-badge{font-size:11px;padding:2px 8px;border-radius:20px;background:var(--green-dim);color:var(--green);font-weight:500}
+.app{display:grid;grid-template-columns:220px 1fr;grid-template-rows:56px 1fr;min-height:100vh}
+.topbar{grid-column:1/-1;display:flex;align-items:center;gap:16px;padding:0 24px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.logo{font-weight:700;font-size:15px;letter-spacing:-.03em}.logo span{color:var(--accent)}
+.badge{font-size:11px;padding:2px 8px;border-radius:20px;background:var(--green-dim);color:var(--green);font-weight:500}
 .topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
-.topbar-week{font-size:12px;color:var(--text2);font-family:'DM Mono',monospace}
-
+.week-label{font-size:12px;color:var(--text2);font-family:'DM Mono',monospace}
 .sidebar{background:var(--surface);border-right:1px solid var(--border);padding:16px 12px;display:flex;flex-direction:column;gap:4px;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto}
-.sidebar-section{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;padding:12px 10px 6px}
-.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--radius-sm);cursor:pointer;color:var(--text2);font-size:13px;transition:all .15s;border:none;background:none;width:100%;text-align:left}
-.nav-item:hover{background:var(--surface2);color:var(--text)}
-.nav-item.active{background:rgba(79,142,247,0.12);color:var(--accent)}
-.nav-icon{width:16px;text-align:center;font-size:14px;flex-shrink:0}
-.nav-count{margin-left:auto;font-size:11px;background:var(--surface3);color:var(--text2);padding:1px 6px;border-radius:10px;font-family:'DM Mono',monospace}
-
-.main{padding:28px;overflow-y:auto;background:var(--bg)}
-.page{display:none}
-.page.active{display:block}
-
-/* Cards */
-.page-title{font-size:20px;font-weight:700;letter-spacing:-.03em;margin-bottom:4px}
-.page-sub{font-size:13px;color:var(--text2);margin-bottom:24px}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
-.card-title{font-size:12px;font-weight:700;color:var(--text2);letter-spacing:.05em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px}
-.card-title::before{content:'';width:3px;height:12px;background:var(--accent);border-radius:2px;display:inline-block}
-
-/* Stats row */
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:20px}
-.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px}
-.stat-label{font-size:11px;color:var(--text2);margin-bottom:6px;font-weight:500}
-.stat-val{font-size:26px;font-weight:700;letter-spacing:-.04em;font-family:'DM Mono',monospace}
-.stat-sub{font-size:11px;color:var(--text3);margin-top:3px}
-.stat-card.accent .stat-val{color:var(--accent)}
-.stat-card.green .stat-val{color:var(--green)}
-.stat-card.amber .stat-val{color:var(--amber)}
-
-/* Buttons */
+.sec-label{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;padding:12px 10px 6px}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--radius-sm);cursor:pointer;color:var(--text2);font-size:13px;border:none;background:none;width:100%;text-align:left;transition:background .15s,color .15s}
+.nav-btn:hover{background:var(--surface2);color:var(--text)}
+.nav-btn.on{background:rgba(79,142,247,0.12);color:var(--accent)}
+.nav-icon{width:16px;text-align:center;font-size:13px;flex-shrink:0}
+.cnt{margin-left:auto;font-size:11px;background:var(--surface3);color:var(--text2);padding:1px 6px;border-radius:10px;font-family:'DM Mono',monospace}
+.main{padding:28px;overflow-y:auto}
+.page{display:none}.page.on{display:block}
+.ptitle{font-size:20px;font-weight:700;letter-spacing:-.03em;margin-bottom:4px}
+.psub{font-size:13px;color:var(--text2);margin-bottom:24px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px}
+.ctitle{font-size:12px;font-weight:700;color:var(--text2);letter-spacing:.05em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.ctitle::before{content:'';width:3px;height:12px;background:var(--accent);border-radius:2px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.scard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px}
+.slabel{font-size:11px;color:var(--text2);margin-bottom:6px;font-weight:500}
+.sval{font-size:26px;font-weight:700;letter-spacing:-.04em;font-family:'DM Mono',monospace}
+.sval small{font-size:14px;font-weight:400}
+.ssub{font-size:11px;color:var(--text3);margin-top:3px}
+.scard.blue .sval{color:var(--accent)}
+.scard.green .sval{color:var(--green)}
+.scard.amber .sval{color:var(--amber)}
 .btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--radius-sm);font-size:13px;font-family:inherit;cursor:pointer;border:1px solid var(--border2);background:var(--surface2);color:var(--text);transition:all .15s;font-weight:500}
-.btn:hover{background:var(--surface3);border-color:var(--border2)}
-.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
-.btn.primary:hover{opacity:.9}
+.btn:hover{background:var(--surface3)}
+.btn.pri{background:var(--accent);color:#fff;border-color:var(--accent)}.btn.pri:hover{opacity:.9}
 .btn.sm{padding:4px 10px;font-size:12px}
-.btn.danger{color:var(--red);border-color:rgba(248,113,113,.3)}
-.btn.danger:hover{background:rgba(248,113,113,.1)}
-
-/* Inputs */
-input,select,textarea{font-family:inherit;font-size:13px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);padding:7px 10px;outline:none;transition:border-color .15s}
+.btn.red{color:var(--red);border-color:rgba(248,113,113,.25)}.btn.red:hover{background:rgba(248,113,113,.08)}
+.btn.w100{width:100%;justify-content:center}
+input,select,textarea{font-family:inherit;font-size:13px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);padding:7px 10px;outline:none;transition:border-color .15s;width:100%}
 input:focus,select:focus,textarea:focus{border-color:var(--accent)}
 select option{background:var(--surface2)}
-
+label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px}
+.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.sp{flex:1}
+.tab-bar{display:flex;gap:4px;margin-bottom:16px;background:var(--surface2);padding:4px;border-radius:var(--radius-sm);width:fit-content}
+.tab{padding:6px 16px;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:none;color:var(--text2);font-family:inherit;transition:all .15s}
+.tab.on{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.3)}
 /* Timeline */
-.timeline-wrap{overflow-x:auto}
-.timeline-grid{display:grid;min-width:700px}
-.tl-header-row{display:grid;grid-template-columns:120px 1fr;gap:0;margin-bottom:3px}
-.tl-hours{display:flex;position:relative;height:20px}
-.tl-hour{position:absolute;font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;transform:translateX(-50%)}
-.tl-member-row{display:grid;grid-template-columns:120px 1fr;gap:0;margin-bottom:3px;align-items:center}
-.tl-name{font-size:12px;color:var(--text2);padding-right:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:6px}
-.tl-name .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.tl-track{position:relative;height:26px;background:var(--surface2);border-radius:4px;overflow:hidden}
-.tl-block{position:absolute;top:3px;bottom:3px;border-radius:3px;opacity:.8;transition:opacity .15s;cursor:default}
-.tl-block:hover{opacity:1}
-.tl-overlap-row{display:grid;grid-template-columns:120px 1fr;gap:0;margin-top:4px;align-items:center}
-.tl-overlap-track{position:relative;height:14px;background:var(--surface2);border-radius:4px;overflow:hidden}
-.tl-overlap-seg{position:absolute;top:0;bottom:0;border-radius:2px}
-.day-divider{height:1px;background:var(--border);margin:10px 0 8px}
-.day-label{font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
-
-/* Weekly table */
-.week-table{width:100%;border-collapse:collapse;font-size:13px}
-.week-table th{padding:10px 12px;text-align:center;color:var(--text2);font-weight:600;font-size:11px;letter-spacing:.04em;text-transform:uppercase;border-bottom:1px solid var(--border)}
-.week-table th:first-child{text-align:left}
-.week-table td{padding:9px 12px;text-align:center;border-bottom:1px solid var(--border)}
-.week-table td:first-child{text-align:left;font-weight:500}
-.week-table tr:last-child td{border-bottom:none}
-.week-table tr:hover td{background:var(--surface2)}
-.heat-cell{display:inline-block;padding:2px 8px;border-radius:5px;font-family:'DM Mono',monospace;font-size:12px;font-weight:500}
-.member-badge{display:inline-flex;align-items:center;gap:6px}
-.member-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-
-/* Paste area */
-.paste-area{width:100%;min-height:120px;resize:vertical;font-family:'DM Mono',monospace;font-size:12px;line-height:1.6;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);padding:12px}
-.paste-area::placeholder{color:var(--text3)}
-.parse-preview{margin-top:12px;max-height:260px;overflow-y:auto;border-radius:var(--radius-sm);border:1px solid var(--border)}
-.preview-table{width:100%;border-collapse:collapse;font-size:12px}
-.preview-table th{padding:7px 10px;text-align:left;background:var(--surface3);color:var(--text2);font-weight:600;font-size:11px;position:sticky;top:0}
-.preview-table td{padding:6px 10px;border-top:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace}
-.preview-table tr:hover td{background:var(--surface2)}
+.tl-wrap{overflow-x:auto;padding-bottom:4px}
+.tl-axis{display:flex;position:relative;height:18px;margin-left:110px;margin-bottom:4px}
+.tl-tick{position:absolute;font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;transform:translateX(-50%)}
+.tl-row{display:flex;align-items:center;margin-bottom:4px;min-width:600px}
+.tl-name{width:110px;flex-shrink:0;font-size:12px;color:var(--text2);padding-right:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:6px}
+.tl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.tl-track{flex:1;height:28px;background:var(--surface2);border-radius:4px;position:relative;overflow:visible}
+.tl-block{position:absolute;top:4px;bottom:4px;border-radius:3px;opacity:.82;cursor:default;transition:opacity .15s}
+.tl-block:hover{opacity:1;z-index:10}
+/* Overlap row */
+.tl-ov-row{display:flex;align-items:center;margin-top:6px;min-width:600px}
+.tl-ov-label{width:110px;flex-shrink:0;font-size:11px;color:var(--text3);padding-right:10px;text-align:right}
+.tl-ov-track{flex:1;height:16px;background:var(--surface2);border-radius:4px;position:relative;overflow:hidden}
+.tl-ov-seg{position:absolute;top:0;bottom:0}
+/* Tooltip */
+.tip-wrap{position:absolute;top:4px;bottom:4px}
+.tip-box{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--surface3);border:1px solid var(--border2);padding:5px 9px;border-radius:6px;font-size:11px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;z-index:50;color:var(--text)}
+.tip-wrap:hover .tip-box{opacity:1}
+/* Week table */
+.wtbl{width:100%;border-collapse:collapse;font-size:13px}
+.wtbl th{padding:10px 12px;text-align:center;color:var(--text2);font-weight:600;font-size:11px;letter-spacing:.04em;text-transform:uppercase;border-bottom:1px solid var(--border)}
+.wtbl th:first-child{text-align:left}
+.wtbl td{padding:9px 12px;text-align:center;border-bottom:1px solid var(--border)}
+.wtbl td:first-child{text-align:left;font-weight:500}
+.wtbl tr:last-child td{border-bottom:none;background:var(--surface2)}
+.wtbl tr:hover td{background:rgba(255,255,255,.02)}
+.hcell{display:inline-block;padding:2px 8px;border-radius:5px;font-family:'DM Mono',monospace;font-size:12px;font-weight:500}
+.mbadge{display:inline-flex;align-items:center;gap:6px}
+/* Paste */
+.paste-area{width:100%;min-height:110px;resize:vertical;font-family:'DM Mono',monospace;font-size:12px;line-height:1.6}
+.preview{margin-top:10px;max-height:240px;overflow-y:auto;border-radius:var(--radius-sm);border:1px solid var(--border)}
+.ptbl{width:100%;border-collapse:collapse;font-size:12px}
+.ptbl th{padding:7px 10px;text-align:left;background:var(--surface3);color:var(--text2);font-weight:600;font-size:11px;position:sticky;top:0}
+.ptbl td{padding:6px 10px;border-top:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace}
 .tag{display:inline-block;padding:1px 7px;border-radius:10px;font-size:11px;font-weight:500}
 .tag.ok{background:var(--green-dim);color:var(--green)}
 .tag.warn{background:rgba(251,191,36,.1);color:var(--amber)}
-
-/* Member settings */
-.member-list{display:flex;flex-direction:column;gap:8px}
-.member-item{display:grid;grid-template-columns:32px 1fr 120px auto;gap:10px;align-items:center;background:var(--surface2);padding:10px 14px;border-radius:var(--radius-sm);border:1px solid var(--border)}
-.member-color-dot{width:24px;height:24px;border-radius:50%;flex-shrink:0}
-.member-name-input{font-size:13px;font-weight:500;background:transparent;border:none;color:var(--text);padding:0;font-family:inherit}
-.member-name-input:focus{outline:1px solid var(--accent);border-radius:3px;padding:0 4px}
-
-/* Grid layout helpers */
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
-.mb16{margin-bottom:16px}
-.mb8{margin-bottom:8px}
-.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.spacer{flex:1}
-
-/* Tabs */
-.tab-bar{display:flex;gap:4px;margin-bottom:16px;background:var(--surface2);padding:4px;border-radius:var(--radius-sm);width:fit-content}
-.tab-btn{padding:6px 16px;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:none;color:var(--text2);font-family:inherit;transition:all .15s}
-.tab-btn.active{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.3)}
-
+/* Member */
+.mitem{display:grid;grid-template-columns:28px 1fr auto auto;gap:10px;align-items:center;background:var(--surface2);padding:10px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);margin-bottom:8px}
+.mdot-lg{width:24px;height:24px;border-radius:50%;cursor:pointer;flex-shrink:0}
+.mname-inp{font-size:13px;font-weight:500;background:transparent;border:1px solid transparent;color:var(--text);padding:2px 6px;border-radius:4px;font-family:inherit;width:100%}
+.mname-inp:focus{outline:none;border-color:var(--accent);background:var(--surface)}
+.color-picks{display:flex;gap:5px;flex-wrap:wrap}
+.cpick{width:16px;height:16px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:border-color .15s;flex-shrink:0}
+.cpick.sel{border-color:#fff}
 /* Toast */
-.toast{position:fixed;bottom:24px;right:24px;background:var(--surface3);border:1px solid var(--border2);color:var(--text);padding:12px 18px;border-radius:var(--radius);font-size:13px;z-index:9999;transform:translateY(80px);opacity:0;transition:all .25s;pointer-events:none}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--surface3);border:1px solid var(--border2);color:var(--text);padding:11px 18px;border-radius:var(--radius);font-size:13px;z-index:9999;transform:translateY(80px);opacity:0;transition:all .25s;pointer-events:none}
 .toast.show{transform:translateY(0);opacity:1}
-.toast.green{border-color:rgba(52,211,153,.3);color:var(--green)}
-
-/* Tooltip */
-.tooltip-wrap{position:relative;display:inline-block}
-.tooltip{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--surface3);border:1px solid var(--border2);padding:4px 8px;border-radius:6px;font-size:11px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;z-index:99}
-.tooltip-wrap:hover .tooltip{opacity:1}
-
-/* Scrollbar */
-::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-track{background:transparent}
+.toast.g{border-color:rgba(52,211,153,.35);color:var(--green)}
+.empty{text-align:center;padding:36px;color:var(--text3)}
+.empty .ei{font-size:28px;margin-bottom:8px}
+::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:3px}
-
-/* Responsive */
-@media(max-width:768px){
-  .app{grid-template-columns:1fr}
-  .sidebar{display:none}
-  .main{padding:16px}
-  .stats-grid{grid-template-columns:1fr 1fr}
-  .grid2,.grid3{grid-template-columns:1fr}
-}
-
-.empty-state{text-align:center;padding:40px;color:var(--text3)}
-.empty-state .emoji{font-size:32px;margin-bottom:8px}
-.empty-state p{font-size:13px}
+@media(max-width:700px){.app{grid-template-columns:1fr}.sidebar{display:none}.stats-grid{grid-template-columns:1fr 1fr}.g2,.g3{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="app">
-  <!-- Top Bar -->
-  <header class="topbar">
-    <div class="topbar-logo">Work<span>Dash</span></div>
-    <span class="topbar-badge">● 실시간</span>
-    <div class="topbar-right">
-      <span class="topbar-week" id="current-week-label"></span>
-      <button class="btn sm" onclick="exportData()">↓ 내보내기</button>
+
+<header class="topbar">
+  <div class="logo">Work<span>Dash</span></div>
+  <span class="badge">● 실시간</span>
+  <div class="topbar-right">
+    <span class="week-label" id="wklabel"></span>
+    <button class="btn sm" id="btn-export">↓ 내보내기</button>
+  </div>
+</header>
+
+<nav class="sidebar">
+  <div class="sec-label">메뉴</div>
+  <button class="nav-btn on" data-page="dashboard"><span class="nav-icon">◈</span>대시보드</button>
+  <button class="nav-btn" data-page="timeline"><span class="nav-icon">◫</span>타임라인</button>
+  <button class="nav-btn" data-page="stats"><span class="nav-icon">◻</span>근무 통계</button>
+  <button class="nav-btn" data-page="paste"><span class="nav-icon">◧</span>데이터 입력</button>
+  <div class="sec-label">설정</div>
+  <button class="nav-btn" data-page="members"><span class="nav-icon">◉</span>팀원 관리<span class="cnt" id="mcnt">0</span></button>
+</nav>
+
+<main class="main">
+
+  <!-- 대시보드 -->
+  <div class="page on" id="page-dashboard">
+    <div class="ptitle">대시보드</div>
+    <div class="psub">이번 주 팀 근무현황 요약</div>
+    <div class="stats-grid" id="sg"></div>
+    <div class="g2">
+      <div class="card"><div class="ctitle">오늘 타임라인</div><div id="today-tl"></div></div>
+      <div class="card"><div class="ctitle">이번 주 팀원별 총 근무</div><div id="week-bars"></div></div>
     </div>
-  </header>
+    <div class="card"><div class="ctitle">요일별 팀 총 근무시간</div><div id="day-chart" style="height:130px;display:flex;align-items:flex-end;gap:10px;padding-top:10px"></div></div>
+  </div>
 
-  <!-- Sidebar -->
-  <nav class="sidebar">
-    <div class="sidebar-section">메뉴</div>
-    <button class="nav-item active" onclick="navigate('dashboard',this)"><span class="nav-icon">◈</span>대시보드</button>
-    <button class="nav-item" onclick="navigate('timeline',this)"><span class="nav-icon">◫</span>타임라인</button>
-    <button class="nav-item" onclick="navigate('stats',this)"><span class="nav-icon">◻</span>근무 통계</button>
-    <button class="nav-item" onclick="navigate('paste',this)"><span class="nav-icon">◧</span>데이터 입력</button>
-    <div class="sidebar-section">설정</div>
-    <button class="nav-item" onclick="navigate('members',this)"><span class="nav-icon">◉</span>팀원 관리<span class="nav-count" id="member-count">0</span></button>
-  </nav>
-
-  <!-- Main -->
-  <main class="main">
-
-    <!-- 대시보드 -->
-    <div class="page active" id="page-dashboard">
-      <div class="page-title">대시보드</div>
-      <div class="page-sub" id="dash-sub">오늘의 팀 근무현황</div>
-
-      <div class="stats-grid" id="stats-grid"></div>
-
-      <div class="grid2 mb16">
-        <div class="card">
-          <div class="card-title">오늘 근무 현황</div>
-          <div id="today-timeline"></div>
-        </div>
-        <div class="card">
-          <div class="card-title">이번 주 팀원별 평균 근무</div>
-          <div id="week-avg-bars"></div>
-        </div>
+  <!-- 타임라인 -->
+  <div class="page" id="page-timeline">
+    <div class="ptitle">타임라인</div>
+    <div class="psub">요일별 근무 시간대 및 겹치는 구간 시각화</div>
+    <div class="tab-bar" id="day-tabs"></div>
+    <div class="card">
+      <div class="row" style="margin-bottom:14px">
+        <div class="ctitle" style="margin:0" id="tl-title">월요일</div>
+        <div class="sp"></div>
+        <span id="tl-meta" style="font-size:12px;color:var(--text2)"></span>
       </div>
+      <div class="tl-wrap" id="tl-content"></div>
+    </div>
+    <!-- 겹침 상세 -->
+    <div class="card" id="overlap-detail-card">
+      <div class="ctitle">겹치는 시간 상세</div>
+      <div id="overlap-detail"></div>
+    </div>
+  </div>
 
+  <!-- 근무 통계 -->
+  <div class="page" id="page-stats">
+    <div class="ptitle">근무 통계</div>
+    <div class="psub">팀원별 요일별 근무시간 집계</div>
+    <div class="tab-bar">
+      <button class="tab on" data-stab="week">주간</button>
+      <button class="tab" data-stab="month">월간</button>
+    </div>
+    <div class="card"><div class="ctitle" id="stats-period"></div><div style="overflow-x:auto"><table class="wtbl" id="stbl"></table></div></div>
+  </div>
+
+  <!-- 데이터 입력 -->
+  <div class="page" id="page-paste">
+    <div class="ptitle">데이터 입력</div>
+    <div class="psub">전산 데이터를 붙여넣거나 직접 입력하세요</div>
+    <div class="g2">
       <div class="card">
-        <div class="card-title">이번 주 요일별 팀 근무시간</div>
-        <div id="week-day-chart"></div>
+        <div class="ctitle">전산 데이터 붙여넣기</div>
+        <p style="font-size:12px;color:var(--text2);margin-bottom:8px">전산에서 Ctrl+C 복사 후 아래에 Ctrl+V 붙여넣기<br>날짜·요일·출근시간·퇴근시간을 자동으로 인식합니다</p>
+        <textarea class="paste-area" id="paste-txt" placeholder="여기에 붙여넣기 (Ctrl+V)&#10;&#10;예시:&#10;2026.04.07	월요일		08:00	17:30"></textarea>
+        <div class="row" style="margin-top:8px">
+          <select id="paste-sel" style="flex:1"><option value="">팀원 선택...</option></select>
+          <button class="btn pri" id="btn-import">가져오기</button>
+          <button class="btn" id="btn-paste-clear">지우기</button>
+        </div>
+        <div id="paste-preview"></div>
       </div>
-    </div>
-
-    <!-- 타임라인 -->
-    <div class="page" id="page-timeline">
-      <div class="page-title">타임라인</div>
-      <div class="page-sub">요일별 팀원 근무 시간대 및 겹치는 구간</div>
-
-      <div class="tab-bar" id="day-tabs"></div>
       <div class="card">
-        <div class="row mb16">
-          <div class="card-title" style="margin:0" id="tl-day-title">월요일</div>
-          <div class="spacer"></div>
-          <span id="tl-overlap-badge" style="font-size:12px;color:var(--green)"></span>
+        <div class="ctitle">직접 입력</div>
+        <div style="margin-bottom:8px"><label>팀원</label><select id="di-member"></select></div>
+        <div style="margin-bottom:8px"><label>날짜</label><input type="date" id="di-date"></div>
+        <div class="g2" style="margin-bottom:8px">
+          <div><label>출근시간</label><input type="time" id="di-start" value="09:00"></div>
+          <div><label>퇴근시간</label><input type="time" id="di-end" value="18:00"></div>
         </div>
-        <div class="timeline-wrap" id="timeline-content"></div>
+        <button class="btn pri w100" id="btn-add-direct">추가</button>
+        <div style="margin-top:14px"><div class="ctitle">최근 입력</div><div id="recent-list"></div></div>
       </div>
     </div>
-
-    <!-- 근무 통계 -->
-    <div class="page" id="page-stats">
-      <div class="page-title">근무 통계</div>
-      <div class="page-sub">팀원별 주간 근무시간 집계</div>
-
-      <div class="tab-bar">
-        <button class="tab-btn active" onclick="switchStatTab('week',this)">주간</button>
-        <button class="tab-btn" onclick="switchStatTab('month',this)">월간</button>
+    <div class="card">
+      <div class="row" style="margin-bottom:12px">
+        <div class="ctitle" style="margin:0">전체 데이터 <span id="entry-count" style="color:var(--text3);font-size:11px"></span></div>
+        <div class="sp"></div>
+        <button class="btn sm red" id="btn-clear-all">전체 삭제</button>
       </div>
-
-      <div class="card">
-        <div class="card-title">팀원별 요일별 근무시간</div>
-        <div style="overflow-x:auto">
-          <table class="week-table" id="stats-table"></table>
-        </div>
-      </div>
+      <div style="overflow-x:auto;max-height:380px;overflow-y:auto"><table class="wtbl" id="all-tbl"></table></div>
     </div>
+  </div>
 
-    <!-- 데이터 입력 -->
-    <div class="page" id="page-paste">
-      <div class="page-title">데이터 입력</div>
-      <div class="page-sub">전산 시스템에서 복사한 데이터를 붙여넣거나 직접 입력하세요</div>
-
-      <div class="grid2 mb16">
-        <div class="card">
-          <div class="card-title">전산 데이터 붙여넣기</div>
-          <p style="font-size:12px;color:var(--text2);margin-bottom:10px">전산에서 복사(Ctrl+C)한 데이터를 그대로 붙여넣으세요.<br>근무일·요일·출근시간·퇴근시간·팀원 컬럼을 자동 인식합니다.</p>
-          <textarea class="paste-area" id="paste-input" placeholder="여기에 붙여넣기 (Ctrl+V)&#10;&#10;예시:&#10;2026.04.01	수요일		08:00	17:00&#10;2026.04.01	수요일		09:00	18:00" oninput="parsePaste()"></textarea>
-          <div class="row" style="margin-top:10px">
-            <select id="paste-member-select" style="flex:1">
-              <option value="">팀원 선택...</option>
-            </select>
-            <button class="btn primary" onclick="importPaste()">가져오기</button>
-            <button class="btn" onclick="document.getElementById('paste-input').value='';document.getElementById('parse-preview').innerHTML=''">지우기</button>
-          </div>
-          <div id="parse-preview"></div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">직접 입력</div>
-          <div class="mb8">
-            <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px">팀원</label>
-            <select id="direct-member" style="width:100%"></select>
-          </div>
-          <div class="mb8">
-            <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px">날짜</label>
-            <input type="date" id="direct-date" style="width:100%">
-          </div>
-          <div class="grid2 mb8">
-            <div>
-              <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px">출근시간</label>
-              <input type="time" id="direct-start" style="width:100%" value="09:00">
-            </div>
-            <div>
-              <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px">퇴근시간</label>
-              <input type="time" id="direct-end" style="width:100%" value="18:00">
-            </div>
-          </div>
-          <button class="btn primary" style="width:100%" onclick="addDirectEntry()">추가</button>
-          <div style="margin-top:16px">
-            <div class="card-title">최근 입력 데이터</div>
-            <div id="recent-entries" style="max-height:200px;overflow-y:auto"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="row mb16">
-          <div class="card-title" style="margin:0">전체 데이터</div>
-          <div class="spacer"></div>
-          <button class="btn sm danger" onclick="clearAllData()">전체 삭제</button>
-        </div>
-        <div style="overflow-x:auto;max-height:400px;overflow-y:auto">
-          <table class="week-table" id="all-data-table"></table>
-        </div>
-      </div>
+  <!-- 팀원 관리 -->
+  <div class="page" id="page-members">
+    <div class="ptitle">팀원 관리</div>
+    <div class="psub">이름을 바꾸면 모든 시트에 자동 반영됩니다 (최대 14명)</div>
+    <div class="card">
+      <div class="ctitle">팀원 목록</div>
+      <div id="mlist"></div>
+      <button class="btn w100" id="btn-add-member" style="margin-top:10px">+ 팀원 추가</button>
     </div>
-
-    <!-- 팀원 관리 -->
-    <div class="page" id="page-members">
-      <div class="page-title">팀원 관리</div>
-      <div class="page-sub">팀원을 추가·수정·삭제하세요. 최대 14명</div>
-
-      <div class="card mb16">
-        <div class="card-title">팀원 목록</div>
-        <div class="member-list" id="member-list"></div>
-        <button class="btn" style="margin-top:12px;width:100%" onclick="addMember()">+ 팀원 추가</button>
-      </div>
-
-      <div class="card">
-        <div class="card-title">기본 근무시간 설정</div>
-        <p style="font-size:12px;color:var(--text2);margin-bottom:12px">팀원별 표준 근무시간을 설정합니다. 타임라인 기본값으로 사용됩니다.</p>
-        <div id="default-schedule-list"></div>
-      </div>
+    <div class="card">
+      <div class="ctitle">기본 출퇴근 시간</div>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:12px">타임라인 표시 기준으로 사용됩니다</p>
+      <div id="sched-list"></div>
     </div>
+  </div>
 
-  </main>
+</main>
 </div>
-
 <div class="toast" id="toast"></div>
 
 <script>
-// ── 상수 ──
+// ═══════════════════════════════════
+// 상수
+// ═══════════════════════════════════
 const DAYS = ['월','화','수','목','금'];
 const DAYS_FULL = ['월요일','화요일','수요일','목요일','금요일'];
 const COLORS = ['#4f8ef7','#f87171','#a78bfa','#34d399','#fbbf24','#f472b6','#38bdf8','#4ade80','#fb923c','#e879f9','#22d3ee','#a3e635','#f97316','#818cf8'];
-const T_START = 7, T_END = 21;
+const T_S = 7, T_E = 21; // 타임라인 시작/끝 시각
 
-// ── 상태 ──
-let state = {
+// ═══════════════════════════════════
+// 상태
+// ═══════════════════════════════════
+let S = {
   members: [
-    {id:1,name:'김민준',color:COLORS[0],defaultSchedule:{s:'09:00',e:'18:00'}},
-    {id:2,name:'이서연',color:COLORS[1],defaultSchedule:{s:'10:00',e:'19:00'}},
-    {id:3,name:'박지호',color:COLORS[2],defaultSchedule:{s:'08:00',e:'17:00'}},
-    {id:4,name:'최유진',color:COLORS[3],defaultSchedule:{s:'11:00',e:'20:00'}},
-    {id:5,name:'정하은',color:COLORS[4],defaultSchedule:{s:'09:30',e:'18:30'}},
+    {id:1,name:'김민준',color:COLORS[0],ds:{s:'09:00',e:'18:00'}},
+    {id:2,name:'이서연',color:COLORS[1],ds:{s:'10:00',e:'19:00'}},
+    {id:3,name:'박지호',color:COLORS[2],ds:{s:'08:00',e:'17:00'}},
+    {id:4,name:'최유진',color:COLORS[3],ds:{s:'11:00',e:'20:00'}},
+    {id:5,name:'정하은',color:COLORS[4],ds:{s:'09:30',e:'18:30'}},
   ],
-  entries: [], // {id, memberId, date, start, end}
-  currentDay: 0,
-  currentStatTab: 'week',
-  nextId: 100,
+  entries: [],
+  curDay: 0,
+  curStatTab: 'week',
+  nid: 100,
 };
 
-// ── 초기화 ──
-function init(){
-  loadState();
-  setCurrentWeekLabel();
-  setDefaultDate();
+// ═══════════════════════════════════
+// 유틸
+// ═══════════════════════════════════
+const toMin = t => { const [h,m] = t.split(':').map(Number); return h*60+m; };
+const toHM  = m => String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
+const norm  = s => s.replace(/[.\-\/]/g,'-').replace(/-(\d)(?=-)/g,'-0$1').replace(/-(\d)$/,'-0$1');
+const mById = id => S.members.find(m => m.id===id);
+const isWknd = d => { const w=new Date(d).getDay(); return w===0||w===6; };
+
+function getWeekDates() {
+  const now = new Date();
+  const mon = new Date(now);
+  mon.setDate(now.getDate() - ((now.getDay()+6)%7));
+  return Array.from({length:5},(_,i)=>{ const d=new Date(mon); d.setDate(mon.getDate()+i); return d.toISOString().slice(0,10); });
+}
+
+function calcOverlap(entries) {
+  const seg = new Array(1440).fill(0);
+  entries.forEach(e => { const s=toMin(e.start),en=toMin(e.end); for(let t=s;t<en;t++) seg[t]++; });
+  return seg;
+}
+
+function overlapHours(entries) {
+  const seg = calcOverlap(entries);
+  return seg.filter(v=>v>=2).length / 60;
+}
+
+function loadS() { try { const r=localStorage.getItem('wd2'); if(r) S={...S,...JSON.parse(r)}; } catch(e){} }
+function saveS() { try { localStorage.setItem('wd2',JSON.stringify(S)); } catch(e){} }
+
+function toast(msg, cls='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast show'+(cls?' '+cls:'');
+  setTimeout(() => t.className='toast', 2400);
+}
+
+// ═══════════════════════════════════
+// 네비게이션 (data-page 방식)
+// ═══════════════════════════════════
+function initNav() {
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const page = this.getAttribute('data-page');
+      // 버튼 active
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('on'));
+      this.classList.add('on');
+      // 페이지 전환
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+      document.getElementById('page-'+page).classList.add('on');
+      // 렌더
+      if(page==='timeline') renderTL();
+      if(page==='stats') renderStats();
+      if(page==='paste') renderPasteData();
+      if(page==='members') renderMembers();
+    });
+  });
+}
+
+// ═══════════════════════════════════
+// 초기화
+// ═══════════════════════════════════
+function init() {
+  loadS();
+  initNav();
+  initEvents();
+  setWeekLabel();
+  document.getElementById('di-date').value = new Date().toISOString().slice(0,10);
   renderAll();
 }
 
-function loadState(){
-  try{
-    const s=localStorage.getItem('workdash');
-    if(s) state={...state,...JSON.parse(s)};
-  }catch(e){}
-}
-
-function saveState(){
-  try{ localStorage.setItem('workdash',JSON.stringify(state)); }catch(e){}
-}
-
-function renderAll(){
-  renderMemberCount();
-  renderDashboard();
-  renderTimeline();
+function renderAll() {
+  updateMCnt();
+  renderDash();
+  renderTL();
   renderStats();
   renderPaste();
   renderMembers();
 }
 
-// ── 내비게이션 ──
-function navigate(page, el){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  document.getElementById('page-'+page).classList.add('active');
-  if(el) el.classList.add('active');
-  if(page==='timeline') renderTimeline();
-  if(page==='stats') renderStats();
-  if(page==='paste') renderPasteData();
-  if(page==='members') renderMembers();
-}
-
-// ── 유틸 ──
-function toMin(t){const[h,m]=t.split(':').map(Number);return h*60+m}
-function toHHMM(m){return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0')}
-function dateToDayIdx(dateStr){
-  const d=new Date(dateStr);
-  const dow=d.getDay(); // 0=일
-  return dow===0?6:dow-1; // 0=월
-}
-function getWeekDates(){
-  const now=new Date();
-  const mon=new Date(now);
-  mon.setDate(now.getDate()-((now.getDay()+6)%7));
-  return Array.from({length:5},(_,i)=>{
-    const d=new Date(mon);d.setDate(mon.getDate()+i);
-    return d.toISOString().slice(0,10);
+// ═══════════════════════════════════
+// 이벤트 바인딩
+// ═══════════════════════════════════
+function initEvents() {
+  // stat tabs
+  document.querySelectorAll('.tab[data-stab]').forEach(t => {
+    t.addEventListener('click', function() {
+      S.curStatTab = this.getAttribute('data-stab');
+      document.querySelectorAll('.tab[data-stab]').forEach(x => x.classList.remove('on'));
+      this.classList.add('on');
+      renderStats();
+    });
   });
-}
-function memberById(id){return state.members.find(m=>m.id===id)}
-function showToast(msg,type=''){
-  const t=document.getElementById('toast');
-  t.textContent=msg;t.className='toast show'+(type?' '+type:'');
-  setTimeout(()=>t.className='toast',2200);
-}
-
-// ── 주 레이블 ──
-function setCurrentWeekLabel(){
-  const dates=getWeekDates();
-  const fmt=d=>d.slice(5).replace('-','.');
-  document.getElementById('current-week-label').textContent=`${fmt(dates[0])} ~ ${fmt(dates[4])} 주`;
-}
-function setDefaultDate(){
-  const today=new Date().toISOString().slice(0,10);
-  document.getElementById('direct-date').value=today;
-}
-
-// ── 대시보드 ──
-function renderDashboard(){
-  const dates=getWeekDates();
-  const today=new Date().toISOString().slice(0,10);
-  const todayIdx=dateToDayIdx(today);
-
-  // 이번 주 entries
-  const weekEntries=state.entries.filter(e=>dates.includes(e.date)&&!isWeekend(e.date));
-
-  // 총 근무시간
-  const totalH=weekEntries.reduce((s,e)=>{
-    const h=(toMin(e.end)-toMin(e.start))/60;
-    return s+(h>0?h:0);
-  },0);
-
-  // 겹치는 시간 (오늘)
-  const todayEntries=state.entries.filter(e=>e.date===today);
-  const overlapH=calcOverlapHours(todayEntries);
-
-  // 1인 평균
-  const memberHours={};
-  weekEntries.forEach(e=>{
-    const h=(toMin(e.end)-toMin(e.start))/60;
-    if(h>0) memberHours[e.memberId]=(memberHours[e.memberId]||0)+h;
+  // export
+  document.getElementById('btn-export').addEventListener('click', exportData);
+  // paste
+  document.getElementById('paste-txt').addEventListener('input', parsePaste);
+  document.getElementById('btn-import').addEventListener('click', importPaste);
+  document.getElementById('btn-paste-clear').addEventListener('click', () => {
+    document.getElementById('paste-txt').value='';
+    document.getElementById('paste-preview').innerHTML='';
+    document.getElementById('paste-preview')._parsed=null;
   });
-  const vals=Object.values(memberHours);
-  const avgH=vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:0;
+  // direct input
+  document.getElementById('btn-add-direct').addEventListener('click', addDirect);
+  // clear all
+  document.getElementById('btn-clear-all').addEventListener('click', () => {
+    if(!confirm('모든 근무 데이터를 삭제할까요?')) return;
+    S.entries=[]; saveS(); renderAll(); renderPasteData(); toast('삭제했습니다');
+  });
+  // add member
+  document.getElementById('btn-add-member').addEventListener('click', addMember);
+}
 
-  document.getElementById('stats-grid').innerHTML=`
-    <div class="stat-card accent"><div class="stat-label">이번 주 총 근무</div><div class="stat-val">${totalH.toFixed(1)}<span style="font-size:14px;font-weight:400">h</span></div><div class="stat-sub">${state.members.length}명 합산</div></div>
-    <div class="stat-card green"><div class="stat-label">오늘 겹치는 시간</div><div class="stat-val">${overlapH.toFixed(1)}<span style="font-size:14px;font-weight:400">h</span></div><div class="stat-sub">2명 이상 동시 근무</div></div>
-    <div class="stat-card amber"><div class="stat-label">1인 평균 (주간)</div><div class="stat-val">${avgH.toFixed(1)}<span style="font-size:14px;font-weight:400">h</span></div><div class="stat-sub">활성 팀원 기준</div></div>
-    <div class="stat-card"><div class="stat-label">팀원 수</div><div class="stat-val">${state.members.length}<span style="font-size:14px;font-weight:400">명</span></div><div class="stat-sub">등록된 팀원</div></div>
-  `;
+// ═══════════════════════════════════
+// 주 레이블
+// ═══════════════════════════════════
+function setWeekLabel() {
+  const w = getWeekDates();
+  const fmt = d => d.slice(5).replace('-','.');
+  document.getElementById('wklabel').textContent = `${fmt(w[0])} ~ ${fmt(w[4])}`;
+}
+
+// ═══════════════════════════════════
+// 대시보드
+// ═══════════════════════════════════
+function renderDash() {
+  const dates = getWeekDates();
+  const today = new Date().toISOString().slice(0,10);
+  const wkEnt = S.entries.filter(e => dates.includes(e.date));
+  const todayEnt = S.entries.filter(e => e.date===today);
+
+  const totalH = wkEnt.reduce((s,e) => s+Math.max(0,(toMin(e.end)-toMin(e.start))/60),0);
+  const ovH = overlapHours(todayEnt);
+  const mH = {};
+  wkEnt.forEach(e => { const h=Math.max(0,(toMin(e.end)-toMin(e.start))/60); mH[e.memberId]=(mH[e.memberId]||0)+h; });
+  const vals = Object.values(mH);
+  const avgH = vals.length ? vals.reduce((a,b)=>a+b,0)/vals.length : 0;
+
+  document.getElementById('sg').innerHTML = `
+    <div class="scard blue"><div class="slabel">주간 팀 총 근무</div><div class="sval">${totalH.toFixed(1)}<small>h</small></div><div class="ssub">${S.members.length}명 합산</div></div>
+    <div class="scard green"><div class="slabel">오늘 겹치는 시간</div><div class="sval">${ovH.toFixed(1)}<small>h</small></div><div class="ssub">2명+ 동시 근무</div></div>
+    <div class="scard amber"><div class="slabel">1인 주간 평균</div><div class="sval">${avgH.toFixed(1)}<small>h</small></div><div class="ssub">활성 팀원 기준</div></div>
+    <div class="scard"><div class="slabel">팀원 수</div><div class="sval">${S.members.length}<small>명</small></div><div class="ssub">등록된 팀원</div></div>`;
 
   // 오늘 타임라인
-  renderDayTimeline('today-timeline', todayEntries, true);
+  renderTLInto('today-tl', todayEnt, true);
 
-  // 이번 주 팀원별 평균
-  const el=document.getElementById('week-avg-bars');
-  if(!weekEntries.length){el.innerHTML='<div class="empty-state"><div class="emoji">📊</div><p>데이터를 입력하면 여기에 표시됩니다</p></div>';return;}
-  const maxH=Math.max(...Object.values(memberHours),1);
-  el.innerHTML=state.members.map(m=>{
-    const h=memberHours[m.id]||0;
-    const pct=h/maxH*100;
-    return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-      <div style="width:80px;font-size:12px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.name}</div>
-      <div style="flex:1;height:20px;background:var(--surface2);border-radius:4px;overflow:hidden">
-        <div style="width:${pct}%;height:100%;background:${m.color};border-radius:4px;opacity:.8"></div>
+  // 팀원별 막대
+  const maxH = Math.max(...Object.values(mH), 1);
+  const bars = document.getElementById('week-bars');
+  if(!vals.length) { bars.innerHTML='<div class="empty"><div class="ei">📊</div><p>데이터를 입력하면 표시됩니다</p></div>'; return; }
+  bars.innerHTML = S.members.map(m => {
+    const h = mH[m.id]||0;
+    return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">
+      <div style="width:76px;font-size:12px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.name}</div>
+      <div style="flex:1;height:18px;background:var(--surface2);border-radius:3px;overflow:hidden">
+        <div style="width:${h/maxH*100}%;height:100%;background:${m.color};opacity:.82;border-radius:3px"></div>
       </div>
-      <div style="width:36px;text-align:right;font-size:12px;color:var(--text2);font-family:'DM Mono',monospace">${h.toFixed(1)}h</div>
+      <div style="width:38px;text-align:right;font-size:12px;color:var(--text2);font-family:'DM Mono',monospace">${h.toFixed(1)}h</div>
     </div>`;
   }).join('');
 
-  // 요일별 팀 근무시간 차트
-  const dayH=DAYS.map((_,di)=>{
-    const dayDate=dates[di];
-    const dayEnt=state.entries.filter(e=>e.date===dayDate);
-    return dayEnt.reduce((s,e)=>s+Math.max(0,(toMin(e.end)-toMin(e.start))/60),0);
-  });
-  const maxDayH=Math.max(...dayH,1);
-  document.getElementById('week-day-chart').innerHTML=`
-    <div style="display:flex;align-items:flex-end;gap:12px;height:120px;padding-top:10px">
-      ${DAYS.map((d,i)=>`
-        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px">
-          <div style="font-size:11px;color:var(--text2);font-family:'DM Mono',monospace">${dayH[i].toFixed(1)}h</div>
-          <div style="width:100%;flex:1;display:flex;align-items:flex-end">
-            <div style="width:100%;height:${dayH[i]/maxDayH*100}%;background:linear-gradient(180deg,var(--accent),var(--accent2));border-radius:4px 4px 0 0;min-height:4px;opacity:.8"></div>
-          </div>
-          <div style="font-size:12px;color:${dates[i]===today?'var(--accent)':'var(--text3)';}">${d}</div>
-        </div>
-      `).join('')}
-    </div>`;
+  // 요일별 차트
+  const dayH = dates.map(d => S.entries.filter(e=>e.date===d).reduce((s,e)=>s+Math.max(0,(toMin(e.end)-toMin(e.start))/60),0));
+  const mxD = Math.max(...dayH, 1);
+  document.getElementById('day-chart').innerHTML = DAYS.map((d,i) => `
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px">
+      <div style="font-size:11px;color:var(--text2);font-family:'DM Mono',monospace">${dayH[i]>0?dayH[i].toFixed(1)+'h':''}</div>
+      <div style="width:100%;flex:1;display:flex;align-items:flex-end">
+        <div style="width:100%;height:${Math.max(dayH[i]/mxD*100,4)}%;background:linear-gradient(180deg,var(--accent),var(--accent2));border-radius:4px 4px 0 0;opacity:.82"></div>
+      </div>
+      <div style="font-size:12px;color:${dates[i]===today?'var(--accent)':'var(--text3)'}">${d}</div>
+    </div>`).join('');
 }
 
-function isWeekend(dateStr){
-  const d=new Date(dateStr).getDay();
-  return d===0||d===6;
-}
+// ═══════════════════════════════════
+// 타임라인 공통 렌더
+// ═══════════════════════════════════
+function renderTLInto(containerId, entries, compact=false) {
+  const el = document.getElementById(containerId);
+  if(!entries.length) { el.innerHTML='<div class="empty"><div class="ei">⏱</div><p>데이터가 없습니다</p></div>'; return; }
 
-function calcOverlapHours(entries){
-  if(entries.length<2) return 0;
-  const seg=new Array(1440).fill(0);
-  entries.forEach(e=>{
-    const s=toMin(e.start),en=toMin(e.end);
-    for(let t=s;t<en;t++) seg[t]++;
-  });
-  return seg.filter(v=>v>=2).length/60;
-}
-
-// ── 타임라인 공통 렌더 ──
-function renderDayTimeline(containerId, entries, compact=false){
-  const el=document.getElementById(containerId);
-  if(!entries.length){
-    el.innerHTML='<div class="empty-state"><div class="emoji">⏱</div><p>이 날짜의 데이터가 없습니다</p></div>';
-    return;
-  }
-  const totalMin=(T_END-T_START)*60;
-  const hours=[];
-  for(let h=T_START;h<=T_END;h++) hours.push(h);
+  const totalMin = (T_E-T_S)*60;
+  const hours = [];
+  for(let h=T_S; h<=T_E; h++) hours.push(h);
 
   // 시간축
-  let html=`<div class="tl-header-row"><div></div><div class="tl-hours">`;
-  hours.forEach(h=>{
-    const pct=(h-T_START)/(T_END-T_START)*100;
-    html+=`<span class="tl-hour" style="left:${pct}%">${h}</span>`;
+  let html = `<div class="tl-axis">`;
+  hours.forEach(h => {
+    const pct = (h-T_S)/(T_E-T_S)*100;
+    html += `<span class="tl-tick" style="left:${pct}%">${h}</span>`;
   });
-  html+=`</div></div>`;
+  html += `</div>`;
 
   // 팀원 행
-  state.members.forEach(m=>{
-    const mEntries=entries.filter(e=>e.memberId===m.id);
-    html+=`<div class="tl-member-row"><div class="tl-name"><span class="dot" style="background:${m.color}"></span>${m.name}</div><div class="tl-track">`;
-    mEntries.forEach(e=>{
-      const s=toMin(e.start),en=toMin(e.end);
-      const left=(s-T_START*60)/totalMin*100;
-      const width=(en-s)/totalMin*100;
-      const hrs=((en-s)/60).toFixed(1);
-      html+=`<div class="tooltip-wrap" style="position:absolute;left:${left}%;width:${width}%;top:3px;bottom:3px">
+  S.members.forEach(m => {
+    const me = entries.filter(e => e.memberId===m.id);
+    html += `<div class="tl-row"><div class="tl-name"><span class="tl-dot" style="background:${m.color}"></span>${m.name}</div><div class="tl-track">`;
+    me.forEach(e => {
+      const s=toMin(e.start), en=toMin(e.end);
+      const left = (s-T_S*60)/totalMin*100;
+      const width = (en-s)/totalMin*100;
+      const hrs = ((en-s)/60).toFixed(1);
+      if(left<0||width<=0) return;
+      html += `<div class="tip-wrap" style="left:${left}%;width:${width}%">
         <div class="tl-block" style="position:absolute;inset:0;background:${m.color}"></div>
-        <div class="tooltip">${m.name} ${e.start}~${e.end} (${hrs}h)</div>
+        <div class="tip-box">${m.name} ${e.start}~${e.end} (${hrs}h)</div>
       </div>`;
     });
-    html+=`</div></div>`;
+    html += `</div></div>`;
   });
 
   // 겹침 행
-  const seg=new Array(T_END*60).fill(0);
-  entries.forEach(e=>{
-    const s=toMin(e.start),en=toMin(e.end);
-    for(let t=s;t<en;t++) if(t<T_END*60) seg[t]++;
-  });
-  html+=`<div class="tl-overlap-row"><div class="tl-name" style="font-size:11px;color:var(--text3)">겹침</div><div class="tl-overlap-track">`;
-  for(let t=T_START*60;t<T_END*60;t++){
-    const c=seg[t]||0;
-    if(c>=2){
-      const left=(t-T_START*60)/totalMin*100;
-      const w=1/totalMin*100+0.1;
-      const alpha=Math.min(0.3+(c-2)*0.2,1);
-      html+=`<div class="tl-overlap-seg" style="left:${left}%;width:${w}%;background:rgba(52,211,153,${alpha})"></div>`;
+  const seg = calcOverlap(entries);
+  html += `<div style="height:6px"></div>`;
+  html += `<div class="tl-ov-row"><div class="tl-ov-label">겹침</div><div class="tl-ov-track">`;
+  for(let t=T_S*60; t<T_E*60; t++) {
+    const c = seg[t]||0;
+    if(c>=2) {
+      const left = (t-T_S*60)/totalMin*100;
+      const w = 1/totalMin*100+0.1;
+      const alpha = Math.min(0.25+(c-2)*0.22, 1);
+      html += `<div class="tl-ov-seg" style="left:${left}%;width:${w}%;background:rgba(52,211,153,${alpha})"></div>`;
     }
   }
-  html+=`</div></div>`;
-  el.innerHTML=html;
+  html += `</div></div>`;
+  el.innerHTML = html;
 }
 
-// ── 타임라인 페이지 ──
-function renderTimeline(){
-  // 요일 탭
-  const tabBar=document.getElementById('day-tabs');
-  tabBar.innerHTML=DAYS.map((d,i)=>
-    `<button class="tab-btn${i===state.currentDay?' active':''}" onclick="selectDay(${i})">${d}요일</button>`
+// ═══════════════════════════════════
+// 타임라인 페이지
+// ═══════════════════════════════════
+function renderTL() {
+  // 탭
+  const tabBar = document.getElementById('day-tabs');
+  tabBar.innerHTML = DAYS.map((d,i) =>
+    `<button class="tab${i===S.curDay?' on':''}" data-di="${i}">${d}요일</button>`
   ).join('');
-  renderTimelineDay();
-}
-
-function selectDay(i){
-  state.currentDay=i;
-  document.querySelectorAll('#day-tabs .tab-btn').forEach((b,j)=>b.classList.toggle('active',j===i));
-  renderTimelineDay();
-}
-
-function renderTimelineDay(){
-  const day=state.currentDay;
-  const dates=getWeekDates();
-  const dateStr=dates[day];
-  const entries=state.entries.filter(e=>e.date===dateStr);
-  const overlapH=calcOverlapHours(entries);
-  document.getElementById('tl-day-title').textContent=`${DAYS_FULL[day]} (${dateStr})`;
-  document.getElementById('tl-overlap-badge').textContent=
-    entries.length?`함께 근무: ${overlapH.toFixed(1)}h`:'';
-  renderDayTimeline('timeline-content',entries);
-}
-
-// ── 근무 통계 ──
-function renderStats(){
-  const dates=getWeekDates();
-  const tab=state.currentStatTab;
-
-  let targetDates=dates;
-  if(tab==='month'){
-    // 이번 달 전체
-    const now=new Date();
-    const y=now.getFullYear(),mo=now.getMonth();
-    const daysInMonth=new Date(y,mo+1,0).getDate();
-    targetDates=[];
-    for(let d=1;d<=daysInMonth;d++){
-      const dt=new Date(y,mo,d).toISOString().slice(0,10);
-      if(!isWeekend(dt)) targetDates.push(dt);
-    }
-  }
-
-  const tbl=document.getElementById('stats-table');
-  const dayLabels=tab==='week'?DAYS:['합계','평균'];
-
-  // 헤더
-  let html=`<thead><tr><th>팀원</th>`;
-  if(tab==='week') DAYS.forEach(d=>html+=`<th>${d}</th>`);
-  html+=`<th>합계</th><th>평균/일</th></tr></thead><tbody>`;
-
-  // 각 팀원
-  state.members.forEach(m=>{
-    const memberEntries=state.entries.filter(e=>e.memberId===m.id&&targetDates.includes(e.date));
-    const dayHours={};
-    memberEntries.forEach(e=>{
-      const h=Math.max(0,(toMin(e.end)-toMin(e.start))/60);
-      dayHours[e.date]=(dayHours[e.date]||0)+h;
+  tabBar.querySelectorAll('.tab').forEach(t => {
+    t.addEventListener('click', function() {
+      S.curDay = parseInt(this.getAttribute('data-di'));
+      tabBar.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+      this.classList.add('on');
+      renderTLDay();
     });
-
-    const total=Object.values(dayHours).reduce((a,b)=>a+b,0);
-    const days=Object.keys(dayHours).length||1;
-    const avg=total/days;
-
-    // 히트맵 색상
-    const maxH=8; // 기준 8시간
-    function heatColor(h){
-      const t=Math.min(h/maxH,1);
-      const r=Math.round(79+t*(124-79));
-      const g=Math.round(142+t*(46-142));
-      const b=Math.round(247+t*(246-247));
-      return `rgba(${r},${g},${b},${0.1+t*0.5})`;
-    }
-
-    html+=`<tr><td><div class="member-badge"><span class="member-dot" style="background:${m.color}"></span>${m.name}</div></td>`;
-    if(tab==='week'){
-      dates.forEach(d=>{
-        const h=dayHours[d]||0;
-        html+=`<td>${h>0?`<span class="heat-cell" style="background:${heatColor(h)}">${h.toFixed(1)}h</span>`:'-'}</td>`;
-      });
-    }
-    html+=`<td><strong>${total.toFixed(1)}h</strong></td><td style="color:var(--text2)">${(total/Math.max(days,1)).toFixed(1)}h</td></tr>`;
   });
-
-  // 합계 행
-  const allH=targetDates.map(d=>{
-    const ents=state.entries.filter(e=>e.date===d);
-    return ents.reduce((s,e)=>s+Math.max(0,(toMin(e.end)-toMin(e.start))/60),0);
-  });
-  const grandTotal=allH.reduce((a,b)=>a+b,0);
-  html+=`<tr style="background:var(--surface2)"><td><strong>팀 합계</strong></td>`;
-  if(tab==='week') allH.forEach(h=>html+=`<td><strong>${h.toFixed(1)}h</strong></td>`);
-  html+=`<td><strong>${grandTotal.toFixed(1)}h</strong></td><td style="color:var(--text2)">${(grandTotal/Math.max(targetDates.length,1)).toFixed(1)}h</td></tr>`;
-  html+=`</tbody>`;
-  tbl.innerHTML=html;
+  renderTLDay();
 }
 
-function switchStatTab(tab,btn){
-  state.currentStatTab=tab;
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  renderStats();
+function renderTLDay() {
+  const day = S.curDay;
+  const dates = getWeekDates();
+  const dateStr = dates[day];
+  const entries = S.entries.filter(e => e.date===dateStr);
+  const ovH = overlapHours(entries);
+
+  document.getElementById('tl-title').textContent = `${DAYS_FULL[day]}  ${dateStr}`;
+  document.getElementById('tl-meta').textContent = entries.length
+    ? `${entries.length}건 · 겹치는 시간 ${ovH.toFixed(1)}h`
+    : '';
+
+  renderTLInto('tl-content', entries);
+  renderOverlapDetail(entries, dateStr);
 }
 
-// ── 데이터 입력 ──
-function renderPaste(){
-  // 팀원 select 채우기
-  const sel1=document.getElementById('paste-member-select');
-  const sel2=document.getElementById('direct-member');
-  const opts='<option value="">팀원 선택...</option>'+state.members.map(m=>`<option value="${m.id}">${m.name}</option>`).join('');
-  sel1.innerHTML=opts; sel2.innerHTML=opts;
-}
+function renderOverlapDetail(entries, dateStr) {
+  const card = document.getElementById('overlap-detail-card');
+  const el = document.getElementById('overlap-detail');
+  if(entries.length < 2) { card.style.display='none'; return; }
+  card.style.display='block';
 
-function parsePaste(){
-  const raw=document.getElementById('paste-input').value.trim();
-  if(!raw){document.getElementById('parse-preview').innerHTML='';return;}
-  const lines=raw.split('\n').filter(l=>l.trim());
-  const rows=lines.map(l=>l.split(/\t|,/).map(c=>c.trim()));
+  // 겹치는 구간 찾기 (연속 구간으로 병합)
+  const seg = calcOverlap(entries);
+  const ranges = [];
+  let inRange = false, rangeS = 0, rangeMax = 0;
 
-  const parsed=[];
-  rows.forEach(r=>{
-    // 날짜, 요일, [휴일명], 출근, 퇴근 형태 감지
-    const timeRe=/^(\d{1,2}):(\d{2})$/;
-    const dateRe=/^\d{4}[.\-\/]\d{1,2}[.\-\/]\d{1,2}$/;
-    const times=r.filter(c=>timeRe.test(c));
-    const dates=r.filter(c=>dateRe.test(c));
-    if(times.length>=2&&dates.length>=1){
-      parsed.push({date:normDate(dates[0]),start:times[0],end:times[1],raw:r.join('\t')});
+  for(let t=T_S*60; t<=T_E*60; t++) {
+    const c = seg[t]||0;
+    if(c>=2 && !inRange) { inRange=true; rangeS=t; rangeMax=c; }
+    else if(c>=2 && inRange) { rangeMax=Math.max(rangeMax,c); }
+    else if(c<2 && inRange) {
+      ranges.push({s:rangeS, e:t, max:rangeMax});
+      inRange=false; rangeMax=0;
     }
-  });
-
-  if(!parsed.length){
-    document.getElementById('parse-preview').innerHTML=`<p style="color:var(--amber);font-size:12px;margin-top:8px">⚠ 인식 가능한 데이터가 없습니다. 날짜·출근시간·퇴근시간이 포함된지 확인하세요.</p>`;
-    return;
   }
 
-  let html=`<div class="parse-preview"><table class="preview-table"><thead><tr><th>날짜</th><th>출근</th><th>퇴근</th><th>근무</th><th>상태</th></tr></thead><tbody>`;
-  parsed.forEach(p=>{
+  if(!ranges.length) { card.style.display='none'; return; }
+
+  // 겹치는 구간별 누가 있는지
+  el.innerHTML = `
+    <table class="wtbl">
+      <thead><tr><th>시간대</th><th>동시 근무 팀원</th><th>인원</th><th>겹침</th></tr></thead>
+      <tbody>
+      ${ranges.map(r => {
+        const mid = Math.floor((r.s+r.e)/2);
+        const who = S.members.filter(m => {
+          const me = entries.filter(e=>e.memberId===m.id);
+          return me.some(e => toMin(e.start)<=mid && toMin(e.end)>mid);
+        });
+        const dur = ((r.e-r.s)/60).toFixed(1);
+        return `<tr>
+          <td style="font-family:'DM Mono',monospace">${toHM(r.s)}~${toHM(r.e)}</td>
+          <td>${who.map(m=>`<span class="mbadge"><span class="tl-dot" style="background:${m.color};display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:3px"></span>${m.name}</span>`).join('  ')}</td>
+          <td><span style="color:var(--green);font-weight:600">${who.length}명</span></td>
+          <td><span class="hcell" style="background:var(--green-dim);color:var(--green)">${dur}h</span></td>
+        </tr>`;
+      }).join('')}
+      </tbody>
+    </table>`;
+}
+
+// ═══════════════════════════════════
+// 근무 통계
+// ═══════════════════════════════════
+function renderStats() {
+  const dates = getWeekDates();
+  const tab = S.curStatTab;
+  let targets = dates;
+
+  if(tab==='month') {
+    const now=new Date(); const y=now.getFullYear(), mo=now.getMonth();
+    const dim=new Date(y,mo+1,0).getDate();
+    targets=[];
+    for(let d=1;d<=dim;d++) { const dt=new Date(y,mo,d).toISOString().slice(0,10); if(!isWknd(dt)) targets.push(dt); }
+    document.getElementById('stats-period').textContent = `${now.getFullYear()}년 ${now.getMonth()+1}월`;
+  } else {
+    document.getElementById('stats-period').textContent = `이번 주 (${dates[0].slice(5)} ~ ${dates[4].slice(5)})`;
+  }
+
+  const maxH = 9;
+  function heatBg(h) {
+    const t=Math.min(h/maxH,1);
+    return `rgba(79,142,247,${0.08+t*0.5})`;
+  }
+  function heatTxt(h) { return h/maxH>0.4?'#93c5fd':'var(--text2)'; }
+
+  let html = `<thead><tr><th>팀원</th>${tab==='week'?DAYS.map(d=>`<th>${d}</th>`).join(''):''}<th>합계</th><th>평균/일</th></tr></thead><tbody>`;
+
+  S.members.forEach(m => {
+    const me = S.entries.filter(e=>e.memberId===m.id&&targets.includes(e.date));
+    const dH = {};
+    me.forEach(e => { const h=Math.max(0,(toMin(e.end)-toMin(e.start))/60); dH[e.date]=(dH[e.date]||0)+h; });
+    const total = Object.values(dH).reduce((a,b)=>a+b,0);
+    const cnt = Object.keys(dH).length||1;
+
+    html += `<tr><td><div class="mbadge"><span class="tl-dot" style="background:${m.color}"></span>${m.name}</div></td>`;
+    if(tab==='week') dates.forEach(d => {
+      const h=dH[d]||0;
+      html += `<td>${h>0?`<span class="hcell" style="background:${heatBg(h)};color:${heatTxt(h)}">${h.toFixed(1)}h</span>`:'-'}</td>`;
+    });
+    html += `<td><strong>${total.toFixed(1)}h</strong></td><td style="color:var(--text2)">${(total/cnt).toFixed(1)}h</td></tr>`;
+  });
+
+  // 합계행
+  const dayTotals = targets.map(d => S.entries.filter(e=>e.date===d).reduce((s,e)=>s+Math.max(0,(toMin(e.end)-toMin(e.start))/60),0));
+  const grand = dayTotals.reduce((a,b)=>a+b,0);
+  html += `<tr><td><strong>팀 합계</strong></td>`;
+  if(tab==='week') dayTotals.forEach(h => html+=`<td><strong>${h.toFixed(1)}h</strong></td>`);
+  html += `<td><strong>${grand.toFixed(1)}h</strong></td><td style="color:var(--text2)">${(grand/Math.max(targets.length,1)).toFixed(1)}h</td></tr>`;
+  html += `</tbody>`;
+  document.getElementById('stbl').innerHTML = html;
+}
+
+// ═══════════════════════════════════
+// 데이터 입력
+// ═══════════════════════════════════
+function renderPaste() {
+  const opts = '<option value="">팀원 선택...</option>' + S.members.map(m=>`<option value="${m.id}">${m.name}</option>`).join('');
+  document.getElementById('paste-sel').innerHTML = opts;
+  document.getElementById('di-member').innerHTML = opts;
+}
+
+function parsePaste() {
+  const raw = document.getElementById('paste-txt').value.trim();
+  const preview = document.getElementById('paste-preview');
+  if(!raw) { preview.innerHTML=''; preview._parsed=null; return; }
+
+  const lines = raw.split('\n').filter(l=>l.trim());
+  const parsed = [];
+  const timeRe = /^(\d{1,2}):(\d{2})$/;
+  const dateRe = /^\d{4}[.\-\/]\d{1,2}[.\-\/]\d{1,2}$/;
+
+  lines.forEach(l => {
+    const cols = l.split(/\t|,/).map(c=>c.trim());
+    const times = cols.filter(c=>timeRe.test(c));
+    const dates = cols.filter(c=>dateRe.test(c));
+    if(times.length>=2 && dates.length>=1) {
+      parsed.push({date:norm(dates[0]), start:times[0], end:times[1]});
+    }
+  });
+
+  if(!parsed.length) {
+    preview.innerHTML=`<p style="color:var(--amber);font-size:12px;margin-top:8px">⚠ 인식 가능한 데이터가 없습니다. 날짜·출근시간·퇴근시간이 포함되어 있는지 확인하세요.</p>`;
+    preview._parsed=null; return;
+  }
+
+  let html = `<div class="preview"><table class="ptbl"><thead><tr><th>날짜</th><th>출근</th><th>퇴근</th><th>근무</th><th>상태</th></tr></thead><tbody>`;
+  parsed.forEach(p => {
     const h=((toMin(p.end)-toMin(p.start))/60).toFixed(1);
     const ok=toMin(p.end)>toMin(p.start);
     html+=`<tr><td>${p.date}</td><td>${p.start}</td><td>${p.end}</td><td>${h}h</td><td><span class="tag ${ok?'ok':'warn'}">${ok?'정상':'확인필요'}</span></td></tr>`;
   });
-  html+=`</tbody></table></div>`;
-  document.getElementById('parse-preview').innerHTML=html;
-  document.getElementById('parse-preview')._parsed=parsed;
+  html+=`</tbody></table></div><p style="font-size:12px;color:var(--text2);margin-top:6px">${parsed.length}건 인식됨 · 팀원 선택 후 "가져오기"</p>`;
+  preview.innerHTML = html;
+  preview._parsed = parsed;
 }
 
-function normDate(s){
-  return s.replace(/[.\-\/]/g,'-').replace(/(\d{4})-(\d{1})-/,'$1-0$2-').replace(/-(\d{1})$/,'-0$1');
-}
-
-function importPaste(){
-  const memberId=parseInt(document.getElementById('paste-member-select').value);
-  if(!memberId){showToast('팀원을 선택하세요','');return;}
-  const preview=document.getElementById('parse-preview');
-  const parsed=preview._parsed;
-  if(!parsed||!parsed.length){showToast('먼저 데이터를 붙여넣으세요','');return;}
-
-  parsed.forEach(p=>{
-    if(toMin(p.end)>toMin(p.start)){
-      state.entries.push({id:state.nextId++,memberId,date:p.date,start:p.start,end:p.end});
+function importPaste() {
+  const memberId = parseInt(document.getElementById('paste-sel').value);
+  if(!memberId) { toast('팀원을 선택하세요'); return; }
+  const preview = document.getElementById('paste-preview');
+  const parsed = preview._parsed;
+  if(!parsed||!parsed.length) { toast('먼저 데이터를 붙여넣으세요'); return; }
+  let cnt=0;
+  parsed.forEach(p => {
+    if(toMin(p.end)>toMin(p.start)) {
+      S.entries.push({id:S.nid++, memberId, date:p.date, start:p.start, end:p.end});
+      cnt++;
     }
   });
-  saveState();
-  renderAll();
-  document.getElementById('paste-input').value='';
-  preview.innerHTML='';
-  showToast(`${parsed.length}건 가져왔습니다`,'green');
+  saveS(); renderAll(); renderPasteData();
+  document.getElementById('paste-txt').value='';
+  preview.innerHTML=''; preview._parsed=null;
+  toast(`${cnt}건 가져왔습니다`,'g');
 }
 
-function addDirectEntry(){
-  const memberId=parseInt(document.getElementById('direct-member').value);
-  const date=document.getElementById('direct-date').value;
-  const start=document.getElementById('direct-start').value;
-  const end=document.getElementById('direct-end').value;
-  if(!memberId||!date||!start||!end){showToast('모든 항목을 입력하세요');return;}
-  if(toMin(end)<=toMin(start)){showToast('퇴근시간이 출근시간보다 늦어야 합니다');return;}
-  state.entries.push({id:state.nextId++,memberId,date,start,end});
-  saveState();
-  renderAll();
-  renderPasteData();
-  showToast('추가됐습니다','green');
+function addDirect() {
+  const memberId = parseInt(document.getElementById('di-member').value);
+  const date = document.getElementById('di-date').value;
+  const start = document.getElementById('di-start').value;
+  const end = document.getElementById('di-end').value;
+  if(!memberId||!date||!start||!end) { toast('모든 항목을 입력하세요'); return; }
+  if(toMin(end)<=toMin(start)) { toast('퇴근시간이 출근시간보다 늦어야 합니다'); return; }
+  S.entries.push({id:S.nid++, memberId, date, start, end});
+  saveS(); renderAll(); renderPasteData();
+  toast('추가됐습니다','g');
 }
 
-function renderPasteData(){
+function renderPasteData() {
   // 최근 입력
-  const recent=[...state.entries].reverse().slice(0,6);
-  document.getElementById('recent-entries').innerHTML=recent.length?
-    recent.map(e=>{
-      const m=memberById(e.memberId);
-      if(!m) return '';
-      const h=((toMin(e.end)-toMin(e.start))/60).toFixed(1);
-      return `<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px">
-        <span class="member-dot" style="background:${m.color}"></span>
-        <span style="color:var(--text2)">${e.date}</span>
-        <span>${m.name}</span>
-        <span style="color:var(--text2)">${e.start}~${e.end}</span>
-        <span style="color:var(--green);margin-left:auto;font-family:'DM Mono',monospace">${h}h</span>
-        <button class="btn sm danger" onclick="deleteEntry(${e.id})">×</button>
-      </div>`;
-    }).join(''):
-    '<p style="font-size:12px;color:var(--text3);padding:8px 0">입력된 데이터가 없습니다</p>';
+  const recent = [...S.entries].reverse().slice(0,6);
+  document.getElementById('recent-list').innerHTML = recent.length
+    ? recent.map(e => {
+        const m=mById(e.memberId); if(!m) return '';
+        const h=((toMin(e.end)-toMin(e.start))/60).toFixed(1);
+        return `<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px">
+          <span class="tl-dot" style="background:${m.color}"></span>
+          <span style="color:var(--text2);font-family:'DM Mono',monospace">${e.date}</span>
+          <span>${m.name}</span>
+          <span style="color:var(--text2)">${e.start}~${e.end}</span>
+          <span style="color:var(--green);margin-left:auto;font-family:'DM Mono',monospace">${h}h</span>
+          <button class="btn sm red" data-del="${e.id}">×</button>
+        </div>`;
+      }).join('')
+    : '<p style="font-size:12px;color:var(--text3);padding:8px 0">입력된 데이터가 없습니다</p>';
 
-  // 전체 테이블
-  const sorted=[...state.entries].sort((a,b)=>b.date.localeCompare(a.date)||a.memberId-b.memberId);
-  const tbl=document.getElementById('all-data-table');
-  if(!sorted.length){tbl.innerHTML='<tr><td style="padding:20px;color:var(--text3);text-align:center">데이터가 없습니다</td></tr>';return;}
-  tbl.innerHTML=`<thead><tr><th>날짜</th><th>팀원</th><th>출근</th><th>퇴근</th><th>근무시간</th><th></th></tr></thead><tbody>`+
-    sorted.map(e=>{
-      const m=memberById(e.memberId);
-      if(!m) return '';
-      const h=((toMin(e.end)-toMin(e.start))/60).toFixed(1);
-      return `<tr><td style="font-family:'DM Mono',monospace;font-size:12px">${e.date}</td>
-        <td><div class="member-badge"><span class="member-dot" style="background:${m.color}"></span>${m.name}</div></td>
-        <td style="font-family:'DM Mono',monospace">${e.start}</td>
-        <td style="font-family:'DM Mono',monospace">${e.end}</td>
-        <td><span class="heat-cell" style="background:rgba(79,142,247,0.15);color:var(--accent)">${h}h</span></td>
-        <td><button class="btn sm danger" onclick="deleteEntry(${e.id})">삭제</button></td></tr>`;
-    }).join('')+`</tbody>`;
+  // 전체 데이터
+  const sorted = [...S.entries].sort((a,b)=>b.date.localeCompare(a.date)||a.memberId-b.memberId);
+  document.getElementById('entry-count').textContent = `(${sorted.length}건)`;
+  const tbl = document.getElementById('all-tbl');
+  if(!sorted.length) {
+    tbl.innerHTML='<tr><td style="padding:20px;color:var(--text3);text-align:center" colspan="6">데이터가 없습니다</td></tr>';
+  } else {
+    tbl.innerHTML = `<thead><tr><th>날짜</th><th>팀원</th><th>출근</th><th>퇴근</th><th>근무</th><th></th></tr></thead><tbody>`+
+      sorted.map(e => {
+        const m=mById(e.memberId); if(!m) return '';
+        const h=((toMin(e.end)-toMin(e.start))/60).toFixed(1);
+        return `<tr>
+          <td style="font-family:'DM Mono',monospace;font-size:12px">${e.date}</td>
+          <td><div class="mbadge"><span class="tl-dot" style="background:${m.color}"></span>${m.name}</div></td>
+          <td style="font-family:'DM Mono',monospace">${e.start}</td>
+          <td style="font-family:'DM Mono',monospace">${e.end}</td>
+          <td><span class="hcell" style="background:rgba(79,142,247,.15);color:var(--accent)">${h}h</span></td>
+          <td><button class="btn sm red" data-del="${e.id}">삭제</button></td></tr>`;
+      }).join('')+`</tbody>`;
+  }
+
+  // 삭제 버튼 이벤트
+  document.querySelectorAll('[data-del]').forEach(btn => {
+    btn.addEventListener('click', function() {
+      S.entries = S.entries.filter(e=>e.id!==parseInt(this.getAttribute('data-del')));
+      saveS(); renderAll(); renderPasteData();
+    });
+  });
 }
 
-function deleteEntry(id){
-  state.entries=state.entries.filter(e=>e.id!==id);
-  saveState();
-  renderAll();
-  renderPasteData();
+// ═══════════════════════════════════
+// 팀원 관리
+// ═══════════════════════════════════
+function updateMCnt() {
+  document.getElementById('mcnt').textContent = S.members.length;
 }
 
-function clearAllData(){
-  if(!confirm('모든 근무 데이터를 삭제하시겠습니까?')) return;
-  state.entries=[];
-  saveState();
-  renderAll();
-  renderPasteData();
-  showToast('삭제됐습니다');
-}
-
-// ── 팀원 관리 ──
-function renderMemberCount(){
-  document.getElementById('member-count').textContent=state.members.length;
-}
-
-function renderMembers(){
-  renderMemberCount();
-  const list=document.getElementById('member-list');
-  list.innerHTML=state.members.map((m,i)=>`
-    <div class="member-item">
-      <div class="member-color-dot" style="background:${m.color}"></div>
-      <input class="member-name-input" value="${m.name}" onchange="updateMemberName(${m.id},this.value)" placeholder="이름 입력">
-      <div style="display:flex;gap:6px;flex-wrap:wrap">
-        ${COLORS.slice(0,7).map(c=>`<div onclick="updateMemberColor(${m.id},'${c}')" style="width:18px;height:18px;border-radius:50%;background:${c};cursor:pointer;border:2px solid ${c===m.color?'#fff':'transparent'};transition:all .15s"></div>`).join('')}
+function renderMembers() {
+  updateMCnt();
+  document.getElementById('mlist').innerHTML = S.members.map(m => `
+    <div class="mitem" data-mid="${m.id}">
+      <div class="mdot-lg" style="background:${m.color}"></div>
+      <input class="mname-inp" value="${m.name}" data-mid="${m.id}" placeholder="이름">
+      <div class="color-picks">
+        ${COLORS.map(c=>`<div class="cpick${c===m.color?' sel':''}" style="background:${c}" data-mid="${m.id}" data-color="${c}"></div>`).join('')}
       </div>
-      <button class="btn sm danger" onclick="removeMember(${m.id})">삭제</button>
-    </div>
-  `).join('');
+      <button class="btn sm red" data-del-m="${m.id}">삭제</button>
+    </div>`).join('');
 
   // 기본 스케줄
-  const dsl=document.getElementById('default-schedule-list');
-  dsl.innerHTML=state.members.map(m=>`
-    <div style="display:grid;grid-template-columns:120px 1fr 1fr;gap:10px;align-items:center;margin-bottom:8px">
-      <div class="member-badge"><span class="member-dot" style="background:${m.color}"></span>${m.name}</div>
-      <div style="display:flex;align-items:center;gap:6px">
-        <label style="font-size:11px;color:var(--text3)">출근</label>
-        <input type="time" value="${m.defaultSchedule?.s||'09:00'}" onchange="updateDefaultSchedule(${m.id},'s',this.value)" style="flex:1">
-      </div>
-      <div style="display:flex;align-items:center;gap:6px">
-        <label style="font-size:11px;color:var(--text3)">퇴근</label>
-        <input type="time" value="${m.defaultSchedule?.e||'18:00'}" onchange="updateDefaultSchedule(${m.id},'e',this.value)" style="flex:1">
-      </div>
-    </div>
-  `).join('');
+  document.getElementById('sched-list').innerHTML = S.members.map(m => `
+    <div style="display:grid;grid-template-columns:110px 1fr 1fr;gap:10px;align-items:center;margin-bottom:8px">
+      <div class="mbadge"><span class="tl-dot" style="background:${m.color}"></span>${m.name}</div>
+      <div style="display:flex;align-items:center;gap:6px"><span style="font-size:11px;color:var(--text3);width:28px">출근</span><input type="time" value="${m.ds?.s||'09:00'}" data-mid="${m.id}" data-sk="s"></div>
+      <div style="display:flex;align-items:center;gap:6px"><span style="font-size:11px;color:var(--text3);width:28px">퇴근</span><input type="time" value="${m.ds?.e||'18:00'}" data-mid="${m.id}" data-sk="e"></div>
+    </div>`).join('');
+
+  // 이벤트
+  document.querySelectorAll('.mname-inp').forEach(inp => {
+    inp.addEventListener('change', function() {
+      const m=S.members.find(x=>x.id===parseInt(this.getAttribute('data-mid')));
+      if(m){m.name=this.value;saveS();updateMCnt();}
+    });
+  });
+  document.querySelectorAll('.cpick').forEach(el => {
+    el.addEventListener('click', function() {
+      const mid=parseInt(this.getAttribute('data-mid'));
+      const color=this.getAttribute('data-color');
+      const m=S.members.find(x=>x.id===mid);
+      if(m){m.color=color;saveS();renderMembers();}
+    });
+  });
+  document.querySelectorAll('[data-del-m]').forEach(btn => {
+    btn.addEventListener('click', function() {
+      if(!confirm('팀원을 삭제할까요?')) return;
+      const id=parseInt(this.getAttribute('data-del-m'));
+      S.members=S.members.filter(m=>m.id!==id);
+      S.entries=S.entries.filter(e=>e.memberId!==id);
+      saveS();renderAll();
+    });
+  });
+  document.querySelectorAll('[data-sk]').forEach(inp => {
+    inp.addEventListener('change', function() {
+      const mid=parseInt(this.getAttribute('data-mid'));
+      const sk=this.getAttribute('data-sk');
+      const m=S.members.find(x=>x.id===mid);
+      if(m){if(!m.ds)m.ds={};m.ds[sk]=this.value;saveS();}
+    });
+  });
 }
 
-function addMember(){
-  if(state.members.length>=14){showToast('최대 14명까지 가능합니다');return;}
-  const idx=state.members.length;
-  state.members.push({id:state.nextId++,name:`팀원${idx+1}`,color:COLORS[idx%COLORS.length],defaultSchedule:{s:'09:00',e:'18:00'}});
-  saveState();
-  renderMembers();
-  renderMemberCount();
+function addMember() {
+  if(S.members.length>=14){toast('최대 14명까지 가능합니다');return;}
+  const idx=S.members.length;
+  S.members.push({id:S.nid++,name:`팀원${idx+1}`,color:COLORS[idx%COLORS.length],ds:{s:'09:00',e:'18:00'}});
+  saveS();renderMembers();updateMCnt();
 }
 
-function removeMember(id){
-  if(!confirm('팀원을 삭제하시겠습니까?')) return;
-  state.members=state.members.filter(m=>m.id!==id);
-  state.entries=state.entries.filter(e=>e.memberId!==id);
-  saveState();
-  renderAll();
-}
-
-function updateMemberName(id,name){
-  const m=state.members.find(m=>m.id===id);
-  if(m){m.name=name;saveState();renderMemberCount();}
-}
-
-function updateMemberColor(id,color){
-  const m=state.members.find(m=>m.id===id);
-  if(m){m.color=color;saveState();renderMembers();}
-}
-
-function updateDefaultSchedule(id,key,val){
-  const m=state.members.find(m=>m.id===id);
-  if(m){if(!m.defaultSchedule)m.defaultSchedule={};m.defaultSchedule[key]=val;saveState();}
-}
-
-// ── 내보내기 ──
-function exportData(){
-  const data=JSON.stringify(state,null,2);
-  const blob=new Blob([data],{type:'application/json'});
+// ═══════════════════════════════════
+// 내보내기
+// ═══════════════════════════════════
+function exportData() {
+  const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
   const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download='workdash_data.json';
-  a.click();
-  showToast('데이터를 내보냈습니다','green');
+  a.href=URL.createObjectURL(blob);a.download='workdash_backup.json';a.click();
+  toast('내보내기 완료','g');
 }
 
-// ── 시작 ──
+// ═══════════════════════════════════
+// 시작
+// ═══════════════════════════════════
 init();
 </script>
 </body>
