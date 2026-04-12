@@ -70,7 +70,7 @@ label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px}
 .std-line::before{content:attr(data-label);position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:10px;color:#ef4444;font-family:'DM Mono',monospace;white-space:nowrap;font-weight:600}
 /* Timeline */
 .tl-wrap{overflow-x:auto;padding-bottom:4px}
-.tl-axis{display:flex;position:relative;height:18px;margin-left:110px;margin-bottom:4px}
+.tl-axis{display:flex;position:relative;height:20px;margin-left:110px;margin-bottom:6px;overflow:visible}
 .tl-tick{position:absolute;font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;transform:translateX(-50%)}
 .tl-row{display:flex;align-items:center;margin-bottom:4px;min-width:600px}
 .tl-name{width:110px;flex-shrink:0;font-size:12px;color:var(--text2);padding-right:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:6px}
@@ -155,6 +155,8 @@ label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px}
   .tl-row{margin-bottom:2px!important}
   .tl-ov-track{height:12px!important}
   .tl-body-wrap{margin-left:90px!important}
+  .tl-wrap{overflow:hidden!important}
+  .tl-axis{overflow:visible!important;margin-bottom:2px!important}
   .std-line{background:#ef4444!important;width:2px!important}
   .std-line::before{color:#ef4444!important;font-size:9px!important}
   .tl-block{opacity:0.9!important}
@@ -330,12 +332,20 @@ const norm  = s => s.replace(/[.\-\/]/g,'-').replace(/-(\d)(?=-)/g,'-0$1').repla
 const mById = id => S.members.find(m => m.id===id);
 const isWknd = d => { const w=new Date(d).getDay(); return w===0||w===6; };
 
+function toLocalDateStr(d) {
+  // toISOString()은 UTC 기준이라 한국(UTC+9)에서 하루 밀림 → 로컬 날짜로 직접 포맷
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const dd = String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${dd}`;
+}
+
 function getWeekDates(offset) {
   const off = (offset !== undefined ? offset : S.weekOffset) || 0;
   const now = new Date();
   const mon = new Date(now);
   mon.setDate(now.getDate() - ((now.getDay()+6)%7) + off*7);
-  return Array.from({length:5},(_,i)=>{ const d=new Date(mon); d.setDate(mon.getDate()+i); return d.toISOString().slice(0,10); });
+  return Array.from({length:5},(_,i)=>{ const d=new Date(mon); d.setDate(mon.getDate()+i); return toLocalDateStr(d); });
 }
 
 function calcOverlap(entries) {
@@ -441,7 +451,7 @@ function init() {
   initNav();
   initEvents();
   setWeekLabel();
-  document.getElementById('di-date').value = new Date().toISOString().slice(0,10);
+  document.getElementById('di-date').value = toLocalDateStr(new Date());
   loadS(); // Firebase 리스너 시작 → 데이터 수신 시 자동 renderAll()
 }
 
@@ -511,7 +521,7 @@ function setWeekLabel() {
 // ═══════════════════════════════════
 function renderDash() {
   const dates = getWeekDates();
-  const today = new Date().toISOString().slice(0,10);
+  const today = toLocalDateStr(new Date());
   const wkEnt = S.entries.filter(e => dates.includes(e.date));
   const todayEnt = S.entries.filter(e => e.date===today);
 
@@ -584,14 +594,20 @@ function renderTLInto(containerId, entries, compact=false) {
     <div style="position:absolute;top:0;bottom:0;left:${stdEPct}%;width:2px;background:#ef4444;z-index:20;pointer-events:none"></div>`;
 
   // 시간축 (기준선 라벨 포함)
-  let html = `<div class="tl-axis" style="position:relative">`;
+  // 기준선 라벨: 출근(STD_START)은 선 오른쪽, 퇴근(STD_END)은 선 왼쪽에 붙여서 틱과 안 겹침
+  function stdLabel(pct, text, align) {
+    // align: 'right'=선 오른쪽에 붙음, 'left'=선 왼쪽에 붙음
+    const anchor = align === 'right' ? 'translateX(4px)' : 'translateX(calc(-100% - 4px))';
+    return `<span style="position:absolute;left:${pct}%;transform:${anchor};font-size:10px;color:#ef4444;font-family:'DM Mono',monospace;font-weight:700;top:0;white-space:nowrap;background:rgba(255,255,255,0.85);padding:0 2px;border-radius:2px">${text}</span>`;
+  }
+
+  let html = `<div class="tl-axis" style="position:relative;overflow:visible">`;
   hours.forEach(h => {
     const pct = (h-T_S)/(T_E-T_S)*100;
     html += `<span class="tl-tick" style="left:${pct}%">${h}</span>`;
   });
-  // 시간축에 기준선 라벨
-  html += `<span style="position:absolute;left:${stdSPct}%;transform:translateX(-50%);font-size:10px;color:#ef4444;font-family:'DM Mono',monospace;font-weight:700;top:0">${STD_START}</span>`;
-  html += `<span style="position:absolute;left:${stdEPct}%;transform:translateX(-50%);font-size:10px;color:#ef4444;font-family:'DM Mono',monospace;font-weight:700;top:0">${STD_END}</span>`;
+  html += stdLabel(stdSPct, STD_START, 'right');
+  html += stdLabel(stdEPct, STD_END, 'left');
   html += `</div>`;
 
   // 팀원 행 — 각 track 안에 기준선 삽입
@@ -726,7 +742,7 @@ function renderStats() {
     const now=new Date(); const y=now.getFullYear(), mo=now.getMonth();
     const dim=new Date(y,mo+1,0).getDate();
     targets=[];
-    for(let d=1;d<=dim;d++) { const dt=new Date(y,mo,d).toISOString().slice(0,10); if(!isWknd(dt)) targets.push(dt); }
+    for(let d=1;d<=dim;d++) { const dt=toLocalDateStr(new Date(y,mo,d)); if(!isWknd(dt)) targets.push(dt); }
     document.getElementById('stats-period').textContent = `${now.getFullYear()}년 ${now.getMonth()+1}월`;
   } else {
     document.getElementById('stats-period').textContent = `이번 주 (${dates[0].slice(5)} ~ ${dates[4].slice(5)})`;
