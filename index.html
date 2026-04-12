@@ -86,7 +86,7 @@ label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px}
 .tl-ov-seg{position:absolute;top:0;bottom:0}
 /* Tooltip */
 .tip-wrap{position:absolute;top:4px;bottom:4px}
-.tip-box{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--surface3);border:1px solid var(--border2);padding:5px 9px;border-radius:6px;font-size:11px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;z-index:50;color:var(--text)}
+.tip-box{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--surface3);border:1px solid var(--border2);padding:6px 10px;border-radius:6px;font-size:11px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;z-index:50;color:var(--text);line-height:1.6;text-align:center}
 .tip-wrap:hover .tip-box{opacity:1}
 /* Week table */
 .wtbl{width:100%;border-collapse:collapse;font-size:13px}
@@ -331,6 +331,13 @@ const toHM  = m => String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).pad
 const norm  = s => s.replace(/[.\-\/]/g,'-').replace(/-(\d)(?=-)/g,'-0$1').replace(/-(\d)$/,'-0$1');
 const mById = id => S.members.find(m => m.id===id);
 const isWknd = d => { const w=new Date(d).getDay(); return w===0||w===6; };
+
+// 점심시간 공제: 8h 이하 → 1h, 8h 초과 → 1.5h
+function netHours(rawH) {
+  if(rawH <= 0) return 0;
+  const deduct = rawH > 8 ? 1.5 : 1;
+  return Math.max(0, rawH - deduct);
+}
 
 function toLocalDateStr(d) {
   // toISOString()은 UTC 기준이라 한국(UTC+9)에서 하루 밀림 → 로컬 날짜로 직접 포맷
@@ -621,11 +628,14 @@ function renderTLInto(containerId, entries, compact=false) {
       const s=toMin(e.start), en=toMin(e.end);
       const left = (s-T_S*60)/totalMin*100;
       const width = (en-s)/totalMin*100;
-      const hrs = ((en-s)/60).toFixed(1);
+      const rawH = (en-s)/60;
+      const hrs = rawH.toFixed(1);
+      const net = netHours(rawH).toFixed(1);
+      const deductLabel = rawH > 8 ? '점심 1.5h 공제' : '점심 1h 공제';
       if(left<0||width<=0) return;
       html += `<div class="tip-wrap" style="left:${left}%;width:${width}%;z-index:10">
         <div class="tl-block" style="position:absolute;inset:0;background:${m.color}"></div>
-        <div class="tip-box">${m.name} ${e.start}~${e.end} (${hrs}h)</div>
+        <div class="tip-box">${m.name} ${e.start}~${e.end}<br>총 ${hrs}h → 실근무 ${net}h (${deductLabel})</div>
       </div>`;
     });
     html += `</div></div>`;
