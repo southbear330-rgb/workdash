@@ -771,9 +771,11 @@ function renderTLInto(cid,entries){
     html+=`<div class="tl-row"><div class="tl-name"><span class="tl-dot" style="background:${m.color}"></span>${m.name}</div><div class="tl-track">${stdL}`;
     me.forEach(e=>{
       if(e.note){
-        // 특이사항: 트랙 전체에 회색 표시
-        html+=`<div style="position:absolute;left:0;right:0;top:0;bottom:0;background:rgba(156,163,175,.18);border-radius:3px;z-index:3;display:flex;align-items:center;justify-content:center">
-          <span style="font-size:10px;font-weight:700;color:var(--amber);font-family:'DM Mono',monospace;text-shadow:none">${e.note}</span>
+        // 특이사항: 색상 없이 08:30~17:30 기준선 사이 가운데에 텍스트만 표시
+        const noteLeft = sPct;
+        const noteWidth = ePct - sPct;
+        html+=`<div style="position:absolute;left:${noteLeft}%;width:${noteWidth}%;top:0;bottom:0;z-index:3;display:flex;align-items:center;justify-content:center;pointer-events:none">
+          <span style="font-size:10px;font-weight:700;color:var(--amber);font-family:'DM Mono',monospace;white-space:nowrap;background:rgba(251,191,36,.12);padding:1px 8px;border-radius:10px;border:1px solid rgba(251,191,36,.3)">${e.note}</span>
         </div>`;
         return;
       }
