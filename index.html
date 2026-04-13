@@ -337,7 +337,7 @@ const DAYS_FULL=['월요일','화요일','수요일','목요일','금요일'];
 const COLS=['#4f8ef7','#f87171','#a78bfa','#34d399','#fbbf24','#f472b6','#38bdf8','#4ade80','#fb923c','#e879f9','#22d3ee','#a3e635','#f97316','#818cf8'];
 const T_S=7,T_E=21;
 const STD_S='08:30',STD_E='17:30';
-const ADMIN_PIN='7179'; // ← 관리자 PIN 여기서 변경
+const ADMIN_PIN='0000'; // ← 관리자 PIN 여기서 변경
 const EJS_SERVICE  = 'service_27ahus5';
 const EJS_TEMPLATE = 'template_wffefdl';
 const EJS_PUBKEY   = 'kW4y8XJ5vUbhThB0v';
@@ -435,7 +435,7 @@ function deductStr(raw){return (raw-1)>8?'점심 1h+30분':'점심 1h'}
 
 function calcSeg(entries){
   const seg=new Array(1440).fill(0);
-  entries.forEach(e=>{const s=toMin(e.start),en=toMin(e.end);for(let t=s;t<en;t++)seg[t]++});
+  entries.forEach(e=>{if(e.note)return;const s=toMin(e.start),en=toMin(e.end);for(let t=s;t<en;t++)seg[t]++});
   return seg;
 }
 function ovH(entries){return calcSeg(entries).filter(v=>v>=2).length/60}
@@ -680,7 +680,7 @@ function renderDash(){
   const todayEnt=S.entries.filter(e=>e.date===today);
   const wkEnt=S.entries.filter(e=>dates.includes(e.date));
 
-  const mNet=mEnt.reduce((s,e)=>s+netH(Math.max(0,(toMin(e.end)-toMin(e.start))/60)),0);
+  const mNet=mEnt.filter(e=>!e.note).reduce((s,e)=>s+netH(Math.max(0,(toMin(e.end)-toMin(e.start))/60)),0);
   const ov=ovH(todayEnt);
   const mH={};
   wkEnt.forEach(e=>{const r=Math.max(0,(toMin(e.end)-toMin(e.start))/60);mH[e.memberId]=(mH[e.memberId]||0)+netH(r)});
@@ -690,7 +690,7 @@ function renderDash(){
   // 팀원별 이번달 누적 실근무
   const mMemberNet={};
   S.members.forEach(m=>{
-    mMemberNet[m.id]=mEnt.filter(e=>e.memberId===m.id)
+    mMemberNet[m.id]=mEnt.filter(e=>e.memberId===m.id&&!e.note)
       .reduce((s,e)=>s+netH(Math.max(0,(toMin(e.end)-toMin(e.start))/60)),0);
   });
 
@@ -704,7 +704,7 @@ function renderDash(){
 
   // 월간 팀원별 누적 실근무 막대
   const bars=document.getElementById('month-bars');
-  document.getElementById('month-bar-title').textContent=`${now.getMonth()+1}월 팀원별 근무 시간 (기준 ${stdMonthH}h)`;
+  document.getElementById('month-bar-title').textContent=`${now.getMonth()+1}월 팀원별 누적 실근무 (기준 ${stdMonthH}h)`;
   // 기준선 위치: maxNet과 stdMonthH 중 큰 값 기준
   const maxNet=Math.max(...Object.values(mMemberNet), stdMonthH, 1);
   const stdLinePct = stdMonthH / maxNet * 100;
@@ -732,7 +732,7 @@ function renderDash(){
   }
 
   // 요일별 실근무 차트
-  const dayH=dates.map(d=>S.entries.filter(e=>e.date===d).reduce((s,e)=>s+netH(Math.max(0,(toMin(e.end)-toMin(e.start))/60)),0));
+  const dayH=dates.map(d=>S.entries.filter(e=>e.date===d&&!e.note).reduce((s,e)=>s+netH(Math.max(0,(toMin(e.end)-toMin(e.start))/60)),0));
   const mxD=Math.max(...dayH,1);
   document.getElementById('day-chart').innerHTML=DAYS.map((d,i)=>`
     <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px">
@@ -770,6 +770,13 @@ function renderTLInto(cid,entries){
     const me=entries.filter(e=>e.memberId===m.id);
     html+=`<div class="tl-row"><div class="tl-name"><span class="tl-dot" style="background:${m.color}"></span>${m.name}</div><div class="tl-track">${stdL}`;
     me.forEach(e=>{
+      if(e.note){
+        // 특이사항: 트랙 전체에 회색 표시
+        html+=`<div style="position:absolute;left:0;right:0;top:0;bottom:0;background:rgba(156,163,175,.18);border-radius:3px;z-index:3;display:flex;align-items:center;justify-content:center">
+          <span style="font-size:10px;font-weight:700;color:var(--amber);font-family:'DM Mono',monospace;text-shadow:none">${e.note}</span>
+        </div>`;
+        return;
+      }
       const s=toMin(e.start),en=toMin(e.end);
       const left=(s-T_S*60)/tot*100,w=(en-s)/tot*100;
       const raw=(en-s)/60,net=netH(raw);
@@ -865,7 +872,7 @@ function renderStats(){
   S.members.forEach(m=>{
     const me=S.entries.filter(e=>e.memberId===m.id&&targets.includes(e.date));
     const dH={};
-    me.forEach(e=>{const raw=Math.max(0,(toMin(e.end)-toMin(e.start))/60);dH[e.date]=(dH[e.date]||0)+netH(raw)});
+    me.forEach(e=>{if(e.note)return;const raw=Math.max(0,(toMin(e.end)-toMin(e.start))/60);dH[e.date]=(dH[e.date]||0)+netH(raw)});
     const total=Object.values(dH).reduce((a,b)=>a+b,0);
     const cnt=Object.keys(dH).length||1;
     html+=`<tr><td><div class="mbadge"><span class="tl-dot" style="background:${m.color}"></span>${m.name}</div></td>`;
@@ -876,7 +883,7 @@ function renderStats(){
     html+=`<td><strong>${total.toFixed(1)}h</strong></td><td style="color:var(--text2)">${(total/cnt).toFixed(1)}h</td></tr>`;
   });
 
-  const dayTotals=targets.map(d=>S.entries.filter(e=>e.date===d).reduce((s,e)=>s+netH(Math.max(0,(toMin(e.end)-toMin(e.start))/60)),0));
+  const dayTotals=targets.map(d=>S.entries.filter(e=>e.date===d&&!e.note).reduce((s,e)=>s+netH(Math.max(0,(toMin(e.end)-toMin(e.start))/60)),0));
   const grand=dayTotals.reduce((a,b)=>a+b,0);
   html+=`<tr><td><strong>팀 합계</strong></td>`;
   if(tab==='week') dayTotals.forEach(h=>html+=`<td><strong>${h.toFixed(1)}h</strong></td>`);
@@ -902,6 +909,10 @@ function renderPaste(){
   ['paste-sel','di-member','filter-member'].forEach(id=>{document.getElementById(id).disabled=lock&&id!=='filter-member'?true:false});
 }
 
+// 특이사항 키워드 (공가, 휴가, 연차, 교육, 출장, 병가 등)
+const NOTE_KEYWORDS = ['공가','휴가','연차','교육','출장','병가','반차','조퇴','외출'];
+function isNote(str){ return NOTE_KEYWORDS.some(k=>str.includes(k)) || /[가-힣]{1,6}\(\d+[dh]\)/.test(str); }
+
 function parsePaste(){
   const raw=document.getElementById('paste-txt').value.trim();
   const pv=document.getElementById('paste-preview');
@@ -910,15 +921,28 @@ function parsePaste(){
   const parsed=[];
   const tRe=/^(\d{1,2}):(\d{2})$/,dRe=/^\d{4}[.\-\/]\d{1,2}[.\-\/]\d{1,2}$/;
   lines.forEach(l=>{
-    const cols=l.split(/\t|,/).map(c=>c.trim());
-    const times=cols.filter(c=>tRe.test(c)),dates=cols.filter(c=>dRe.test(c));
-    if(times.length>=2&&dates.length>=1) parsed.push({date:norm(dates[0]),start:times[0],end:times[1]});
+    const cols=l.split(/\t/).map(c=>c.trim());
+    const times=cols.filter(c=>tRe.test(c));
+    const dates=cols.filter(c=>dRe.test(c));
+    if(!dates.length) return;
+    // 특이사항 컬럼 감지
+    const noteCol=cols.find(c=>c&&!dRe.test(c)&&!tRe.test(c)&&!/^[월화수목금토일]요일$/.test(c)&&isNote(c));
+    if(noteCol){
+      // 특이사항 있으면 시간 무시하고 note로 저장
+      parsed.push({date:norm(dates[0]),start:'',end:'',note:noteCol});
+    } else if(times.length>=2){
+      parsed.push({date:norm(dates[0]),start:times[0],end:times[1],note:''});
+    }
   });
   if(!parsed.length){pv.innerHTML='<p style="color:var(--amber);font-size:12px;margin-top:8px">⚠ 인식 불가. 날짜·출근시간·퇴근시간이 포함되어 있는지 확인하세요.</p>';pv._parsed=null;return}
-  let html=`<div class="preview"><table class="ptbl"><thead><tr><th>날짜</th><th>출근</th><th>퇴근</th><th>총근무</th><th>실근무</th><th>상태</th></tr></thead><tbody>`;
+  let html=`<div class="preview"><table class="ptbl"><thead><tr><th>날짜</th><th>출근</th><th>퇴근</th><th>실근무</th><th>비고</th></tr></thead><tbody>`;
   parsed.forEach(p=>{
-    const r=(toMin(p.end)-toMin(p.start))/60,ok=r>0;
-    html+=`<tr><td>${p.date}</td><td>${p.start}</td><td>${p.end}</td><td>${r.toFixed(1)}h</td><td style="color:var(--green)">${ok?netH(r).toFixed(1)+'h':'-'}</td><td><span class="tag ${ok?'ok':'warn'}">${ok?'정상':'오류'}</span></td></tr>`;
+    if(p.note){
+      html+=`<tr><td>${p.date}</td><td colspan="2" style="color:var(--amber)">-</td><td>-</td><td><span class="tag warn">${p.note}</span></td></tr>`;
+    } else {
+      const r=(toMin(p.end)-toMin(p.start))/60,ok=r>0;
+      html+=`<tr><td>${p.date}</td><td>${p.start}</td><td>${p.end}</td><td style="color:var(--green)">${ok?netH(r).toFixed(1)+'h':'-'}</td><td><span class="tag ${ok?'ok':'warn'}">${ok?'정상':'오류'}</span></td></tr>`;
+    }
   });
   html+=`</tbody></table></div><p style="font-size:12px;color:var(--text2);margin-top:6px">${parsed.length}건 인식 · 팀원 선택 후 가져오기</p>`;
   pv.innerHTML=html;pv._parsed=parsed;
@@ -932,7 +956,13 @@ function importPaste(){
   const parsed=pv._parsed;
   if(!parsed||!parsed.length){toast('먼저 데이터를 붙여넣으세요');return}
   let cnt=0;
-  parsed.forEach(p=>{if(toMin(p.end)>toMin(p.start)){S.entries.push({id:S.nid++,memberId:mid,date:p.date,start:p.start,end:p.end});cnt++}});
+  parsed.forEach(p=>{
+    if(p.note){
+      S.entries.push({id:S.nid++,memberId:mid,date:p.date,start:'',end:'',note:p.note});cnt++;
+    } else if(toMin(p.end)>toMin(p.start)){
+      S.entries.push({id:S.nid++,memberId:mid,date:p.date,start:p.start,end:p.end,note:''});cnt++;
+    }
+  });
   saveS();renderAll();renderPasteData();
   document.getElementById('paste-txt').value='';pv.innerHTML='';pv._parsed=null;
   toast(`${cnt}건 가져왔습니다`,'g');
@@ -966,14 +996,14 @@ function renderPasteData(){
   document.getElementById('recent-list').innerHTML=recent.length
     ?recent.map(e=>{
         const m=mById(e.memberId);if(!m)return'';
-        const raw=(toMin(e.end)-toMin(e.start))/60,net=netH(raw);
+        const raw=e.note?0:(toMin(e.end)-toMin(e.start))/60,net=netH(raw);
         const canDel=CUR.isAdmin||e.memberId===CUR.id;
         return `<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px">
           <span class="tl-dot" style="background:${m.color}"></span>
           <span style="color:var(--text2);font-family:'DM Mono',monospace;font-size:11px">${e.date}</span>
           <span style="font-weight:500">${m.name}</span>
-          <span style="color:var(--text2)">${e.start}~${e.end}</span>
-          <span style="color:var(--accent);margin-left:auto;font-family:'DM Mono',monospace">${net.toFixed(1)}h</span>
+          ${e.note?`<span class="tag warn">${e.note}</span>`:`<span style="color:var(--text2)">${e.start}~${e.end}</span>`}
+          <span style="color:var(--accent);margin-left:auto;font-family:'DM Mono',monospace">${e.note?'-':net.toFixed(1)+'h'}</span>
           ${canDel?`<button class="btn sm red" data-del="${e.id}">×</button>`:''}
         </div>`;
       }).join('')
@@ -989,6 +1019,14 @@ function renderPasteData(){
         const m=mById(e.memberId);if(!m)return'';
         const raw=Math.max(0,(toMin(e.end)-toMin(e.start))/60),net=netH(raw);
         const canDel=CUR.isAdmin||e.memberId===CUR.id;
+        if(e.note){
+          return `<tr>
+            <td style="font-family:'DM Mono',monospace;font-size:12px">${e.date}</td>
+            <td><div class="mbadge"><span class="tl-dot" style="background:${m.color}"></span>${m.name}</div></td>
+            <td colspan="3" style="text-align:center"><span class="tag warn">${e.note}</span></td>
+            <td>-</td>
+            <td>${canDel?`<button class="btn sm red" data-del="${e.id}">삭제</button>`:''}</td></tr>`;
+        }
         return `<tr>
           <td style="font-family:'DM Mono',monospace;font-size:12px">${e.date}</td>
           <td><div class="mbadge"><span class="tl-dot" style="background:${m.color}"></span>${m.name}</div></td>
