@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
 :root{
   --bg:#f0f2f7;--surface:#ffffff;--surface2:#f4f6fb;--surface3:#e8ecf4;
@@ -180,6 +181,7 @@ label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px}
       <button class="btn sm" id="btn-next-week">›</button>
     </div>
     <span id="login-badge" style="font-size:12px;padding:3px 10px;border-radius:20px;background:var(--surface2);color:var(--text2)"></span>
+    <button class="btn sm" id="btn-notify" style="display:none;background:rgba(217,119,6,.1);color:var(--amber);border-color:rgba(217,119,6,.3)">📧 미입력 알림</button>
     <button class="btn sm" id="btn-export">↓ 백업</button>
     <button class="btn sm" id="btn-print" onclick="window.print()">🖨 인쇄</button>
     <button class="btn sm red" id="btn-logout" style="display:none">로그아웃</button>
@@ -309,6 +311,21 @@ label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px}
 
 </main>
 </div>
+<!-- 알림 발송 모달 -->
+<div id="notify-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:8000;align-items:center;justify-content:center">
+  <div style="background:var(--surface);border-radius:var(--radius);padding:28px;width:400px;max-width:90vw;box-shadow:0 8px 32px rgba(0,0,0,.15)">
+    <div style="font-size:16px;font-weight:700;margin-bottom:4px">📧 미입력 알림 발송</div>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:16px" id="notify-date-label"></div>
+    <div style="font-size:12px;color:var(--text3);margin-bottom:8px;font-weight:600;letter-spacing:.04em;text-transform:uppercase">미입력 팀원 선택</div>
+    <div id="notify-member-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px;max-height:240px;overflow-y:auto"></div>
+    <div id="notify-no-missing" style="display:none;text-align:center;padding:20px;color:var(--green);font-size:13px">✓ 모든 팀원이 오늘 데이터를 입력했습니다</div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:4px">
+      <button class="btn" id="notify-cancel">취소</button>
+      <button class="btn pri" id="notify-send">선택 발송</button>
+    </div>
+    <div id="notify-sending" style="display:none;text-align:center;padding:12px;font-size:13px;color:var(--text2)">발송 중...</div>
+  </div>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -321,6 +338,10 @@ const COLS=['#4f8ef7','#f87171','#a78bfa','#34d399','#fbbf24','#f472b6','#38bdf8
 const T_S=7,T_E=21;
 const STD_S='08:30',STD_E='17:30';
 const ADMIN_PIN='0000'; // ← 관리자 PIN 여기서 변경
+const EJS_SERVICE  = 'service_27ahus5';
+const EJS_TEMPLATE = 'template_wffefdl';
+const EJS_PUBKEY   = 'kW4y8XJ5vUbhThB0v';
+const DASHBOARD_URL = window.location.href; // 현재 URL 자동 사용
 
 // ═══════════════════════════
 // 한국 공휴일 (연도별 고정 + 음력 변환 필요한 건 수동 관리)
@@ -378,11 +399,11 @@ let CUR={id:null,isAdmin:false,name:''};
 // ═══════════════════════════
 let S={
   members:[
-    {id:1,name:'김민준',color:COLS[0],pin:'',ds:{s:'09:00',e:'18:00'}},
-    {id:2,name:'이서연',color:COLS[1],pin:'',ds:{s:'10:00',e:'19:00'}},
-    {id:3,name:'박지호',color:COLS[2],pin:'',ds:{s:'08:00',e:'17:00'}},
-    {id:4,name:'최유진',color:COLS[3],pin:'',ds:{s:'11:00',e:'20:00'}},
-    {id:5,name:'정하은',color:COLS[4],pin:'',ds:{s:'09:30',e:'18:30'}},
+    {id:1,name:'김민준',color:COLS[0],pin:'',email:'',ds:{s:'09:00',e:'18:00'}},
+    {id:2,name:'이서연',color:COLS[1],pin:'',email:'',ds:{s:'10:00',e:'19:00'}},
+    {id:3,name:'박지호',color:COLS[2],pin:'',email:'',ds:{s:'08:00',e:'17:00'}},
+    {id:4,name:'최유진',color:COLS[3],pin:'',email:'',ds:{s:'11:00',e:'20:00'}},
+    {id:5,name:'정하은',color:COLS[4],pin:'',email:'',ds:{s:'09:30',e:'18:30'}},
   ],
   entries:[],curDay:0,curStatTab:'week',weekOffset:0,nid:100,
 };
@@ -510,6 +531,7 @@ function loginSuccess(){
   document.getElementById('login-badge').textContent=CUR.isAdmin?'🔑 관리자':CUR.name;
   document.getElementById('btn-logout').style.display='';
   document.getElementById('nav-members').style.display=CUR.isAdmin?'':'none';
+  document.getElementById('btn-notify').style.display=CUR.isAdmin?'':'none';
   renderAll();
 }
 
@@ -555,6 +577,7 @@ function doLogout(){
   document.getElementById('login-badge').textContent='';
   document.getElementById('btn-logout').style.display='none';
   document.getElementById('nav-members').style.display='none';
+  document.getElementById('btn-notify').style.display='none';
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
   document.getElementById('page-dashboard').classList.add('on');
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('on'));
@@ -626,6 +649,9 @@ function initEvents(){
   document.getElementById('btn-set-pin').addEventListener('click',doSetPin);
   document.getElementById('pin-new2').addEventListener('keydown',e=>{if(e.key==='Enter')doSetPin()});
   document.getElementById('btn-logout').addEventListener('click',doLogout);
+  document.getElementById('btn-notify').addEventListener('click',sendNotify);
+  document.getElementById('notify-cancel').addEventListener('click',()=>{document.getElementById('notify-modal').style.display='none'});
+  document.getElementById('notify-send').addEventListener('click',doSendNotify);
   document.getElementById('pin-input').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
 }
 
@@ -1019,6 +1045,10 @@ function renderMembers(){
       <div>
         <input class="mname-inp" value="${m.name}" data-mid="${m.id}" placeholder="이름" style="margin-bottom:6px">
         <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px">${COLS.map(c=>`<div class="cpick${c===m.color?' sel':''}" style="background:${c}" data-mid="${m.id}" data-color="${c}"></div>`).join('')}</div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px">
+          <span style="font-size:12px;color:var(--text2);width:32px">이메일</span>
+          <input type="email" value="${m.email||''}" data-mid="${m.id}" data-field="email" placeholder="이메일 주소 입력" style="flex:1;font-size:12px">
+        </div>
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
           <span style="font-size:12px;color:var(--text2)">PIN</span>
           <span style="font-size:12px;padding:2px 10px;border-radius:10px;" id="pin-status-${m.id}"></span>
@@ -1046,6 +1076,12 @@ function renderMembers(){
     inp.addEventListener('change',function(){
       const m=S.members.find(x=>x.id===parseInt(this.getAttribute('data-mid')));
       if(m){m.pin=this.value;saveS();toast('PIN 저장됐습니다','g');}
+    });
+  });
+  document.querySelectorAll('[data-field="email"]').forEach(inp=>{
+    inp.addEventListener('change',function(){
+      const m=S.members.find(x=>x.id===parseInt(this.getAttribute('data-mid')));
+      if(m){m.email=this.value;saveS();toast('이메일 저장됐습니다','g');}
     });
   });
   document.querySelectorAll('.cpick').forEach(el=>{
@@ -1088,6 +1124,103 @@ function addMember(){
   const idx=S.members.length;
   S.members.push({id:S.nid++,name:`팀원${idx+1}`,color:COLS[idx%COLS.length],pin:'0000',ds:{s:'09:00',e:'18:00'}});
   saveS();renderMembers();updateMCnt();renderPaste();
+}
+
+// ═══════════════════════════
+// 미입력 알림 이메일
+// ═══════════════════════════
+function sendNotify(){
+  const today = toDate(new Date());
+  const now = new Date();
+  const holidays = getHolidays(now.getFullYear());
+  const dow = now.getDay();
+  if(dow===0||dow===6||holidays.has(today)){
+    toast('오늘은 근무일이 아닙니다','');return;
+  }
+
+  // 미입력 팀원 (이메일 있는 사람만)
+  const missing = S.members.filter(m=>{
+    if(!m.email) return false;
+    return !S.entries.some(e=>e.memberId===m.id&&e.date===today);
+  });
+  // 이메일 없는 미입력 팀원
+  const noEmail = S.members.filter(m=>{
+    if(m.email) return false;
+    return !S.entries.some(e=>e.memberId===m.id&&e.date===today);
+  });
+
+  // 모달 열기
+  const modal = document.getElementById('notify-modal');
+  const list = document.getElementById('notify-member-list');
+  const noMissing = document.getElementById('notify-no-missing');
+  const sendBtn = document.getElementById('notify-send');
+  document.getElementById('notify-date-label').textContent = `기준일: ${today}`;
+  modal.style.display='flex';
+
+  if(!missing.length && !noEmail.length){
+    list.innerHTML=''; noMissing.style.display='block'; sendBtn.style.display='none';
+    return;
+  }
+  noMissing.style.display='none'; sendBtn.style.display='';
+
+  let html='';
+  // 이메일 있는 미입력 팀원 (체크박스)
+  missing.forEach(m=>{
+    const lastKey='notify_sent_'+m.id+'_'+today;
+    const sent=localStorage.getItem(lastKey);
+    html+=`<label style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);cursor:pointer;${sent?'opacity:.5':''}">
+      <input type="checkbox" data-mid="${m.id}" ${sent?'disabled':''} style="width:16px;height:16px;accent-color:var(--accent)">
+      <span style="width:10px;height:10px;border-radius:50%;background:${m.color};display:inline-block;flex-shrink:0"></span>
+      <span style="flex:1;font-size:13px;font-weight:500">${m.name}</span>
+      <span style="font-size:11px;color:var(--text2)">${m.email}</span>
+      ${sent?'<span style="font-size:11px;color:var(--green)">오늘 발송됨</span>':''}
+    </label>`;
+  });
+  // 이메일 없는 팀원 (비활성)
+  if(noEmail.length){
+    html+=`<div style="font-size:11px;color:var(--text3);padding:4px 0 2px;margin-top:4px">이메일 미설정 (발송 불가)</div>`;
+    noEmail.forEach(m=>{
+      html+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);opacity:.4">
+        <span style="width:16px;height:16px"></span>
+        <span style="width:10px;height:10px;border-radius:50%;background:${m.color};display:inline-block;flex-shrink:0"></span>
+        <span style="font-size:13px">${m.name}</span>
+        <span style="font-size:11px;color:var(--red);margin-left:auto">이메일 없음</span>
+      </div>`;
+    });
+  }
+  list.innerHTML=html;
+}
+
+async function doSendNotify(){
+  const today = toDate(new Date());
+  const checked = [...document.querySelectorAll('#notify-member-list input[type=checkbox]:checked')];
+  if(!checked.length){toast('발송할 팀원을 선택하세요');return;}
+
+  const sending=document.getElementById('notify-sending');
+  const sendBtn=document.getElementById('notify-send');
+  sending.style.display='block'; sendBtn.disabled=true;
+
+  emailjs.init(EJS_PUBKEY);
+  let ok=0, fail=0;
+  for(const cb of checked){
+    const mid=parseInt(cb.getAttribute('data-mid'));
+    const m=mById(mid); if(!m||!m.email) continue;
+    try{
+      await emailjs.send(EJS_SERVICE, EJS_TEMPLATE,{
+        to_email: m.email,
+        member_name: m.name,
+        date: today,
+        dashboard_url: window.location.href,
+      });
+      localStorage.setItem('notify_sent_'+m.id+'_'+today,'1');
+      ok++;
+    } catch(e){
+      console.error('발송 실패:',m.name,e); fail++;
+    }
+  }
+  sending.style.display='none'; sendBtn.disabled=false;
+  document.getElementById('notify-modal').style.display='none';
+  toast(`발송 완료: ${ok}명 성공${fail?', '+fail+'명 실패':''}`, ok>0?'g':'');
 }
 
 // ═══════════════════════════
