@@ -72,7 +72,7 @@ label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px}
 .tl-name{width:110px;flex-shrink:0;font-size:12px;color:var(--text2);padding-right:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:6px}
 .tl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .tl-track{flex:1;height:30px;background:var(--surface2);border-radius:4px;position:relative;overflow:hidden}
-.tl-lbl{position:absolute;top:50%;transform:translateY(-50%);font-size:10px;font-weight:700;color:#fff;padding:0 6px;white-space:nowrap;pointer-events:none;font-family:'DM Mono',monospace;text-shadow:0 1px 2px rgba(0,0,0,.35);z-index:5}
+.tl-lbl{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:10px;font-weight:700;color:#fff;padding:0 6px;white-space:nowrap;pointer-events:none;font-family:'DM Mono',monospace;text-shadow:0 1px 2px rgba(0,0,0,.35);z-index:5}
 .tl-ov-row{display:flex;align-items:center;margin-top:6px;min-width:600px}
 .tl-ov-label{width:110px;flex-shrink:0;font-size:11px;color:var(--text3);padding-right:10px;text-align:right}
 .tl-ov-track{flex:1;height:16px;background:var(--surface2);border-radius:4px;position:relative;overflow:hidden}
@@ -321,6 +321,52 @@ const COLS=['#4f8ef7','#f87171','#a78bfa','#34d399','#fbbf24','#f472b6','#38bdf8
 const T_S=7,T_E=21;
 const STD_S='08:30',STD_E='17:30';
 const ADMIN_PIN='0000'; // ← 관리자 PIN 여기서 변경
+
+// ═══════════════════════════
+// 한국 공휴일 (연도별 고정 + 음력 변환 필요한 건 수동 관리)
+// ═══════════════════════════
+function getHolidays(y) {
+  const h = new Set();
+  // 고정 공휴일
+  const fixed = [
+    `${y}-01-01`, // 신정
+    `${y}-03-01`, // 삼일절
+    `${y}-05-05`, // 어린이날
+    `${y}-06-06`, // 현충일
+    `${y}-08-15`, // 광복절
+    `${y}-10-03`, // 개천절
+    `${y}-10-09`, // 한글날
+    `${y}-12-25`, // 크리스마스
+  ];
+  fixed.forEach(d => h.add(d));
+  // 음력 공휴일 (연도별 수동 등록 - 2025~2027)
+  const lunar = {
+    2025: ['2025-01-28','2025-01-29','2025-01-30', // 설날
+           '2025-05-05',                             // 부처님오신날
+           '2025-10-05','2025-10-06','2025-10-07'], // 추석
+    2026: ['2026-02-16','2026-02-17','2026-02-18', // 설날
+           '2026-05-24',                             // 부처님오신날
+           '2026-09-24','2026-09-25','2026-09-26'], // 추석
+    2027: ['2027-02-06','2027-02-07','2027-02-08', // 설날
+           '2027-05-13',                             // 부처님오신날
+           '2027-10-14','2027-10-15','2027-10-16'], // 추석
+  };
+  (lunar[y]||[]).forEach(d => h.add(d));
+  return h;
+}
+
+// 해당 월의 실제 근무일 수 (주말 + 공휴일 제외)
+function getWorkDays(y, mo) {
+  const dim = new Date(y, mo+1, 0).getDate();
+  const holidays = getHolidays(y);
+  const days = [];
+  for(let d=1; d<=dim; d++) {
+    const dt = toDate(new Date(y, mo, d));
+    const dow = new Date(dt).getDay();
+    if(dow !== 0 && dow !== 6 && !holidays.has(dt)) days.push(dt);
+  }
+  return days;
+}
 
 // ═══════════════════════════
 // 로그인 상태
@@ -601,9 +647,8 @@ function renderDash(){
   const dates=getWeekDates();
   const today=toDate(new Date());
   const now=new Date(),y=now.getFullYear(),mo=now.getMonth();
-  const dim=new Date(y,mo+1,0).getDate();
-  const mDates=[];
-  for(let d=1;d<=dim;d++){const dt=toDate(new Date(y,mo,d));if(!isWknd(dt))mDates.push(dt)}
+  const mDates = getWorkDays(y, mo); // 주말 + 공휴일 제외한 근무일
+  const stdMonthH = mDates.length * 8; // 기본 근무시간 = 근무일 × 8h
 
   const mEnt=S.entries.filter(e=>mDates.includes(e.date));
   const todayEnt=S.entries.filter(e=>e.date===today);
@@ -627,27 +672,37 @@ function renderDash(){
     <div class="scard blue"><div class="slabel">${now.getMonth()+1}월 팀 실근무</div><div class="sval">${mNet.toFixed(1)}<small> h</small></div><div class="ssub">공제 반영 합산</div></div>
     <div class="scard green"><div class="slabel">오늘 겹치는 시간</div><div class="sval">${ov.toFixed(1)}<small> h</small></div><div class="ssub">2명+ 동시 근무</div></div>
     <div class="scard amber"><div class="slabel">주간 1인 평균</div><div class="sval">${avg.toFixed(1)}<small> h</small></div><div class="ssub">실근무 기준</div></div>
-    <div class="scard"><div class="slabel">팀원 수</div><div class="sval">${S.members.length}<small> 명</small></div><div class="ssub">등록된 팀원</div></div>`;
+    <div class="scard"><div class="slabel">${now.getMonth()+1}월 기본 근무</div><div class="sval">${stdMonthH}<small> h</small></div><div class="ssub">근무일 ${mDates.length}일 × 8h</div></div>`;
 
   renderTLInto('today-tl',todayEnt);
 
   // 월간 팀원별 누적 실근무 막대
   const bars=document.getElementById('month-bars');
-  document.getElementById('month-bar-title').textContent=`${now.getMonth()+1}월 팀원별 누적 실근무`;
-  const maxNet=Math.max(...Object.values(mMemberNet),1);
+  document.getElementById('month-bar-title').textContent=`${now.getMonth()+1}월 팀원별 누적 실근무 (기준 ${stdMonthH}h)`;
+  // 기준선 위치: maxNet과 stdMonthH 중 큰 값 기준
+  const maxNet=Math.max(...Object.values(mMemberNet), stdMonthH, 1);
+  const stdLinePct = stdMonthH / maxNet * 100;
   if(!Object.values(mMemberNet).some(v=>v>0)){
     bars.innerHTML='<div class="empty"><div class="ei">📊</div><p>이번 달 데이터가 없습니다</p></div>';
   } else {
-    bars.innerHTML=S.members.map(m=>{
+    // 기준선 라벨 헤더
+    let barsHtml = `<div style="position:relative;margin-bottom:4px;margin-left:84px">
+      <div style="position:absolute;left:${stdLinePct}%;transform:translateX(-50%);font-size:10px;color:#ef4444;font-weight:700;white-space:nowrap;font-family:'DM Mono',monospace">${stdMonthH}h</div>
+      <div style="height:14px"></div>
+    </div>`;
+    barsHtml += S.members.map(m=>{
       const h=mMemberNet[m.id]||0;
       return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">
         <div style="width:76px;font-size:12px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.name}</div>
-        <div style="flex:1;height:18px;background:var(--surface2);border-radius:3px;overflow:hidden">
-          <div style="width:${h/maxNet*100}%;height:100%;background:${m.color};opacity:.82;border-radius:3px"></div>
+        <div style="flex:1;height:18px;background:var(--surface2);border-radius:3px;position:relative;overflow:visible">
+          <div style="width:${h/maxNet*100}%;height:100%;background:${m.color};opacity:.82;border-radius:3px;position:relative;z-index:1"></div>
+          <!-- 기준선 -->
+          <div style="position:absolute;top:-3px;bottom:-3px;left:${stdLinePct}%;width:2px;background:#ef4444;z-index:5;border-radius:1px"></div>
         </div>
-        <div style="width:46px;text-align:right;font-size:12px;font-family:'DM Mono',monospace;color:var(--text2)">${h.toFixed(1)}h</div>
+        <div style="width:46px;text-align:right;font-size:12px;font-family:'DM Mono',monospace;color:${h>=stdMonthH?'var(--green)':'var(--text2)'}">${h.toFixed(1)}h</div>
       </div>`;
     }).join('');
+    bars.innerHTML = barsHtml;
   }
 
   // 요일별 실근무 차트
@@ -694,7 +749,7 @@ function renderTLInto(cid,entries){
       const raw=(en-s)/60,net=netH(raw);
       if(left<0||w<=0)return;
       html+=`<div style="position:absolute;left:${left}%;width:${w}%;top:0;bottom:0;background:${m.color};border-radius:3px;z-index:3">
-        <span class="tl-lbl">${net.toFixed(1)}h</span>
+        <span class="tl-lbl">${e.start}~${e.end} (${net.toFixed(1)}h)</span>
       </div>`;
     });
     html+=`</div></div>`;
