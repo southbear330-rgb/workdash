@@ -312,6 +312,25 @@ label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px}
 </main>
 </div>
 <!-- 알림 발송 모달 -->
+<!-- 업데이트 알림 모달 -->
+<div id="update-modal" style="display:none;position:fixed;top:68px;right:20px;z-index:7500;width:340px;max-width:92vw">
+  <div style="background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);box-shadow:0 8px 32px rgba(0,0,0,.15);overflow:hidden">
+    <div style="display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--border);background:var(--surface2)">
+      <span style="font-size:14px">🔔</span>
+      <span style="font-size:13px;font-weight:600" id="update-modal-title">데이터 업데이트</span>
+      <button id="update-modal-close" style="margin-left:auto;background:none;border:none;cursor:pointer;font-size:16px;color:var(--text3);line-height:1">×</button>
+    </div>
+    <div id="update-modal-body" style="padding:14px 16px;max-height:260px;overflow-y:auto;font-size:13px"></div>
+    <div style="padding:10px 16px;border-top:1px solid var(--border);text-align:right">
+      <button class="btn sm" id="update-modal-ok">확인</button>
+    </div>
+  </div>
+</div>
+
+<!-- 중복/오류 경고 배너 -->
+<div id="warn-banner" style="display:none;position:fixed;top:64px;left:50%;transform:translateX(-50%);z-index:7400;background:#fef3c7;border:1px solid #f59e0b;border-radius:var(--radius-sm);padding:10px 18px;font-size:13px;font-weight:500;color:#92400e;box-shadow:0 4px 12px rgba(0,0,0,.1);cursor:pointer;max-width:600px;text-align:center" id="warn-banner">
+</div>
+
 <div id="notify-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:8000;align-items:center;justify-content:center">
   <div style="background:var(--surface);border-radius:var(--radius);padding:28px;width:400px;max-width:90vw;box-shadow:0 8px 32px rgba(0,0,0,.15)">
     <div style="font-size:16px;font-weight:700;margin-bottom:4px">📧 미입력 알림 발송</div>
@@ -463,15 +482,128 @@ function syncStatus(s){
   const r=m[s]||m.ok;el.textContent=r.t;el.style.color=r.c;
 }
 
+let _prevEntries = null; // 이전 entries 스냅샷 (변경 감지용)
+let _isFirstLoad = true;
+
 function loadS(){
   syncStatus('syncing');
   REF.on('value',snap=>{
     const d=snap.val();
-    if(d){S.members=d.members||S.members;S.entries=d.entries||[];S.nid=d.nid||S.nid;}
+    if(d){
+      const newEntries = d.entries||[];
+      const newMembers = d.members||S.members;
+
+      // 변경 감지 (최초 로드 제외, 로그인 상태일 때만)
+      if(!_isFirstLoad && CUR.name && _prevEntries!==null){
+        detectChanges(_prevEntries, newEntries, newMembers);
+      }
+
+      S.members=newMembers;
+      S.entries=newEntries;
+      S.nid=d.nid||S.nid;
+      _prevEntries = JSON.parse(JSON.stringify(newEntries));
+    }
     syncStatus('ok');
     renderLoginGrid();
-    if(CUR.name) renderAll();
+    if(CUR.name){
+      renderAll();
+      checkDuplicates();
+    }
+    _isFirstLoad = false;
   },()=>{syncStatus('err');toast('서버 연결 실패')});
+}
+
+// ── 변경 감지 ──
+function detectChanges(prev, next, members){
+  const prevMap = {};
+  prev.forEach(e=>prevMap[e.id]=e);
+  const nextMap = {};
+  next.forEach(e=>nextMap[e.id]=e);
+
+  const added=[], removed=[], modified=[];
+  next.forEach(e=>{
+    if(!prevMap[e.id]) added.push(e);
+    else if(JSON.stringify(e)!==JSON.stringify(prevMap[e.id])) modified.push(e);
+  });
+  prev.forEach(e=>{ if(!nextMap[e.id]) removed.push(e); });
+
+  const allChanged=[...added,...modified,...removed];
+  if(!allChanged.length) return;
+
+  const mById2=id=>members.find(m=>m.id===id);
+  const fmt=e=>{const m=mById2(e.memberId);return `${m?m.name:'?'} ${e.date} ${e.note||e.start+'~'+e.end}`;};
+
+  const title=document.getElementById('update-modal-title');
+  const body=document.getElementById('update-modal-body');
+  const modal=document.getElementById('update-modal');
+
+  // 하루치(5건 이하): 상세 표시 / 그 이상: 요약
+  const total=allChanged.length;
+  const DETAIL_LIMIT=5;
+
+  let html='';
+  if(total<=DETAIL_LIMIT){
+    if(added.length){
+      html+=`<div style="margin-bottom:10px"><div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:4px;letter-spacing:.04em">▲ 추가 ${added.length}건</div>`;
+      added.forEach(e=>html+=`<div style="padding:4px 0;border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;font-size:12px">${fmt(e)}</div>`);
+      html+='</div>';
+    }
+    if(modified.length){
+      html+=`<div style="margin-bottom:10px"><div style="font-size:11px;font-weight:700;color:var(--amber);margin-bottom:4px;letter-spacing:.04em">✎ 수정 ${modified.length}건</div>`;
+      modified.forEach(e=>html+=`<div style="padding:4px 0;border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;font-size:12px">${fmt(e)}</div>`);
+      html+='</div>';
+    }
+    if(removed.length){
+      html+=`<div style="margin-bottom:10px"><div style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:4px;letter-spacing:.04em">✕ 삭제 ${removed.length}건</div>`;
+      removed.forEach(e=>html+=`<div style="padding:4px 0;border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;font-size:12px;text-decoration:line-through;color:var(--text3)">${fmt(e)}</div>`);
+      html+='</div>';
+    }
+    title.textContent=`데이터가 업데이트됐습니다 (${total}건)`;
+  } else {
+    // 요약: 첫 번째 변경 기준으로
+    const first=allChanged[0];
+    const firstName=mById2(first.memberId)?.name||'?';
+    title.textContent='데이터가 업데이트됐습니다';
+    html=`<div style="color:var(--text2);line-height:1.8">
+      <span style="font-weight:600;color:var(--text)">${firstName}</span> 외 ${total-1}건이 변경됐습니다.<br>
+      <span style="font-size:12px;color:var(--text3)">(추가 ${added.length}건 · 수정 ${modified.length}건 · 삭제 ${removed.length}건)</span>
+    </div>`;
+  }
+  body.innerHTML=html;
+  modal.style.display='block';
+}
+
+// ── 중복/오버 감지 ──
+function checkDuplicates(){
+  const banner=document.getElementById('warn-banner');
+  const now=new Date(),y=now.getFullYear(),mo=now.getMonth();
+  const mDates=getWorkDays(y,mo);
+  const warnings=[];
+
+  // 1. 월간 팀원 실근무 200h 초과 체크
+  S.members.forEach(m=>{
+    const mEnt=S.entries.filter(e=>mDates.includes(e.date)&&e.memberId===m.id);
+    const total=mEnt.reduce((s,e)=>s+(e.note?noteH(e.note):netH(Math.max(0,(toMin(e.end)-toMin(e.start))/60))),0);
+    if(total>=200) warnings.push(`⚠ ${m.name}의 이번달 실근무가 ${total.toFixed(0)}h — 중복 일정을 확인하세요`);
+  });
+
+  // 2. 같은날 같은 팀원 데이터 중복 체크
+  const dupMap={};
+  S.entries.forEach(e=>{
+    const k=`${e.memberId}_${e.date}`;
+    dupMap[k]=(dupMap[k]||0)+1;
+  });
+  Object.entries(dupMap).forEach(([k,cnt])=>{
+    if(cnt>1){
+      const [mid,date]=k.split('_');
+      const m=mById(parseInt(mid));
+      if(m) warnings.push(`⚠ ${m.name} ${date} 중복 입력 (${cnt}건)`);
+    }
+  });
+
+  if(!warnings.length){banner.style.display='none';return;}
+  banner.textContent=warnings.join('  |  ');
+  banner.style.display='block';
 }
 
 function saveS(){
@@ -479,6 +611,7 @@ function saveS(){
   REF.set({members:S.members,entries:S.entries,nid:S.nid})
     .then(()=>syncStatus('ok'))
     .catch(()=>{syncStatus('err');toast('저장 실패')});
+  setTimeout(checkDuplicates, 1000);
 }
 
 // ═══════════════════════════
@@ -533,6 +666,8 @@ function loginSuccess(){
   document.getElementById('nav-members').style.display=CUR.isAdmin?'':'none';
   document.getElementById('btn-notify').style.display=CUR.isAdmin?'':'none';
   renderAll();
+  _prevEntries = JSON.parse(JSON.stringify(S.entries));
+  checkDuplicates();
 }
 
 function doLogin(){
@@ -651,6 +786,9 @@ function initEvents(){
   document.getElementById('btn-logout').addEventListener('click',doLogout);
   document.getElementById('btn-notify').addEventListener('click',sendNotify);
   document.getElementById('notify-cancel').addEventListener('click',()=>{document.getElementById('notify-modal').style.display='none'});
+  document.getElementById('update-modal-close').addEventListener('click',()=>{document.getElementById('update-modal').style.display='none'});
+  document.getElementById('update-modal-ok').addEventListener('click',()=>{document.getElementById('update-modal').style.display='none'});
+  document.getElementById('warn-banner').addEventListener('click',()=>{document.getElementById('warn-banner').style.display='none'});
   document.getElementById('notify-send').addEventListener('click',doSendNotify);
   document.getElementById('pin-input').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
 }
