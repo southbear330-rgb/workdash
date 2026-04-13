@@ -680,18 +680,18 @@ function renderDash(){
   const todayEnt=S.entries.filter(e=>e.date===today);
   const wkEnt=S.entries.filter(e=>dates.includes(e.date));
 
-  const mNet=mEnt.filter(e=>!e.note).reduce((s,e)=>s+netH(Math.max(0,(toMin(e.end)-toMin(e.start))/60)),0);
+  const mNet=mEnt.reduce((s,e)=>s+(e.note?noteH(e.note):netH(Math.max(0,(toMin(e.end)-toMin(e.start))/60))),0);
   const ov=ovH(todayEnt);
   const mH={};
-  wkEnt.forEach(e=>{const r=Math.max(0,(toMin(e.end)-toMin(e.start))/60);mH[e.memberId]=(mH[e.memberId]||0)+netH(r)});
+  wkEnt.forEach(e=>{const h=e.note?noteH(e.note):netH(Math.max(0,(toMin(e.end)-toMin(e.start))/60));mH[e.memberId]=(mH[e.memberId]||0)+h});
   const vals=Object.values(mH);
   const avg=vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:0;
 
   // 팀원별 이번달 누적 실근무
   const mMemberNet={};
   S.members.forEach(m=>{
-    mMemberNet[m.id]=mEnt.filter(e=>e.memberId===m.id&&!e.note)
-      .reduce((s,e)=>s+netH(Math.max(0,(toMin(e.end)-toMin(e.start))/60)),0);
+    mMemberNet[m.id]=mEnt.filter(e=>e.memberId===m.id)
+      .reduce((s,e)=>s+(e.note?noteH(e.note):netH(Math.max(0,(toMin(e.end)-toMin(e.start))/60))),0);
   });
 
   document.getElementById('sg').innerHTML=`
@@ -732,7 +732,7 @@ function renderDash(){
   }
 
   // 요일별 실근무 차트
-  const dayH=dates.map(d=>S.entries.filter(e=>e.date===d&&!e.note).reduce((s,e)=>s+netH(Math.max(0,(toMin(e.end)-toMin(e.start))/60)),0));
+  const dayH=dates.map(d=>S.entries.filter(e=>e.date===d).reduce((s,e)=>s+(e.note?noteH(e.note):netH(Math.max(0,(toMin(e.end)-toMin(e.start))/60))),0));
   const mxD=Math.max(...dayH,1);
   document.getElementById('day-chart').innerHTML=DAYS.map((d,i)=>`
     <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px">
@@ -874,7 +874,7 @@ function renderStats(){
   S.members.forEach(m=>{
     const me=S.entries.filter(e=>e.memberId===m.id&&targets.includes(e.date));
     const dH={};
-    me.forEach(e=>{if(e.note)return;const raw=Math.max(0,(toMin(e.end)-toMin(e.start))/60);dH[e.date]=(dH[e.date]||0)+netH(raw)});
+    me.forEach(e=>{const h=e.note?noteH(e.note):netH(Math.max(0,(toMin(e.end)-toMin(e.start))/60));dH[e.date]=(dH[e.date]||0)+h;});
     const total=Object.values(dH).reduce((a,b)=>a+b,0);
     const cnt=Object.keys(dH).length||1;
     html+=`<tr><td><div class="mbadge"><span class="tl-dot" style="background:${m.color}"></span>${m.name}</div></td>`;
@@ -885,7 +885,7 @@ function renderStats(){
     html+=`<td><strong>${total.toFixed(1)}h</strong></td><td style="color:var(--text2)">${(total/cnt).toFixed(1)}h</td></tr>`;
   });
 
-  const dayTotals=targets.map(d=>S.entries.filter(e=>e.date===d&&!e.note).reduce((s,e)=>s+netH(Math.max(0,(toMin(e.end)-toMin(e.start))/60)),0));
+  const dayTotals=targets.map(d=>S.entries.filter(e=>e.date===d).reduce((s,e)=>s+(e.note?noteH(e.note):netH(Math.max(0,(toMin(e.end)-toMin(e.start))/60))),0));
   const grand=dayTotals.reduce((a,b)=>a+b,0);
   html+=`<tr><td><strong>팀 합계</strong></td>`;
   if(tab==='week') dayTotals.forEach(h=>html+=`<td><strong>${h.toFixed(1)}h</strong></td>`);
@@ -911,9 +911,13 @@ function renderPaste(){
   ['paste-sel','di-member','filter-member'].forEach(id=>{document.getElementById(id).disabled=lock&&id!=='filter-member'?true:false});
 }
 
-// 특이사항 키워드 (공가, 휴가, 연차, 교육, 출장, 병가 등)
+// 특이사항 키워드
 const NOTE_KEYWORDS = ['공가','휴가','연차','교육','출장','병가','반차','조퇴','외출'];
+const UNPAID_KEYWORDS = ['무급']; // 무급휴가 → 0h
 function isNote(str){ return NOTE_KEYWORDS.some(k=>str.includes(k)) || /[가-힣]{1,6}\(\d+[dh]\)/.test(str); }
+function isUnpaid(str){ return UNPAID_KEYWORDS.some(k=>str.includes(k)); }
+// 특이사항의 실근무시간: 무급=0h, 나머지=8h
+function noteH(note){ return isUnpaid(note)?0:8; }
 
 function parsePaste(){
   const raw=document.getElementById('paste-txt').value.trim();
@@ -998,14 +1002,14 @@ function renderPasteData(){
   document.getElementById('recent-list').innerHTML=recent.length
     ?recent.map(e=>{
         const m=mById(e.memberId);if(!m)return'';
-        const raw=e.note?0:(toMin(e.end)-toMin(e.start))/60,net=netH(raw);
+        const net=e.note?noteH(e.note):netH(Math.max(0,(toMin(e.end)-toMin(e.start))/60));
         const canDel=CUR.isAdmin||e.memberId===CUR.id;
         return `<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px">
           <span class="tl-dot" style="background:${m.color}"></span>
           <span style="color:var(--text2);font-family:'DM Mono',monospace;font-size:11px">${e.date}</span>
           <span style="font-weight:500">${m.name}</span>
           ${e.note?`<span class="tag warn">${e.note}</span>`:`<span style="color:var(--text2)">${e.start}~${e.end}</span>`}
-          <span style="color:var(--accent);margin-left:auto;font-family:'DM Mono',monospace">${e.note?'-':net.toFixed(1)+'h'}</span>
+          <span style="color:var(--accent);margin-left:auto;font-family:'DM Mono',monospace">${net.toFixed(1)}h</span>
           ${canDel?`<button class="btn sm red" data-del="${e.id}">×</button>`:''}
         </div>`;
       }).join('')
@@ -1026,7 +1030,7 @@ function renderPasteData(){
             <td style="font-family:'DM Mono',monospace;font-size:12px">${e.date}</td>
             <td><div class="mbadge"><span class="tl-dot" style="background:${m.color}"></span>${m.name}</div></td>
             <td colspan="3" style="text-align:center"><span class="tag warn">${e.note}</span></td>
-            <td>-</td>
+            <td><span class="hcell" style="background:var(--green-dim);color:var(--green)">${noteH(e.note).toFixed(1)}h</span></td>
             <td>${canDel?`<button class="btn sm red" data-del="${e.id}">삭제</button>`:''}</td></tr>`;
         }
         return `<tr>
