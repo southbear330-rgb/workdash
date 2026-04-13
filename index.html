@@ -966,7 +966,7 @@ function renderMembers(){
         <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px">${COLS.map(c=>`<div class="cpick${c===m.color?' sel':''}" style="background:${c}" data-mid="${m.id}" data-color="${c}"></div>`).join('')}</div>
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
           <span style="font-size:12px;color:var(--text2)">PIN</span>
-          <span style="font-size:12px;padding:2px 10px;border-radius:10px;background:${m.pin?'var(--green-dim)':\'rgba(220,38,38,.1)\'}; color:${m.pin?\'var(--green)\':\'var(--red)\'}">${m.pin?\'설정됨\':\'미설정\'}</span>
+          <span style="font-size:12px;padding:2px 10px;border-radius:10px;" id="pin-status-${m.id}"></span>
           <button class="btn sm red" data-reset-pin="${m.id}">PIN 초기화</button>
         </div>
       </div>
