@@ -20,16 +20,16 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:14px;line-height:1.5}
 .app{display:grid;grid-template-columns:220px 1fr;grid-template-rows:56px 1fr;min-height:100vh}
-.topbar{grid-column:1/-1;display:flex;align-items:center;gap:16px;padding:0 24px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.topbar{grid-column:1/-1;display:flex;align-items:center;gap:12px;padding:0 24px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
 .logo{font-weight:700;font-size:15px;letter-spacing:-.03em}.logo span{color:var(--accent)}
 .badge{font-size:11px;padding:2px 8px;border-radius:20px;background:var(--green-dim);color:var(--green);font-weight:500}
-.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px}
 .week-label{font-size:12px;color:var(--text2);font-family:'DM Mono',monospace}
 .sidebar{background:var(--surface);border-right:1px solid var(--border);padding:16px 12px;display:flex;flex-direction:column;gap:4px;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto}
 .sec-label{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;padding:12px 10px 6px}
 .nav-btn{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--radius-sm);cursor:pointer;color:var(--text2);font-size:13px;border:none;background:none;width:100%;text-align:left;transition:background .15s,color .15s}
 .nav-btn:hover{background:var(--surface2);color:var(--text)}
-.nav-btn.on{background:rgba(79,142,247,0.12);color:var(--accent)}
+.nav-btn.on{background:rgba(59,130,246,0.10);color:var(--accent)}
 .nav-icon{width:16px;text-align:center;font-size:13px;flex-shrink:0}
 .cnt{margin-left:auto;font-size:11px;background:var(--surface3);color:var(--text2);padding:1px 6px;border-radius:10px;font-family:'DM Mono',monospace}
 .main{padding:28px;overflow-y:auto}
@@ -40,7 +40,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .ctitle{font-size:12px;font-weight:700;color:var(--text2);letter-spacing:.05em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px}
 .ctitle::before{content:'';width:3px;height:12px;background:var(--accent);border-radius:2px}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
 .scard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px}
 .slabel{font-size:12px;color:var(--text2);margin-bottom:8px;font-weight:500}
@@ -54,7 +53,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .btn:hover{background:var(--surface3)}
 .btn.pri{background:var(--accent);color:#fff;border-color:var(--accent)}.btn.pri:hover{opacity:.9}
 .btn.sm{padding:4px 10px;font-size:12px}
-.btn.red{color:var(--red);border-color:rgba(248,113,113,.25)}.btn.red:hover{background:rgba(248,113,113,.08)}
+.btn.red{color:var(--red);border-color:rgba(220,38,38,.25)}.btn.red:hover{background:rgba(220,38,38,.08)}
 .btn.w100{width:100%;justify-content:center}
 input,select,textarea{font-family:inherit;font-size:13px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);padding:7px 10px;outline:none;transition:border-color .15s;width:100%}
 input:focus,select:focus,textarea:focus{border-color:var(--accent)}
@@ -65,37 +64,27 @@ label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px}
 .tab-bar{display:flex;gap:4px;margin-bottom:16px;background:var(--surface2);padding:4px;border-radius:var(--radius-sm);width:fit-content}
 .tab{padding:6px 16px;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:none;color:var(--text2);font-family:inherit;transition:all .15s}
 .tab.on{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.3)}
-/* 정규 근무 기준선 */
-.std-line{position:absolute;top:0;bottom:0;width:2px;background:#ef4444;z-index:20;pointer-events:none}
-.std-line::before{content:attr(data-label);position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:10px;color:#ef4444;font-family:'DM Mono',monospace;white-space:nowrap;font-weight:600}
 /* Timeline */
 .tl-wrap{overflow-x:auto;padding-bottom:4px}
-.tl-axis{display:flex;position:relative;height:20px;margin-left:110px;margin-bottom:6px;overflow:visible}
+.tl-axis{position:relative;height:20px;margin-left:110px;margin-bottom:6px;overflow:visible}
 .tl-tick{position:absolute;font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;transform:translateX(-50%)}
 .tl-row{display:flex;align-items:center;margin-bottom:4px;min-width:600px}
 .tl-name{width:110px;flex-shrink:0;font-size:12px;color:var(--text2);padding-right:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:6px}
 .tl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.tl-track{flex:1;height:28px;background:var(--surface2);border-radius:4px;position:relative;overflow:visible}
-.tl-body-wrap{position:relative}
-.tl-block{position:absolute;top:4px;bottom:4px;border-radius:3px;opacity:.82;cursor:default;transition:opacity .15s}
-.tl-block:hover{opacity:1;z-index:10}
-/* Overlap row */
+.tl-track{flex:1;height:30px;background:var(--surface2);border-radius:4px;position:relative;overflow:hidden}
+.tl-lbl{position:absolute;top:50%;transform:translateY(-50%);font-size:10px;font-weight:700;color:#fff;padding:0 6px;white-space:nowrap;pointer-events:none;font-family:'DM Mono',monospace;text-shadow:0 1px 2px rgba(0,0,0,.35);z-index:5}
 .tl-ov-row{display:flex;align-items:center;margin-top:6px;min-width:600px}
 .tl-ov-label{width:110px;flex-shrink:0;font-size:11px;color:var(--text3);padding-right:10px;text-align:right}
 .tl-ov-track{flex:1;height:16px;background:var(--surface2);border-radius:4px;position:relative;overflow:hidden}
 .tl-ov-seg{position:absolute;top:0;bottom:0}
-/* Tooltip */
-.tip-wrap{position:absolute;top:4px;bottom:4px}
-.tip-box{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--surface3);border:1px solid var(--border2);padding:6px 10px;border-radius:6px;font-size:11px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;z-index:50;color:var(--text);line-height:1.6;text-align:center}
-.tip-wrap:hover .tip-box{opacity:1}
-/* Week table */
+/* Table */
 .wtbl{width:100%;border-collapse:collapse;font-size:13px}
 .wtbl th{padding:10px 12px;text-align:center;color:var(--text2);font-weight:600;font-size:11px;letter-spacing:.04em;text-transform:uppercase;border-bottom:1px solid var(--border)}
 .wtbl th:first-child{text-align:left}
 .wtbl td{padding:9px 12px;text-align:center;border-bottom:1px solid var(--border)}
 .wtbl td:first-child{text-align:left;font-weight:500}
 .wtbl tr:last-child td{border-bottom:none;background:var(--surface2)}
-.wtbl tr:hover td{background:rgba(255,255,255,.02)}
+.wtbl tr:hover td{background:rgba(0,0,0,.015)}
 .hcell{display:inline-block;padding:2px 8px;border-radius:5px;font-family:'DM Mono',monospace;font-size:12px;font-weight:500}
 .mbadge{display:inline-flex;align-items:center;gap:6px}
 /* Paste */
@@ -108,78 +97,78 @@ label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px}
 .tag.ok{background:var(--green-dim);color:var(--green)}
 .tag.warn{background:rgba(251,191,36,.1);color:var(--amber)}
 /* Member */
-.mitem{display:grid;grid-template-columns:28px 1fr auto auto;gap:10px;align-items:center;background:var(--surface2);padding:10px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);margin-bottom:8px}
-.mdot-lg{width:24px;height:24px;border-radius:50%;cursor:pointer;flex-shrink:0}
+.mitem{display:grid;grid-template-columns:28px 1fr auto auto;gap:10px;align-items:start;background:var(--surface2);padding:12px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);margin-bottom:8px}
 .mname-inp{font-size:13px;font-weight:500;background:transparent;border:1px solid transparent;color:var(--text);padding:2px 6px;border-radius:4px;font-family:inherit;width:100%}
 .mname-inp:focus{outline:none;border-color:var(--accent);background:var(--surface)}
-.color-picks{display:flex;gap:5px;flex-wrap:wrap}
 .cpick{width:16px;height:16px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:border-color .15s;flex-shrink:0}
-.cpick.sel{border-color:#fff}
+.cpick.sel{border-color:#333}
+/* Login */
+.login-overlay{position:fixed;inset:0;background:rgba(240,242,247,.97);display:flex;align-items:center;justify-content:center;z-index:9000}
+.login-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:36px 40px;width:360px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.08)}
+.login-box h2{font-size:20px;font-weight:700;margin-bottom:6px}
+.login-box p{font-size:13px;color:var(--text2);margin-bottom:20px}
+.login-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;text-align:left}
+.lm-btn{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface2);cursor:pointer;font-size:13px;font-family:inherit;color:var(--text);transition:all .15s;width:100%}
+.lm-btn:hover{border-color:var(--accent);background:rgba(59,130,246,.04)}
+.lm-btn.sel{border-color:var(--accent);background:rgba(59,130,246,.08);color:var(--accent);font-weight:500}
+.pin-inp{text-align:center;font-size:20px;letter-spacing:8px;font-family:'DM Mono',monospace}
 /* Toast */
 .toast{position:fixed;bottom:24px;right:24px;background:var(--surface3);border:1px solid var(--border2);color:var(--text);padding:11px 18px;border-radius:var(--radius);font-size:13px;z-index:9999;transform:translateY(80px);opacity:0;transition:all .25s;pointer-events:none}
 .toast.show{transform:translateY(0);opacity:1}
-.toast.g{border-color:rgba(52,211,153,.35);color:var(--green)}
+.toast.g{border-color:rgba(5,150,105,.35);color:var(--green)}
 .empty{text-align:center;padding:36px;color:var(--text3)}
 .empty .ei{font-size:28px;margin-bottom:8px}
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:3px}
-@media(max-width:700px){.app{grid-template-columns:1fr}.sidebar{display:none}.stats-grid{grid-template-columns:1fr 1fr}.g2,.g3{grid-template-columns:1fr}}
+@media(max-width:700px){.app{grid-template-columns:1fr}.sidebar{display:none}.stats-grid{grid-template-columns:1fr 1fr}.g2{grid-template-columns:1fr}}
 @media print{
   @page{size:A4 landscape;margin:10mm 12mm}
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}
-  .sidebar,.topbar,#btn-export,#btn-print,#btn-prev-week,#btn-next-week,.tab-bar,#btn-add-member,#btn-clear-all{display:none!important}
-  .app{display:block!important;width:100%!important}
-  .main{padding:8px 0!important;width:100%!important}
-  .page{display:none!important}
-  .page.on{display:block!important}
+  .sidebar,.topbar,.login-overlay,.tab-bar,.btn{display:none!important}
+  .app{display:block!important}.main{padding:8px 0!important}
+  .page{display:none!important}.page.on{display:block!important}
   .card{break-inside:avoid;border:1px solid #ccc!important;margin-bottom:8px;padding:12px!important}
   .scard{border:1px solid #ccc!important;padding:12px 14px!important}
   .stats-grid{grid-template-columns:repeat(4,1fr)!important;gap:8px!important;margin-bottom:10px!important}
   .g2{grid-template-columns:1fr 1fr!important;gap:10px!important;margin-bottom:8px!important}
-  body,html{background:#fff!important;font-size:12px!important}
-  .sval{font-size:24px!important}
-  .sval small{font-size:13px!important}
-  .slabel{font-size:11px!important}
-  .ssub{font-size:10px!important}
-  .ptitle{font-size:16px!important;margin-bottom:2px!important}
-  .psub{font-size:11px!important;margin-bottom:10px!important}
-  .sval,.slabel,.ssub,.ptitle,.psub{color:#111!important}
-  .ctitle{color:#555!important;font-size:10px!important;margin-bottom:8px!important}
-  .scard.blue .sval{color:#2563eb!important}
-  .scard.green .sval{color:#059669!important}
-  .scard.amber .sval{color:#d97706!important}
-  .tl-track{height:22px!important}
-  .tl-name{font-size:11px!important;width:90px!important}
-  .tl-axis{margin-left:90px!important}
-  .tl-tick{font-size:9px!important}
-  .tl-row{margin-bottom:2px!important}
-  .tl-ov-track{height:12px!important}
-  .tl-body-wrap{margin-left:90px!important}
-  .tl-wrap{overflow:hidden!important}
-  .tl-axis{overflow:visible!important;margin-bottom:2px!important}
-  .std-line{background:#ef4444!important;width:2px!important}
-  .std-line::before{color:#ef4444!important;font-size:9px!important}
-  .tl-block{opacity:0.9!important}
-  .tl-ov-seg{opacity:1!important}
-  .week-bars div{height:14px!important}
+  body,html{background:#fff!important}
+  .scard.blue .sval{color:#2563eb!important}.scard.green .sval{color:#059669!important}.scard.amber .sval{color:#d97706!important}
+  .tl-track{height:22px!important}.tl-name{font-size:11px!important;width:90px!important}
+  .tl-axis{margin-left:90px!important;overflow:visible!important}.tl-row{margin-bottom:2px!important}
 }
 </style>
 </head>
 <body>
-<div class="app">
 
+<!-- 로그인 -->
+<div class="login-overlay" id="login-overlay">
+  <div class="login-box">
+    <h2>WorkDash</h2>
+    <p>팀원을 선택하고 PIN을 입력하세요</p>
+    <div class="login-grid" id="login-grid"></div>
+    <div id="pin-wrap" style="display:none">
+      <label style="font-size:12px;color:var(--text2);margin-bottom:6px;display:block;text-align:left" id="pin-label">PIN 입력</label>
+      <input class="pin-inp" type="password" inputmode="numeric" maxlength="6" id="pin-input" placeholder="••••">
+      <button class="btn pri w100" style="margin-top:10px" id="btn-login">로그인</button>
+      <p id="login-err" style="color:var(--red);font-size:12px;margin-top:8px;min-height:18px;text-align:left"></p>
+    </div>
+  </div>
+</div>
+
+<div class="app">
 <header class="topbar">
   <div class="logo">Work<span>Dash</span></div>
-  <span class="badge">● 실시간</span>
+  <span class="badge" id="sync-badge">● 연결 중</span>
   <div class="topbar-right">
-    <div style="display:flex;align-items:center;gap:6px">
+    <div style="display:flex;align-items:center;gap:5px">
       <button class="btn sm" id="btn-prev-week">‹</button>
       <span class="week-label" id="wklabel" style="min-width:130px;text-align:center"></span>
       <button class="btn sm" id="btn-next-week">›</button>
     </div>
-    <span id="sync-status" style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text3)">연결 중…</span>
-    <button class="btn sm" id="btn-export">↓ 내보내기</button>
+    <span id="login-badge" style="font-size:12px;padding:3px 10px;border-radius:20px;background:var(--surface2);color:var(--text2)"></span>
+    <button class="btn sm" id="btn-export">↓ 백업</button>
     <button class="btn sm" id="btn-print" onclick="window.print()">🖨 인쇄</button>
+    <button class="btn sm red" id="btn-logout" style="display:none">로그아웃</button>
   </div>
 </header>
 
@@ -190,7 +179,7 @@ label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px}
   <button class="nav-btn" data-page="stats"><span class="nav-icon">◻</span>근무 통계</button>
   <button class="nav-btn" data-page="paste"><span class="nav-icon">◧</span>데이터 입력</button>
   <div class="sec-label">설정</div>
-  <button class="nav-btn" data-page="members"><span class="nav-icon">◉</span>팀원 관리<span class="cnt" id="mcnt">0</span></button>
+  <button class="nav-btn" data-page="members" id="nav-members" style="display:none"><span class="nav-icon">◉</span>팀원 관리<span class="cnt" id="mcnt">0</span></button>
 </nav>
 
 <main class="main">
@@ -198,19 +187,19 @@ label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px}
   <!-- 대시보드 -->
   <div class="page on" id="page-dashboard">
     <div class="ptitle">대시보드</div>
-    <div class="psub">이번 주 팀 근무현황 요약</div>
+    <div class="psub">팀 근무현황 요약 (실근무 기준)</div>
     <div class="stats-grid" id="sg"></div>
     <div class="g2">
       <div class="card"><div class="ctitle">오늘 타임라인</div><div id="today-tl"></div></div>
-      <div class="card"><div class="ctitle">이번 주 팀원별 총 근무</div><div id="week-bars"></div></div>
+      <div class="card"><div class="ctitle" id="month-bar-title">월별 팀원 실근무</div><div id="month-bars"></div></div>
     </div>
-    <div class="card"><div class="ctitle">요일별 팀 총 근무시간</div><div id="day-chart" style="height:130px;display:flex;align-items:flex-end;gap:10px;padding-top:10px"></div></div>
+    <div class="card"><div class="ctitle">이번 주 요일별 실근무</div><div id="day-chart" style="height:130px;display:flex;align-items:flex-end;gap:10px;padding-top:10px"></div></div>
   </div>
 
   <!-- 타임라인 -->
   <div class="page" id="page-timeline">
     <div class="ptitle">타임라인</div>
-    <div class="psub">요일별 근무 시간대 및 겹치는 구간 시각화</div>
+    <div class="psub">요일별 근무 시간대 및 겹치는 구간 (실근무 시간 표시)</div>
     <div class="tab-bar" id="day-tabs"></div>
     <div class="card">
       <div class="row" style="margin-bottom:14px">
@@ -220,8 +209,7 @@ label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px}
       </div>
       <div class="tl-wrap" id="tl-content"></div>
     </div>
-    <!-- 겹침 상세 -->
-    <div class="card" id="overlap-detail-card">
+    <div class="card" id="overlap-card" style="display:none">
       <div class="ctitle">겹치는 시간 상세</div>
       <div id="overlap-detail"></div>
     </div>
@@ -230,12 +218,15 @@ label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px}
   <!-- 근무 통계 -->
   <div class="page" id="page-stats">
     <div class="ptitle">근무 통계</div>
-    <div class="psub">팀원별 요일별 근무시간 집계</div>
+    <div class="psub">점심 공제 반영 실근무시간 집계</div>
     <div class="tab-bar">
       <button class="tab on" data-stab="week">주간</button>
       <button class="tab" data-stab="month">월간</button>
     </div>
-    <div class="card"><div class="ctitle" id="stats-period"></div><div style="overflow-x:auto"><table class="wtbl" id="stbl"></table></div></div>
+    <div class="card">
+      <div class="ctitle" id="stats-period"></div>
+      <div style="overflow-x:auto"><table class="wtbl" id="stbl"></table></div>
+    </div>
   </div>
 
   <!-- 데이터 입력 -->
@@ -245,10 +236,10 @@ label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px}
     <div class="g2">
       <div class="card">
         <div class="ctitle">전산 데이터 붙여넣기</div>
-        <p style="font-size:12px;color:var(--text2);margin-bottom:8px">전산에서 Ctrl+C 복사 후 아래에 Ctrl+V 붙여넣기<br>날짜·요일·출근시간·퇴근시간을 자동으로 인식합니다</p>
-        <textarea class="paste-area" id="paste-txt" placeholder="여기에 붙여넣기 (Ctrl+V)&#10;&#10;예시:&#10;2026.04.07	월요일		08:00	17:30"></textarea>
+        <p style="font-size:12px;color:var(--text2);margin-bottom:8px">전산에서 복사 후 아래에 Ctrl+V<br>날짜·출근·퇴근 시간을 자동 인식합니다</p>
+        <textarea class="paste-area" id="paste-txt" placeholder="여기에 붙여넣기&#10;&#10;예시:&#10;2026.04.07	월요일		08:00	17:30"></textarea>
         <div class="row" style="margin-top:8px">
-          <select id="paste-sel" style="flex:1"><option value="">팀원 선택...</option></select>
+          <select id="paste-sel" style="flex:1"></select>
           <button class="btn pri" id="btn-import">가져오기</button>
           <button class="btn" id="btn-paste-clear">지우기</button>
         </div>
@@ -259,8 +250,8 @@ label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px}
         <div style="margin-bottom:8px"><label>팀원</label><select id="di-member"></select></div>
         <div style="margin-bottom:8px"><label>날짜</label><input type="date" id="di-date"></div>
         <div class="g2" style="margin-bottom:8px">
-          <div><label>출근시간</label><input type="time" id="di-start" value="09:00"></div>
-          <div><label>퇴근시간</label><input type="time" id="di-end" value="18:00"></div>
+          <div><label>출근</label><input type="time" id="di-start" value="09:00"></div>
+          <div><label>퇴근</label><input type="time" id="di-end" value="18:00"></div>
         </div>
         <button class="btn pri w100" id="btn-add-direct">추가</button>
         <div style="margin-top:14px"><div class="ctitle">최근 입력</div><div id="recent-list"></div></div>
@@ -268,18 +259,28 @@ label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px}
     </div>
     <div class="card">
       <div class="row" style="margin-bottom:12px">
-        <div class="ctitle" style="margin:0">전체 데이터 <span id="entry-count" style="color:var(--text3);font-size:11px"></span></div>
+        <div class="ctitle" style="margin:0">데이터 조회 / 삭제</div>
+      </div>
+      <!-- 필터 -->
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px;padding:12px;background:var(--surface2);border-radius:var(--radius-sm)">
+        <select id="filter-member" style="width:140px"></select>
+        <input type="date" id="filter-from" style="width:140px">
+        <span style="font-size:12px;color:var(--text3)">~</span>
+        <input type="date" id="filter-to" style="width:140px">
+        <button class="btn sm pri" id="btn-filter">검색</button>
         <div class="sp"></div>
+        <button class="btn sm red" id="btn-del-filtered">검색결과 삭제</button>
         <button class="btn sm red" id="btn-clear-all">전체 삭제</button>
       </div>
       <div style="overflow-x:auto;max-height:380px;overflow-y:auto"><table class="wtbl" id="all-tbl"></table></div>
+      <div id="entry-count" style="font-size:12px;color:var(--text3);margin-top:8px;text-align:right"></div>
     </div>
   </div>
 
-  <!-- 팀원 관리 -->
+  <!-- 팀원 관리 (관리자 전용) -->
   <div class="page" id="page-members">
-    <div class="ptitle">팀원 관리</div>
-    <div class="psub">이름을 바꾸면 모든 시트에 자동 반영됩니다 (최대 14명)</div>
+    <div class="ptitle">팀원 관리 <span style="font-size:13px;color:var(--red);font-weight:400">🔒 관리자 전용</span></div>
+    <div class="psub">팀원 이름·PIN·색상을 설정합니다. 관리자 PIN은 코드의 ADMIN_PIN 값을 변경하세요.</div>
     <div class="card">
       <div class="ctitle">팀원 목록</div>
       <div id="mlist"></div>
@@ -287,7 +288,7 @@ label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px}
     </div>
     <div class="card">
       <div class="ctitle">기본 출퇴근 시간</div>
-      <p style="font-size:12px;color:var(--text2);margin-bottom:12px">타임라인 표시 기준으로 사용됩니다</p>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:12px">타임라인 기준값으로 사용됩니다</p>
       <div id="sched-list"></div>
     </div>
   </div>
@@ -297,276 +298,302 @@ label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px}
 <div class="toast" id="toast"></div>
 
 <script>
-// ═══════════════════════════════════
+// ═══════════════════════════
 // 상수
-// ═══════════════════════════════════
-const DAYS = ['월','화','수','목','금'];
-const DAYS_FULL = ['월요일','화요일','수요일','목요일','금요일'];
-const COLORS = ['#4f8ef7','#f87171','#a78bfa','#34d399','#fbbf24','#f472b6','#38bdf8','#4ade80','#fb923c','#e879f9','#22d3ee','#a3e635','#f97316','#818cf8'];
-const T_S = 7, T_E = 21; // 타임라인 시작/끝 시각
+// ═══════════════════════════
+const DAYS=['월','화','수','목','금'];
+const DAYS_FULL=['월요일','화요일','수요일','목요일','금요일'];
+const COLS=['#4f8ef7','#f87171','#a78bfa','#34d399','#fbbf24','#f472b6','#38bdf8','#4ade80','#fb923c','#e879f9','#22d3ee','#a3e635','#f97316','#818cf8'];
+const T_S=7,T_E=21;
+const STD_S='08:30',STD_E='17:30';
+const ADMIN_PIN='0000'; // ← 관리자 PIN 여기서 변경
 
-// ═══════════════════════════════════
-// 상태
-// ═══════════════════════════════════
-let S = {
-  members: [
-    {id:1,name:'김민준',color:COLORS[0],ds:{s:'09:00',e:'18:00'}},
-    {id:2,name:'이서연',color:COLORS[1],ds:{s:'10:00',e:'19:00'}},
-    {id:3,name:'박지호',color:COLORS[2],ds:{s:'08:00',e:'17:00'}},
-    {id:4,name:'최유진',color:COLORS[3],ds:{s:'11:00',e:'20:00'}},
-    {id:5,name:'정하은',color:COLORS[4],ds:{s:'09:30',e:'18:30'}},
+// ═══════════════════════════
+// 로그인 상태
+// ═══════════════════════════
+let CUR={id:null,isAdmin:false,name:''};
+
+// ═══════════════════════════
+// 데이터 상태
+// ═══════════════════════════
+let S={
+  members:[
+    {id:1,name:'김민준',color:COLS[0],pin:'1234',ds:{s:'09:00',e:'18:00'}},
+    {id:2,name:'이서연',color:COLS[1],pin:'2345',ds:{s:'10:00',e:'19:00'}},
+    {id:3,name:'박지호',color:COLS[2],pin:'3456',ds:{s:'08:00',e:'17:00'}},
+    {id:4,name:'최유진',color:COLS[3],pin:'4567',ds:{s:'11:00',e:'20:00'}},
+    {id:5,name:'정하은',color:COLS[4],pin:'5678',ds:{s:'09:30',e:'18:30'}},
   ],
-  entries: [],
-  curDay: 0,
-  curStatTab: 'week',
-  weekOffset: 0,
-  nid: 100,
+  entries:[],curDay:0,curStatTab:'week',weekOffset:0,nid:100,
 };
 
-// ═══════════════════════════════════
+// ═══════════════════════════
 // 유틸
-// ═══════════════════════════════════
-const toMin = t => { const [h,m] = t.split(':').map(Number); return h*60+m; };
-const toHM  = m => String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
-const norm  = s => s.replace(/[.\-\/]/g,'-').replace(/-(\d)(?=-)/g,'-0$1').replace(/-(\d)$/,'-0$1');
-const mById = id => S.members.find(m => m.id===id);
-const isWknd = d => { const w=new Date(d).getDay(); return w===0||w===6; };
+// ═══════════════════════════
+const toMin=t=>{const[h,m]=t.split(':').map(Number);return h*60+m};
+const toHM=m=>String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
+const norm=s=>s.replace(/[.\-\/]/g,'-').replace(/-(\d)(?=-)/g,'-0$1').replace(/-(\d)$/,'-0$1');
+const mById=id=>S.members.find(m=>m.id===id);
+const isWknd=d=>{const w=new Date(d).getDay();return w===0||w===6};
+const toDate=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 
-// 점심시간 공제: 8h 이하 → 1h, 8h 초과 → 1.5h
-function netHours(rawH) {
-  if(rawH <= 0) return 0;
-  const deduct = rawH > 8 ? 1.5 : 1;
-  return Math.max(0, rawH - deduct);
+function getWeekDates(off){
+  const o=(off!==undefined?off:S.weekOffset)||0;
+  const now=new Date(),mon=new Date(now);
+  mon.setDate(now.getDate()-((now.getDay()+6)%7)+o*7);
+  return Array.from({length:5},(_,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);return toDate(d)});
 }
 
-function toLocalDateStr(d) {
-  // toISOString()은 UTC 기준이라 한국(UTC+9)에서 하루 밀림 → 로컬 날짜로 직접 포맷
-  const y = d.getFullYear();
-  const m = String(d.getMonth()+1).padStart(2,'0');
-  const dd = String(d.getDate()).padStart(2,'0');
-  return `${y}-${m}-${dd}`;
+// 점심 공제: 1h 기본, 1h 공제 후 실근무 8h 초과시 +0.5h 추가 공제
+function netH(raw){
+  if(raw<=0)return 0;
+  const a=raw-1;
+  return a>8?a-0.5:a;
 }
+function deductStr(raw){return (raw-1)>8?'점심 1h+30분':'점심 1h'}
 
-function getWeekDates(offset) {
-  const off = (offset !== undefined ? offset : S.weekOffset) || 0;
-  const now = new Date();
-  const mon = new Date(now);
-  mon.setDate(now.getDate() - ((now.getDay()+6)%7) + off*7);
-  return Array.from({length:5},(_,i)=>{ const d=new Date(mon); d.setDate(mon.getDate()+i); return toLocalDateStr(d); });
-}
-
-function calcOverlap(entries) {
-  const seg = new Array(1440).fill(0);
-  entries.forEach(e => { const s=toMin(e.start),en=toMin(e.end); for(let t=s;t<en;t++) seg[t]++; });
+function calcSeg(entries){
+  const seg=new Array(1440).fill(0);
+  entries.forEach(e=>{const s=toMin(e.start),en=toMin(e.end);for(let t=s;t<en;t++)seg[t]++});
   return seg;
 }
+function ovH(entries){return calcSeg(entries).filter(v=>v>=2).length/60}
 
-function overlapHours(entries) {
-  const seg = calcOverlap(entries);
-  return seg.filter(v=>v>=2).length / 60;
+function toast(msg,cls=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast show'+(cls?' '+cls:'');
+  setTimeout(()=>t.className='toast',2400);
 }
 
-// ═══════════════════════════════════
-// Firebase 설정
-// ═══════════════════════════════════
-const FB_CFG = {
-  apiKey: "AIzaSyAFVfHRuk79yNX1HoQdKONKnnh_HUYVixo",
-  authDomain: "workdash-web.firebaseapp.com",
-  databaseURL: "https://workdash-web-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "workdash-web",
-};
-firebase.initializeApp(FB_CFG);
-const DB = firebase.database();
-const REF = DB.ref('workdash');
+// ═══════════════════════════
+// Firebase
+// ═══════════════════════════
+firebase.initializeApp({
+  apiKey:"AIzaSyAFVfHRuk79yNX1HoQdKONKnnh_HUYVixo",
+  authDomain:"workdash-web.firebaseapp.com",
+  databaseURL:"https://workdash-web-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:"workdash-web",
+});
+const REF=firebase.database().ref('workdash');
 
-// 동기화 상태 표시
-function setSyncStatus(status) {
-  const el = document.getElementById('sync-status');
-  if(!el) return;
-  const map = {
-    syncing: {text:'동기화 중…', color:'var(--amber)'},
-    ok:      {text:'● 동기화됨', color:'var(--green)'},
-    error:   {text:'● 오프라인', color:'var(--red)'},
-  };
-  const s = map[status]||map.ok;
-  el.textContent = s.text;
-  el.style.color = s.color;
+function syncStatus(s){
+  const el=document.getElementById('sync-badge');if(!el)return;
+  const m={syncing:{t:'● 동기화 중',c:'var(--amber)'},ok:{t:'● 동기화됨',c:'var(--green)'},err:{t:'● 오프라인',c:'var(--red)'}};
+  const r=m[s]||m.ok;el.textContent=r.t;el.style.color=r.c;
 }
 
-// Firebase → 로컬 상태 실시간 수신 (최초 1회 + 변경 시마다)
-function loadS() {
-  setSyncStatus('syncing');
-  REF.on('value', snap => {
-    const data = snap.val();
-    if(data) {
-      S.members = data.members || S.members;
-      S.entries = data.entries || [];
-      S.nid     = data.nid     || S.nid;
-    }
-    setSyncStatus('ok');
-    renderAll();
-  }, err => {
-    console.error('Firebase 읽기 오류:', err);
-    setSyncStatus('error');
-    toast('서버 연결 실패. 로컬 데이터를 사용합니다.', '');
+function loadS(){
+  syncStatus('syncing');
+  REF.on('value',snap=>{
+    const d=snap.val();
+    if(d){S.members=d.members||S.members;S.entries=d.entries||[];S.nid=d.nid||S.nid;}
+    syncStatus('ok');
+    renderLoginGrid();
+    if(CUR.name) renderAll();
+  },()=>{syncStatus('err');toast('서버 연결 실패')});
+}
+
+function saveS(){
+  syncStatus('syncing');
+  REF.set({members:S.members,entries:S.entries,nid:S.nid})
+    .then(()=>syncStatus('ok'))
+    .catch(()=>{syncStatus('err');toast('저장 실패')});
+}
+
+// ═══════════════════════════
+// 로그인
+// ═══════════════════════════
+let _selId=null;
+
+function renderLoginGrid(){
+  const g=document.getElementById('login-grid');
+  let h=`<button class="lm-btn" data-lid="admin" style="grid-column:1/-1">🔑 관리자 로그인</button>`;
+  h+=S.members.map(m=>`<button class="lm-btn" data-lid="${m.id}"><span style="width:10px;height:10px;border-radius:50%;background:${m.color};display:inline-block;flex-shrink:0"></span>${m.name}</button>`).join('');
+  g.innerHTML=h;
+  g.querySelectorAll('.lm-btn').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      _selId=this.getAttribute('data-lid');
+      g.querySelectorAll('.lm-btn').forEach(b=>b.classList.remove('sel'));
+      this.classList.add('sel');
+      const isA=_selId==='admin';
+      document.getElementById('pin-label').textContent=isA?'관리자 PIN':this.textContent.trim()+' PIN';
+      document.getElementById('pin-wrap').style.display='block';
+      document.getElementById('pin-input').value='';
+      document.getElementById('login-err').textContent='';
+      document.getElementById('pin-input').focus();
+    });
   });
 }
 
-// 로컬 상태 → Firebase 저장
-function saveS() {
-  setSyncStatus('syncing');
-  REF.set({
-    members: S.members,
-    entries: S.entries,
-    nid:     S.nid,
-  }).then(() => setSyncStatus('ok'))
-    .catch(err => { console.error(err); setSyncStatus('error'); toast('저장 실패'); });
+function doLogin(){
+  const pin=document.getElementById('pin-input').value.trim();
+  const err=document.getElementById('login-err');
+  if(!_selId){err.textContent='팀원을 선택하세요';return}
+  if(_selId==='admin'){
+    if(pin!==ADMIN_PIN){err.textContent='PIN이 틀렸습니다';return}
+    CUR={id:null,isAdmin:true,name:'관리자'};
+  } else {
+    const mid=parseInt(_selId),m=mById(mid);
+    if(!m){err.textContent='팀원 정보 없음';return}
+    if(pin!==String(m.pin)){err.textContent='PIN이 틀렸습니다';return}
+    CUR={id:mid,isAdmin:false,name:m.name};
+  }
+  document.getElementById('login-overlay').style.display='none';
+  document.getElementById('login-badge').textContent=CUR.isAdmin?'🔑 관리자':CUR.name;
+  document.getElementById('btn-logout').style.display='';
+  document.getElementById('nav-members').style.display=CUR.isAdmin?'':'none';
+  renderAll();
 }
 
-function toast(msg, cls='') {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.className = 'toast show'+(cls?' '+cls:'');
-  setTimeout(() => t.className='toast', 2400);
+function doLogout(){
+  CUR={id:null,isAdmin:false,name:''};_selId=null;
+  document.getElementById('login-overlay').style.display='flex';
+  document.getElementById('pin-wrap').style.display='none';
+  document.getElementById('login-badge').textContent='';
+  document.getElementById('btn-logout').style.display='none';
+  document.getElementById('nav-members').style.display='none';
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.getElementById('page-dashboard').classList.add('on');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('on'));
+  document.querySelector('[data-page="dashboard"]').classList.add('on');
 }
 
-// ═══════════════════════════════════
-// 네비게이션 (data-page 방식)
-// ═══════════════════════════════════
-function initNav() {
-  document.querySelectorAll('.nav-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const page = this.getAttribute('data-page');
-      // 버튼 active
-      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('on'));
+// ═══════════════════════════
+// 네비게이션
+// ═══════════════════════════
+function initNav(){
+  document.querySelectorAll('.nav-btn').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const page=this.getAttribute('data-page');
+      if(page==='members'&&!CUR.isAdmin){toast('관리자만 접근 가능합니다');return}
+      document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('on'));
       this.classList.add('on');
-      // 페이지 전환
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+      document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
       document.getElementById('page-'+page).classList.add('on');
-      // 렌더
-      if(page==='timeline') renderTL();
-      if(page==='stats') renderStats();
-      if(page==='paste') renderPasteData();
-      if(page==='members') renderMembers();
+      if(page==='timeline')renderTL();
+      if(page==='stats')renderStats();
+      if(page==='paste'){renderPaste();renderPasteData();}
+      if(page==='members')renderMembers();
     });
   });
 }
 
-// ═══════════════════════════════════
+// ═══════════════════════════
 // 초기화
-// ═══════════════════════════════════
-function init() {
-  initNav();
-  initEvents();
-  setWeekLabel();
-  document.getElementById('di-date').value = toLocalDateStr(new Date());
-  loadS(); // Firebase 리스너 시작 → 데이터 수신 시 자동 renderAll()
+// ═══════════════════════════
+function init(){
+  initNav();initEvents();setWkLabel();
+  document.getElementById('di-date').value=toDate(new Date());
+  loadS();
 }
 
-function renderAll() {
-  updateMCnt();
-  renderDash();
-  renderTL();
-  renderStats();
-  renderPaste();
-  renderMembers();
+function renderAll(){
+  if(!CUR.name)return;
+  updateMCnt();renderDash();renderTL();renderStats();renderPaste();
 }
 
-// ═══════════════════════════════════
-// 이벤트 바인딩
-// ═══════════════════════════════════
-function initEvents() {
-  // stat tabs
-  document.querySelectorAll('.tab[data-stab]').forEach(t => {
-    t.addEventListener('click', function() {
-      S.curStatTab = this.getAttribute('data-stab');
-      document.querySelectorAll('.tab[data-stab]').forEach(x => x.classList.remove('on'));
-      this.classList.add('on');
-      renderStats();
+function initEvents(){
+  document.querySelectorAll('.tab[data-stab]').forEach(t=>{
+    t.addEventListener('click',function(){
+      S.curStatTab=this.getAttribute('data-stab');
+      document.querySelectorAll('.tab[data-stab]').forEach(x=>x.classList.remove('on'));
+      this.classList.add('on');renderStats();
     });
   });
-  // export
-  document.getElementById('btn-export').addEventListener('click', exportData);
-  document.getElementById('btn-prev-week').addEventListener('click', () => {
-    S.weekOffset--; setWeekLabel(); renderDash(); renderTL(); renderStats();
-  });
-  document.getElementById('btn-next-week').addEventListener('click', () => {
-    S.weekOffset++; setWeekLabel(); renderDash(); renderTL(); renderStats();
-  });
-  // paste
-  document.getElementById('paste-txt').addEventListener('input', parsePaste);
-  document.getElementById('btn-import').addEventListener('click', importPaste);
-  document.getElementById('btn-paste-clear').addEventListener('click', () => {
+  document.getElementById('btn-export').addEventListener('click',exportData);
+  document.getElementById('btn-prev-week').addEventListener('click',()=>{S.weekOffset--;setWkLabel();renderDash();renderTL();renderStats()});
+  document.getElementById('btn-next-week').addEventListener('click',()=>{S.weekOffset++;setWkLabel();renderDash();renderTL();renderStats()});
+  document.getElementById('paste-txt').addEventListener('input',parsePaste);
+  document.getElementById('btn-import').addEventListener('click',importPaste);
+  document.getElementById('btn-paste-clear').addEventListener('click',()=>{
     document.getElementById('paste-txt').value='';
-    document.getElementById('paste-preview').innerHTML='';
-    document.getElementById('paste-preview')._parsed=null;
+    const pv=document.getElementById('paste-preview');pv.innerHTML='';pv._parsed=null;
   });
-  // direct input
-  document.getElementById('btn-add-direct').addEventListener('click', addDirect);
-  // clear all
-  document.getElementById('btn-clear-all').addEventListener('click', () => {
-    if(!confirm('모든 근무 데이터를 삭제할까요?')) return;
-    S.entries=[]; saveS(); renderAll(); renderPasteData(); toast('삭제했습니다');
+  document.getElementById('btn-add-direct').addEventListener('click',addDirect);
+  document.getElementById('btn-filter').addEventListener('click',renderPasteData);
+  document.getElementById('btn-del-filtered').addEventListener('click',delFiltered);
+  document.getElementById('btn-clear-all').addEventListener('click',()=>{
+    if(!CUR.isAdmin){toast('관리자만 전체 삭제 가능합니다');return}
+    if(!confirm('모든 데이터를 삭제할까요?'))return;
+    S.entries=[];saveS();renderAll();renderPasteData();toast('삭제했습니다');
   });
-  // add member
-  document.getElementById('btn-add-member').addEventListener('click', addMember);
+  document.getElementById('btn-add-member').addEventListener('click',addMember);
+  document.getElementById('btn-login').addEventListener('click',doLogin);
+  document.getElementById('btn-logout').addEventListener('click',doLogout);
+  document.getElementById('pin-input').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
 }
 
-// ═══════════════════════════════════
+// ═══════════════════════════
 // 주 레이블
-// ═══════════════════════════════════
-function setWeekLabel() {
-  const w = getWeekDates();
-  const fmt = d => d.slice(5).replace('-','.');
-  const label = S.weekOffset === 0 ? `이번 주  ${fmt(w[0])}~${fmt(w[4])}`
-              : S.weekOffset < 0  ? `${Math.abs(S.weekOffset)}주 전  ${fmt(w[0])}~${fmt(w[4])}`
-              :                     `${S.weekOffset}주 후  ${fmt(w[0])}~${fmt(w[4])}`;
-  document.getElementById('wklabel').textContent = label;
+// ═══════════════════════════
+function setWkLabel(){
+  const w=getWeekDates(),fmt=d=>d.slice(5).replace('-','.');
+  const label=S.weekOffset===0?`이번 주  ${fmt(w[0])}~${fmt(w[4])}`
+    :S.weekOffset<0?`${Math.abs(S.weekOffset)}주 전  ${fmt(w[0])}~${fmt(w[4])}`
+    :`${S.weekOffset}주 후  ${fmt(w[0])}~${fmt(w[4])}`;
+  document.getElementById('wklabel').textContent=label;
 }
 
-// ═══════════════════════════════════
+// ═══════════════════════════
 // 대시보드
-// ═══════════════════════════════════
-function renderDash() {
-  const dates = getWeekDates();
-  const today = toLocalDateStr(new Date());
-  const wkEnt = S.entries.filter(e => dates.includes(e.date));
-  const todayEnt = S.entries.filter(e => e.date===today);
+// ═══════════════════════════
+function renderDash(){
+  const dates=getWeekDates();
+  const today=toDate(new Date());
+  const now=new Date(),y=now.getFullYear(),mo=now.getMonth();
+  const dim=new Date(y,mo+1,0).getDate();
+  const mDates=[];
+  for(let d=1;d<=dim;d++){const dt=toDate(new Date(y,mo,d));if(!isWknd(dt))mDates.push(dt)}
 
-  const totalH = wkEnt.reduce((s,e) => s+Math.max(0,(toMin(e.end)-toMin(e.start))/60),0);
-  const ovH = overlapHours(todayEnt);
-  const mH = {};
-  wkEnt.forEach(e => { const h=Math.max(0,(toMin(e.end)-toMin(e.start))/60); mH[e.memberId]=(mH[e.memberId]||0)+h; });
-  const vals = Object.values(mH);
-  const avgH = vals.length ? vals.reduce((a,b)=>a+b,0)/vals.length : 0;
+  const mEnt=S.entries.filter(e=>mDates.includes(e.date));
+  const todayEnt=S.entries.filter(e=>e.date===today);
+  const wkEnt=S.entries.filter(e=>dates.includes(e.date));
 
-  document.getElementById('sg').innerHTML = `
-    <div class="scard blue"><div class="slabel">주간 팀 총 근무</div><div class="sval">${totalH.toFixed(1)}<small> h</small></div><div class="ssub">${S.members.length}명 합산</div></div>
-    <div class="scard green"><div class="slabel">오늘 겹치는 시간</div><div class="sval">${ovH.toFixed(1)}<small> h</small></div><div class="ssub">2명+ 동시 근무</div></div>
-    <div class="scard amber"><div class="slabel">1인 주간 평균</div><div class="sval">${avgH.toFixed(1)}<small> h</small></div><div class="ssub">활성 팀원 기준</div></div>
+  const mNet=mEnt.reduce((s,e)=>s+netH(Math.max(0,(toMin(e.end)-toMin(e.start))/60)),0);
+  const ov=ovH(todayEnt);
+  const mH={};
+  wkEnt.forEach(e=>{const r=Math.max(0,(toMin(e.end)-toMin(e.start))/60);mH[e.memberId]=(mH[e.memberId]||0)+netH(r)});
+  const vals=Object.values(mH);
+  const avg=vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:0;
+
+  // 팀원별 이번달 누적 실근무
+  const mMemberNet={};
+  S.members.forEach(m=>{
+    mMemberNet[m.id]=mEnt.filter(e=>e.memberId===m.id)
+      .reduce((s,e)=>s+netH(Math.max(0,(toMin(e.end)-toMin(e.start))/60)),0);
+  });
+
+  document.getElementById('sg').innerHTML=`
+    <div class="scard blue"><div class="slabel">${now.getMonth()+1}월 팀 실근무</div><div class="sval">${mNet.toFixed(1)}<small> h</small></div><div class="ssub">공제 반영 합산</div></div>
+    <div class="scard green"><div class="slabel">오늘 겹치는 시간</div><div class="sval">${ov.toFixed(1)}<small> h</small></div><div class="ssub">2명+ 동시 근무</div></div>
+    <div class="scard amber"><div class="slabel">주간 1인 평균</div><div class="sval">${avg.toFixed(1)}<small> h</small></div><div class="ssub">실근무 기준</div></div>
     <div class="scard"><div class="slabel">팀원 수</div><div class="sval">${S.members.length}<small> 명</small></div><div class="ssub">등록된 팀원</div></div>`;
 
-  // 오늘 타임라인
-  renderTLInto('today-tl', todayEnt, true);
+  renderTLInto('today-tl',todayEnt);
 
-  // 팀원별 막대
-  const maxH = Math.max(...Object.values(mH), 1);
-  const bars = document.getElementById('week-bars');
-  if(!vals.length) { bars.innerHTML='<div class="empty"><div class="ei">📊</div><p>데이터를 입력하면 표시됩니다</p></div>'; return; }
-  bars.innerHTML = S.members.map(m => {
-    const h = mH[m.id]||0;
-    return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">
-      <div style="width:76px;font-size:12px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.name}</div>
-      <div style="flex:1;height:18px;background:var(--surface2);border-radius:3px;overflow:hidden">
-        <div style="width:${h/maxH*100}%;height:100%;background:${m.color};opacity:.82;border-radius:3px"></div>
-      </div>
-      <div style="width:38px;text-align:right;font-size:12px;color:var(--text2);font-family:'DM Mono',monospace">${h.toFixed(1)}h</div>
-    </div>`;
-  }).join('');
+  // 월간 팀원별 누적 실근무 막대
+  const bars=document.getElementById('month-bars');
+  document.getElementById('month-bar-title').textContent=`${now.getMonth()+1}월 팀원별 누적 실근무`;
+  const maxNet=Math.max(...Object.values(mMemberNet),1);
+  if(!Object.values(mMemberNet).some(v=>v>0)){
+    bars.innerHTML='<div class="empty"><div class="ei">📊</div><p>이번 달 데이터가 없습니다</p></div>';
+  } else {
+    bars.innerHTML=S.members.map(m=>{
+      const h=mMemberNet[m.id]||0;
+      return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">
+        <div style="width:76px;font-size:12px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.name}</div>
+        <div style="flex:1;height:18px;background:var(--surface2);border-radius:3px;overflow:hidden">
+          <div style="width:${h/maxNet*100}%;height:100%;background:${m.color};opacity:.82;border-radius:3px"></div>
+        </div>
+        <div style="width:46px;text-align:right;font-size:12px;font-family:'DM Mono',monospace;color:var(--text2)">${h.toFixed(1)}h</div>
+      </div>`;
+    }).join('');
+  }
 
-  // 요일별 차트
-  const dayH = dates.map(d => S.entries.filter(e=>e.date===d).reduce((s,e)=>s+Math.max(0,(toMin(e.end)-toMin(e.start))/60),0));
-  const mxD = Math.max(...dayH, 1);
-  document.getElementById('day-chart').innerHTML = DAYS.map((d,i) => `
+  // 요일별 실근무 차트
+  const dayH=dates.map(d=>S.entries.filter(e=>e.date===d).reduce((s,e)=>s+netH(Math.max(0,(toMin(e.end)-toMin(e.start))/60)),0));
+  const mxD=Math.max(...dayH,1);
+  document.getElementById('day-chart').innerHTML=DAYS.map((d,i)=>`
     <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px">
       <div style="font-size:11px;color:var(--text2);font-family:'DM Mono',monospace">${dayH[i]>0?dayH[i].toFixed(1)+'h':''}</div>
       <div style="width:100%;flex:1;display:flex;align-items:flex-end">
@@ -576,426 +603,381 @@ function renderDash() {
     </div>`).join('');
 }
 
-// ═══════════════════════════════════
-// 타임라인 공통 렌더
-// ═══════════════════════════════════
-// 정규 근무 기준선 시간 (HH:MM)
-const STD_START = '08:30';
-const STD_END   = '17:30';
+// ═══════════════════════════
+// 타임라인
+// ═══════════════════════════
+function renderTLInto(cid,entries){
+  const el=document.getElementById(cid);
+  if(!entries.length){el.innerHTML='<div class="empty"><div class="ei">⏱</div><p>데이터가 없습니다</p></div>';return}
+  const tot=(T_E-T_S)*60;
+  const sPct=(toMin(STD_S)-T_S*60)/tot*100;
+  const ePct=(toMin(STD_E)-T_S*60)/tot*100;
+  const stdL=`<div style="position:absolute;top:0;bottom:0;left:${sPct}%;width:2px;background:#ef4444;z-index:10;pointer-events:none"></div>
+    <div style="position:absolute;top:0;bottom:0;left:${ePct}%;width:2px;background:#ef4444;z-index:10;pointer-events:none"></div>`;
 
-function renderTLInto(containerId, entries, compact=false) {
-  const el = document.getElementById(containerId);
-  if(!entries.length) { el.innerHTML='<div class="empty"><div class="ei">⏱</div><p>데이터가 없습니다</p></div>'; return; }
-
-  const totalMin = (T_E-T_S)*60;
-  const hours = [];
-  for(let h=T_S; h<=T_E; h++) hours.push(h);
-
-  // 기준선 위치 (각 track 안에 넣을 % 값)
-  const stdSPct = (toMin(STD_START) - T_S*60) / totalMin * 100;
-  const stdEPct = (toMin(STD_END)   - T_S*60) / totalMin * 100;
-
-  // 기준선 HTML 조각 — track 안에 반복 삽입
-  const stdLines = `
-    <div style="position:absolute;top:0;bottom:0;left:${stdSPct}%;width:2px;background:#ef4444;z-index:20;pointer-events:none"></div>
-    <div style="position:absolute;top:0;bottom:0;left:${stdEPct}%;width:2px;background:#ef4444;z-index:20;pointer-events:none"></div>`;
-
-  // 시간축 (기준선 라벨 포함)
-  // 기준선 라벨: 출근(STD_START)은 선 오른쪽, 퇴근(STD_END)은 선 왼쪽에 붙여서 틱과 안 겹침
-  function stdLabel(pct, text, align) {
-    // align: 'right'=선 오른쪽에 붙음, 'left'=선 왼쪽에 붙음
-    const anchor = align === 'right' ? 'translateX(4px)' : 'translateX(calc(-100% - 4px))';
-    return `<span style="position:absolute;left:${pct}%;transform:${anchor};font-size:10px;color:#ef4444;font-family:'DM Mono',monospace;font-weight:700;top:0;white-space:nowrap;background:rgba(255,255,255,0.85);padding:0 2px;border-radius:2px">${text}</span>`;
+  function sLabel(pct,txt,align){
+    const a=align==='r'?'translateX(4px)':'translateX(calc(-100% - 4px))';
+    return `<span style="position:absolute;left:${pct}%;transform:${a};font-size:10px;color:#ef4444;font-family:'DM Mono',monospace;font-weight:700;top:0;white-space:nowrap;background:rgba(255,255,255,.88);padding:0 2px;border-radius:2px">${txt}</span>`;
   }
 
-  let html = `<div class="tl-axis" style="position:relative;overflow:visible">`;
-  hours.forEach(h => {
-    const pct = (h-T_S)/(T_E-T_S)*100;
-    html += `<span class="tl-tick" style="left:${pct}%">${h}</span>`;
-  });
-  html += stdLabel(stdSPct, STD_START, 'right');
-  html += stdLabel(stdEPct, STD_END, 'left');
-  html += `</div>`;
+  const hours=[];for(let h=T_S;h<=T_E;h++)hours.push(h);
+  let html=`<div class="tl-axis">`;
+  hours.forEach(h=>{const p=(h-T_S)/(T_E-T_S)*100;html+=`<span class="tl-tick" style="left:${p}%">${h}</span>`});
+  html+=sLabel(sPct,STD_S,'r')+sLabel(ePct,STD_E,'l')+'</div>';
 
-  // 팀원 행 — 각 track 안에 기준선 삽입
-  S.members.forEach(m => {
-    const me = entries.filter(e => e.memberId===m.id);
-    html += `<div class="tl-row"><div class="tl-name"><span class="tl-dot" style="background:${m.color}"></span>${m.name}</div><div class="tl-track">`;
-    // 기준선 먼저
-    html += stdLines;
-    // 근무 블록
-    me.forEach(e => {
-      const s=toMin(e.start), en=toMin(e.end);
-      const left = (s-T_S*60)/totalMin*100;
-      const width = (en-s)/totalMin*100;
-      const rawH = (en-s)/60;
-      const hrs = rawH.toFixed(1);
-      const net = netHours(rawH).toFixed(1);
-      const deductLabel = rawH > 8 ? '점심 1.5h 공제' : '점심 1h 공제';
-      if(left<0||width<=0) return;
-      html += `<div class="tip-wrap" style="left:${left}%;width:${width}%;z-index:10">
-        <div class="tl-block" style="position:absolute;inset:0;background:${m.color}"></div>
-        <div class="tip-box">${m.name} ${e.start}~${e.end}<br>총 ${hrs}h → 실근무 ${net}h (${deductLabel})</div>
+  S.members.forEach(m=>{
+    const me=entries.filter(e=>e.memberId===m.id);
+    html+=`<div class="tl-row"><div class="tl-name"><span class="tl-dot" style="background:${m.color}"></span>${m.name}</div><div class="tl-track">${stdL}`;
+    me.forEach(e=>{
+      const s=toMin(e.start),en=toMin(e.end);
+      const left=(s-T_S*60)/tot*100,w=(en-s)/tot*100;
+      const raw=(en-s)/60,net=netH(raw);
+      if(left<0||w<=0)return;
+      html+=`<div style="position:absolute;left:${left}%;width:${w}%;top:0;bottom:0;background:${m.color};border-radius:3px;z-index:3">
+        <span class="tl-lbl">${net.toFixed(1)}h</span>
       </div>`;
     });
-    html += `</div></div>`;
+    html+=`</div></div>`;
   });
 
   // 겹침 행
-  const seg = calcOverlap(entries);
-  html += `<div style="height:6px"></div>`;
-  html += `<div class="tl-ov-row"><div class="tl-ov-label">겹침</div><div class="tl-ov-track">`;
-  for(let t=T_S*60; t<T_E*60; t++) {
-    const c = seg[t]||0;
-    if(c>=2) {
-      const left = (t-T_S*60)/totalMin*100;
-      const w = 1/totalMin*100+0.1;
-      const alpha = Math.min(0.25+(c-2)*0.22, 1);
-      html += `<div class="tl-ov-seg" style="left:${left}%;width:${w}%;background:rgba(52,211,153,${alpha})"></div>`;
-    }
+  const seg=calcSeg(entries);
+  html+=`<div style="height:6px"></div><div class="tl-ov-row"><div class="tl-ov-label">겹침</div><div class="tl-ov-track">`;
+  for(let t=T_S*60;t<T_E*60;t++){
+    const c=seg[t]||0;
+    if(c>=2){const l=(t-T_S*60)/tot*100,ow=1/tot*100+0.1,a=Math.min(0.25+(c-2)*0.22,1);
+      html+=`<div class="tl-ov-seg" style="left:${l}%;width:${ow}%;background:rgba(52,211,153,${a})"></div>`}
   }
-  html += `</div></div>`;
-  el.innerHTML = html;
+  html+=`</div></div>`;
+  el.innerHTML=html;
 }
 
-// ═══════════════════════════════════
-// 타임라인 페이지
-// ═══════════════════════════════════
-function renderTL() {
-  // 탭
-  const tabBar = document.getElementById('day-tabs');
-  tabBar.innerHTML = DAYS.map((d,i) =>
-    `<button class="tab${i===S.curDay?' on':''}" data-di="${i}">${d}요일</button>`
-  ).join('');
-  tabBar.querySelectorAll('.tab').forEach(t => {
-    t.addEventListener('click', function() {
-      S.curDay = parseInt(this.getAttribute('data-di'));
-      tabBar.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
-      this.classList.add('on');
-      renderTLDay();
+function renderTL(){
+  const tb=document.getElementById('day-tabs');
+  tb.innerHTML=DAYS.map((d,i)=>`<button class="tab${i===S.curDay?' on':''}" data-di="${i}">${d}요일</button>`).join('');
+  tb.querySelectorAll('.tab').forEach(t=>{
+    t.addEventListener('click',function(){
+      S.curDay=parseInt(this.getAttribute('data-di'));
+      tb.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+      this.classList.add('on');renderTLDay();
     });
   });
   renderTLDay();
 }
 
-function renderTLDay() {
-  const day = S.curDay;
-  const dates = getWeekDates();
-  const dateStr = dates[day];
-  const entries = S.entries.filter(e => e.date===dateStr);
-  const ovH = overlapHours(entries);
-
-  document.getElementById('tl-title').textContent = `${DAYS_FULL[day]}  ${dateStr}`;
-  document.getElementById('tl-meta').textContent = entries.length
-    ? `${entries.length}건 · 겹치는 시간 ${ovH.toFixed(1)}h`
-    : '';
-
-  renderTLInto('tl-content', entries);
-  renderOverlapDetail(entries, dateStr);
+function renderTLDay(){
+  const dates=getWeekDates(),ds=dates[S.curDay];
+  const ent=S.entries.filter(e=>e.date===ds);
+  const ov=ovH(ent);
+  document.getElementById('tl-title').textContent=`${DAYS_FULL[S.curDay]}  ${ds}`;
+  document.getElementById('tl-meta').textContent=ent.length?`${ent.length}건 · 겹침 ${ov.toFixed(1)}h`:'';
+  renderTLInto('tl-content',ent);
+  renderOvDetail(ent);
 }
 
-function renderOverlapDetail(entries, dateStr) {
-  const card = document.getElementById('overlap-detail-card');
-  const el = document.getElementById('overlap-detail');
-  if(entries.length < 2) { card.style.display='none'; return; }
+function renderOvDetail(entries){
+  const card=document.getElementById('overlap-card');
+  const el=document.getElementById('overlap-detail');
+  if(entries.length<2){card.style.display='none';return}
+  const seg=calcSeg(entries);
+  const ranges=[];let inR=false,rS=0,rMax=0;
+  for(let t=T_S*60;t<=T_E*60;t++){
+    const c=seg[t]||0;
+    if(c>=2&&!inR){inR=true;rS=t;rMax=c}
+    else if(c>=2&&inR)rMax=Math.max(rMax,c);
+    else if(c<2&&inR){ranges.push({s:rS,e:t,max:rMax});inR=false;rMax=0}
+  }
+  if(!ranges.length){card.style.display='none';return}
   card.style.display='block';
-
-  // 겹치는 구간 찾기 (연속 구간으로 병합)
-  const seg = calcOverlap(entries);
-  const ranges = [];
-  let inRange = false, rangeS = 0, rangeMax = 0;
-
-  for(let t=T_S*60; t<=T_E*60; t++) {
-    const c = seg[t]||0;
-    if(c>=2 && !inRange) { inRange=true; rangeS=t; rangeMax=c; }
-    else if(c>=2 && inRange) { rangeMax=Math.max(rangeMax,c); }
-    else if(c<2 && inRange) {
-      ranges.push({s:rangeS, e:t, max:rangeMax});
-      inRange=false; rangeMax=0;
-    }
-  }
-
-  if(!ranges.length) { card.style.display='none'; return; }
-
-  // 겹치는 구간별 누가 있는지
-  el.innerHTML = `
-    <table class="wtbl">
-      <thead><tr><th>시간대</th><th>동시 근무 팀원</th><th>인원</th><th>겹침</th></tr></thead>
-      <tbody>
-      ${ranges.map(r => {
-        const mid = Math.floor((r.s+r.e)/2);
-        const who = S.members.filter(m => {
-          const me = entries.filter(e=>e.memberId===m.id);
-          return me.some(e => toMin(e.start)<=mid && toMin(e.end)>mid);
-        });
-        const dur = ((r.e-r.s)/60).toFixed(1);
-        return `<tr>
-          <td style="font-family:'DM Mono',monospace">${toHM(r.s)}~${toHM(r.e)}</td>
-          <td>${who.map(m=>`<span class="mbadge"><span class="tl-dot" style="background:${m.color};display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:3px"></span>${m.name}</span>`).join('  ')}</td>
-          <td><span style="color:var(--green);font-weight:600">${who.length}명</span></td>
-          <td><span class="hcell" style="background:var(--green-dim);color:var(--green)">${dur}h</span></td>
-        </tr>`;
-      }).join('')}
-      </tbody>
-    </table>`;
+  el.innerHTML=`<table class="wtbl"><thead><tr><th>시간대</th><th>함께 근무 팀원</th><th>인원</th><th>겹침</th></tr></thead><tbody>
+    ${ranges.map(r=>{
+      const mid=Math.floor((r.s+r.e)/2);
+      const who=S.members.filter(m=>entries.filter(e=>e.memberId===m.id).some(e=>toMin(e.start)<=mid&&toMin(e.end)>mid));
+      return `<tr><td style="font-family:'DM Mono',monospace">${toHM(r.s)}~${toHM(r.e)}</td>
+        <td>${who.map(m=>`<span class="mbadge" style="margin-right:8px"><span style="width:7px;height:7px;border-radius:50%;background:${m.color};display:inline-block;margin-right:3px"></span>${m.name}</span>`).join('')}</td>
+        <td><strong style="color:var(--green)">${who.length}명</strong></td>
+        <td><span class="hcell" style="background:var(--green-dim);color:var(--green)">${((r.e-r.s)/60).toFixed(1)}h</span></td></tr>`;
+    }).join('')}</tbody></table>`;
 }
 
-// ═══════════════════════════════════
-// 근무 통계
-// ═══════════════════════════════════
-function renderStats() {
-  const dates = getWeekDates();
-  const tab = S.curStatTab;
-  let targets = dates;
-
-  if(tab==='month') {
-    const now=new Date(); const y=now.getFullYear(), mo=now.getMonth();
-    const dim=new Date(y,mo+1,0).getDate();
+// ═══════════════════════════
+// 근무 통계 (실근무 기준)
+// ═══════════════════════════
+function renderStats(){
+  const dates=getWeekDates(),tab=S.curStatTab;
+  let targets=dates;
+  if(tab==='month'){
+    const now=new Date(),y=now.getFullYear(),mo=now.getMonth(),dim=new Date(y,mo+1,0).getDate();
     targets=[];
-    for(let d=1;d<=dim;d++) { const dt=toLocalDateStr(new Date(y,mo,d)); if(!isWknd(dt)) targets.push(dt); }
-    document.getElementById('stats-period').textContent = `${now.getFullYear()}년 ${now.getMonth()+1}월`;
+    for(let d=1;d<=dim;d++){const dt=toDate(new Date(y,mo,d));if(!isWknd(dt))targets.push(dt)}
+    document.getElementById('stats-period').textContent=`${new Date().getFullYear()}년 ${new Date().getMonth()+1}월 실근무`;
   } else {
-    document.getElementById('stats-period').textContent = `이번 주 (${dates[0].slice(5)} ~ ${dates[4].slice(5)})`;
+    document.getElementById('stats-period').textContent=`주간 실근무  ${dates[0].slice(5)}~${dates[4].slice(5)}`;
   }
 
-  const maxH = 9;
-  function heatBg(h) {
-    const t=Math.min(h/maxH,1);
-    return `rgba(79,142,247,${0.08+t*0.5})`;
-  }
-  function heatTxt(h) { return h/maxH>0.4?'#93c5fd':'var(--text2)'; }
+  const maxH=9;
+  const hBg=h=>`rgba(79,142,247,${0.08+Math.min(h/maxH,1)*0.5})`;
+  const hTxt=h=>Math.min(h/maxH,1)>0.4?'#1d4ed8':'var(--text2)';
 
-  let html = `<thead><tr><th>팀원</th>${tab==='week'?DAYS.map(d=>`<th>${d}</th>`).join(''):''}<th>합계</th><th>평균/일</th></tr></thead><tbody>`;
+  let html=`<thead><tr><th>팀원</th>${tab==='week'?DAYS.map(d=>`<th>${d}</th>`).join('')+`<th>주합계</th>`:'<th>월합계</th>'}<th>일평균</th></tr></thead><tbody>`;
 
-  S.members.forEach(m => {
-    const me = S.entries.filter(e=>e.memberId===m.id&&targets.includes(e.date));
-    const dH = {};
-    me.forEach(e => { const h=Math.max(0,(toMin(e.end)-toMin(e.start))/60); dH[e.date]=(dH[e.date]||0)+h; });
-    const total = Object.values(dH).reduce((a,b)=>a+b,0);
-    const cnt = Object.keys(dH).length||1;
-
-    html += `<tr><td><div class="mbadge"><span class="tl-dot" style="background:${m.color}"></span>${m.name}</div></td>`;
-    if(tab==='week') dates.forEach(d => {
+  S.members.forEach(m=>{
+    const me=S.entries.filter(e=>e.memberId===m.id&&targets.includes(e.date));
+    const dH={};
+    me.forEach(e=>{const raw=Math.max(0,(toMin(e.end)-toMin(e.start))/60);dH[e.date]=(dH[e.date]||0)+netH(raw)});
+    const total=Object.values(dH).reduce((a,b)=>a+b,0);
+    const cnt=Object.keys(dH).length||1;
+    html+=`<tr><td><div class="mbadge"><span class="tl-dot" style="background:${m.color}"></span>${m.name}</div></td>`;
+    if(tab==='week') dates.forEach(d=>{
       const h=dH[d]||0;
-      html += `<td>${h>0?`<span class="hcell" style="background:${heatBg(h)};color:${heatTxt(h)}">${h.toFixed(1)}h</span>`:'-'}</td>`;
+      html+=`<td>${h>0?`<span class="hcell" style="background:${hBg(h)};color:${hTxt(h)}">${h.toFixed(1)}h</span>`:'-'}</td>`;
     });
-    html += `<td><strong>${total.toFixed(1)}h</strong></td><td style="color:var(--text2)">${(total/cnt).toFixed(1)}h</td></tr>`;
+    html+=`<td><strong>${total.toFixed(1)}h</strong></td><td style="color:var(--text2)">${(total/cnt).toFixed(1)}h</td></tr>`;
   });
 
-  // 합계행
-  const dayTotals = targets.map(d => S.entries.filter(e=>e.date===d).reduce((s,e)=>s+Math.max(0,(toMin(e.end)-toMin(e.start))/60),0));
-  const grand = dayTotals.reduce((a,b)=>a+b,0);
-  html += `<tr><td><strong>팀 합계</strong></td>`;
-  if(tab==='week') dayTotals.forEach(h => html+=`<td><strong>${h.toFixed(1)}h</strong></td>`);
-  html += `<td><strong>${grand.toFixed(1)}h</strong></td><td style="color:var(--text2)">${(grand/Math.max(targets.length,1)).toFixed(1)}h</td></tr>`;
-  html += `</tbody>`;
-  document.getElementById('stbl').innerHTML = html;
+  const dayTotals=targets.map(d=>S.entries.filter(e=>e.date===d).reduce((s,e)=>s+netH(Math.max(0,(toMin(e.end)-toMin(e.start))/60)),0));
+  const grand=dayTotals.reduce((a,b)=>a+b,0);
+  html+=`<tr><td><strong>팀 합계</strong></td>`;
+  if(tab==='week') dayTotals.forEach(h=>html+=`<td><strong>${h.toFixed(1)}h</strong></td>`);
+  html+=`<td><strong>${grand.toFixed(1)}h</strong></td><td style="color:var(--text2)">${(grand/Math.max(targets.length,1)).toFixed(1)}h</td></tr></tbody>`;
+  document.getElementById('stbl').innerHTML=html;
 }
 
-// ═══════════════════════════════════
+// ═══════════════════════════
 // 데이터 입력
-// ═══════════════════════════════════
-function renderPaste() {
-  const opts = '<option value="">팀원 선택...</option>' + S.members.map(m=>`<option value="${m.id}">${m.name}</option>`).join('');
-  document.getElementById('paste-sel').innerHTML = opts;
-  document.getElementById('di-member').innerHTML = opts;
+// ═══════════════════════════
+function memberOpts(selId){
+  let o='<option value="">팀원 선택...</option>';
+  if(CUR.isAdmin) o+=S.members.map(m=>`<option value="${m.id}"${m.id===selId?' selected':''}>${m.name}</option>`).join('');
+  else if(CUR.id){const m=mById(CUR.id);if(m)o+=`<option value="${m.id}" selected>${m.name}</option>`;}
+  return o;
 }
 
-function parsePaste() {
-  const raw = document.getElementById('paste-txt').value.trim();
-  const preview = document.getElementById('paste-preview');
-  if(!raw) { preview.innerHTML=''; preview._parsed=null; return; }
-
-  const lines = raw.split('\n').filter(l=>l.trim());
-  const parsed = [];
-  const timeRe = /^(\d{1,2}):(\d{2})$/;
-  const dateRe = /^\d{4}[.\-\/]\d{1,2}[.\-\/]\d{1,2}$/;
-
-  lines.forEach(l => {
-    const cols = l.split(/\t|,/).map(c=>c.trim());
-    const times = cols.filter(c=>timeRe.test(c));
-    const dates = cols.filter(c=>dateRe.test(c));
-    if(times.length>=2 && dates.length>=1) {
-      parsed.push({date:norm(dates[0]), start:times[0], end:times[1]});
-    }
-  });
-
-  if(!parsed.length) {
-    preview.innerHTML=`<p style="color:var(--amber);font-size:12px;margin-top:8px">⚠ 인식 가능한 데이터가 없습니다. 날짜·출근시간·퇴근시간이 포함되어 있는지 확인하세요.</p>`;
-    preview._parsed=null; return;
-  }
-
-  let html = `<div class="preview"><table class="ptbl"><thead><tr><th>날짜</th><th>출근</th><th>퇴근</th><th>근무</th><th>상태</th></tr></thead><tbody>`;
-  parsed.forEach(p => {
-    const h=((toMin(p.end)-toMin(p.start))/60).toFixed(1);
-    const ok=toMin(p.end)>toMin(p.start);
-    html+=`<tr><td>${p.date}</td><td>${p.start}</td><td>${p.end}</td><td>${h}h</td><td><span class="tag ${ok?'ok':'warn'}">${ok?'정상':'확인필요'}</span></td></tr>`;
-  });
-  html+=`</tbody></table></div><p style="font-size:12px;color:var(--text2);margin-top:6px">${parsed.length}건 인식됨 · 팀원 선택 후 "가져오기"</p>`;
-  preview.innerHTML = html;
-  preview._parsed = parsed;
+function renderPaste(){
+  document.getElementById('paste-sel').innerHTML=memberOpts(0);
+  document.getElementById('di-member').innerHTML=memberOpts(CUR.id);
+  document.getElementById('filter-member').innerHTML='<option value="">전체 팀원</option>'+(CUR.isAdmin?S.members.map(m=>`<option value="${m.id}">${m.name}</option>`).join(''):`<option value="${CUR.id}" selected>${mById(CUR.id)?.name||''}</option>`);
+  const lock=!CUR.isAdmin;
+  ['paste-sel','di-member','filter-member'].forEach(id=>{document.getElementById(id).disabled=lock&&id!=='filter-member'?true:false});
 }
 
-function importPaste() {
-  const memberId = parseInt(document.getElementById('paste-sel').value);
-  if(!memberId) { toast('팀원을 선택하세요'); return; }
-  const preview = document.getElementById('paste-preview');
-  const parsed = preview._parsed;
-  if(!parsed||!parsed.length) { toast('먼저 데이터를 붙여넣으세요'); return; }
+function parsePaste(){
+  const raw=document.getElementById('paste-txt').value.trim();
+  const pv=document.getElementById('paste-preview');
+  if(!raw){pv.innerHTML='';pv._parsed=null;return}
+  const lines=raw.split('\n').filter(l=>l.trim());
+  const parsed=[];
+  const tRe=/^(\d{1,2}):(\d{2})$/,dRe=/^\d{4}[.\-\/]\d{1,2}[.\-\/]\d{1,2}$/;
+  lines.forEach(l=>{
+    const cols=l.split(/\t|,/).map(c=>c.trim());
+    const times=cols.filter(c=>tRe.test(c)),dates=cols.filter(c=>dRe.test(c));
+    if(times.length>=2&&dates.length>=1) parsed.push({date:norm(dates[0]),start:times[0],end:times[1]});
+  });
+  if(!parsed.length){pv.innerHTML='<p style="color:var(--amber);font-size:12px;margin-top:8px">⚠ 인식 불가. 날짜·출근시간·퇴근시간이 포함되어 있는지 확인하세요.</p>';pv._parsed=null;return}
+  let html=`<div class="preview"><table class="ptbl"><thead><tr><th>날짜</th><th>출근</th><th>퇴근</th><th>총근무</th><th>실근무</th><th>상태</th></tr></thead><tbody>`;
+  parsed.forEach(p=>{
+    const r=(toMin(p.end)-toMin(p.start))/60,ok=r>0;
+    html+=`<tr><td>${p.date}</td><td>${p.start}</td><td>${p.end}</td><td>${r.toFixed(1)}h</td><td style="color:var(--green)">${ok?netH(r).toFixed(1)+'h':'-'}</td><td><span class="tag ${ok?'ok':'warn'}">${ok?'정상':'오류'}</span></td></tr>`;
+  });
+  html+=`</tbody></table></div><p style="font-size:12px;color:var(--text2);margin-top:6px">${parsed.length}건 인식 · 팀원 선택 후 가져오기</p>`;
+  pv.innerHTML=html;pv._parsed=parsed;
+}
+
+function importPaste(){
+  const mid=parseInt(document.getElementById('paste-sel').value);
+  if(!mid){toast('팀원을 선택하세요');return}
+  if(!CUR.isAdmin&&mid!==CUR.id){toast('본인 데이터만 입력 가능합니다');return}
+  const pv=document.getElementById('paste-preview');
+  const parsed=pv._parsed;
+  if(!parsed||!parsed.length){toast('먼저 데이터를 붙여넣으세요');return}
   let cnt=0;
-  parsed.forEach(p => {
-    if(toMin(p.end)>toMin(p.start)) {
-      S.entries.push({id:S.nid++, memberId, date:p.date, start:p.start, end:p.end});
-      cnt++;
-    }
-  });
-  saveS(); renderAll(); renderPasteData();
-  document.getElementById('paste-txt').value='';
-  preview.innerHTML=''; preview._parsed=null;
+  parsed.forEach(p=>{if(toMin(p.end)>toMin(p.start)){S.entries.push({id:S.nid++,memberId:mid,date:p.date,start:p.start,end:p.end});cnt++}});
+  saveS();renderAll();renderPasteData();
+  document.getElementById('paste-txt').value='';pv.innerHTML='';pv._parsed=null;
   toast(`${cnt}건 가져왔습니다`,'g');
 }
 
-function addDirect() {
-  const memberId = parseInt(document.getElementById('di-member').value);
-  const date = document.getElementById('di-date').value;
-  const start = document.getElementById('di-start').value;
-  const end = document.getElementById('di-end').value;
-  if(!memberId||!date||!start||!end) { toast('모든 항목을 입력하세요'); return; }
-  if(toMin(end)<=toMin(start)) { toast('퇴근시간이 출근시간보다 늦어야 합니다'); return; }
-  S.entries.push({id:S.nid++, memberId, date, start, end});
-  saveS(); renderAll(); renderPasteData();
-  toast('추가됐습니다','g');
+function addDirect(){
+  const mid=parseInt(document.getElementById('di-member').value);
+  const date=document.getElementById('di-date').value;
+  const start=document.getElementById('di-start').value;
+  const end=document.getElementById('di-end').value;
+  if(!mid||!date||!start||!end){toast('모든 항목을 입력하세요');return}
+  if(!CUR.isAdmin&&mid!==CUR.id){toast('본인 데이터만 입력 가능합니다');return}
+  if(toMin(end)<=toMin(start)){toast('퇴근시간이 출근시간보다 늦어야 합니다');return}
+  S.entries.push({id:S.nid++,memberId:mid,date,start,end});
+  saveS();renderAll();renderPasteData();toast('추가됐습니다','g');
 }
 
-function renderPasteData() {
-  // 최근 입력
-  const recent = [...S.entries].reverse().slice(0,6);
-  document.getElementById('recent-list').innerHTML = recent.length
-    ? recent.map(e => {
-        const m=mById(e.memberId); if(!m) return '';
-        const h=((toMin(e.end)-toMin(e.start))/60).toFixed(1);
-        return `<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px">
+function renderPasteData(){
+  const fMid=parseInt(document.getElementById('filter-member')?.value)||0;
+  const fFrom=document.getElementById('filter-from')?.value||'';
+  const fTo=document.getElementById('filter-to')?.value||'';
+
+  let vis=CUR.isAdmin?[...S.entries]:S.entries.filter(e=>e.memberId===CUR.id);
+  if(fMid)vis=vis.filter(e=>e.memberId===fMid);
+  if(fFrom)vis=vis.filter(e=>e.date>=fFrom);
+  if(fTo)vis=vis.filter(e=>e.date<=fTo);
+  const sorted=[...vis].sort((a,b)=>b.date.localeCompare(a.date)||a.memberId-b.memberId);
+
+  // 최근 6건
+  const recent=[...S.entries].reverse().slice(0,8).filter(e=>CUR.isAdmin||e.memberId===CUR.id);
+  document.getElementById('recent-list').innerHTML=recent.length
+    ?recent.map(e=>{
+        const m=mById(e.memberId);if(!m)return'';
+        const raw=(toMin(e.end)-toMin(e.start))/60,net=netH(raw);
+        const canDel=CUR.isAdmin||e.memberId===CUR.id;
+        return `<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px">
           <span class="tl-dot" style="background:${m.color}"></span>
-          <span style="color:var(--text2);font-family:'DM Mono',monospace">${e.date}</span>
-          <span>${m.name}</span>
+          <span style="color:var(--text2);font-family:'DM Mono',monospace;font-size:11px">${e.date}</span>
+          <span style="font-weight:500">${m.name}</span>
           <span style="color:var(--text2)">${e.start}~${e.end}</span>
-          <span style="color:var(--green);margin-left:auto;font-family:'DM Mono',monospace">${h}h</span>
-          <button class="btn sm red" data-del="${e.id}">×</button>
+          <span style="color:var(--accent);margin-left:auto;font-family:'DM Mono',monospace">${net.toFixed(1)}h</span>
+          ${canDel?`<button class="btn sm red" data-del="${e.id}">×</button>`:''}
         </div>`;
       }).join('')
-    : '<p style="font-size:12px;color:var(--text3);padding:8px 0">입력된 데이터가 없습니다</p>';
+    :'<p style="font-size:12px;color:var(--text3);padding:8px 0">입력된 데이터가 없습니다</p>';
 
-  // 전체 데이터
-  const sorted = [...S.entries].sort((a,b)=>b.date.localeCompare(a.date)||a.memberId-b.memberId);
-  document.getElementById('entry-count').textContent = `(${sorted.length}건)`;
-  const tbl = document.getElementById('all-tbl');
-  if(!sorted.length) {
-    tbl.innerHTML='<tr><td style="padding:20px;color:var(--text3);text-align:center" colspan="6">데이터가 없습니다</td></tr>';
+  document.getElementById('entry-count').textContent=`${sorted.length}건`;
+  const tbl=document.getElementById('all-tbl');
+  if(!sorted.length){
+    tbl.innerHTML='<tr><td colspan="7" style="padding:20px;color:var(--text3);text-align:center">데이터가 없습니다</td></tr>';
   } else {
-    tbl.innerHTML = `<thead><tr><th>날짜</th><th>팀원</th><th>출근</th><th>퇴근</th><th>근무</th><th></th></tr></thead><tbody>`+
-      sorted.map(e => {
-        const m=mById(e.memberId); if(!m) return '';
-        const h=((toMin(e.end)-toMin(e.start))/60).toFixed(1);
+    tbl.innerHTML=`<thead><tr><th>날짜</th><th>팀원</th><th>출근</th><th>퇴근</th><th>총 근무</th><th>실근무</th><th></th></tr></thead><tbody>`+
+      sorted.map(e=>{
+        const m=mById(e.memberId);if(!m)return'';
+        const raw=Math.max(0,(toMin(e.end)-toMin(e.start))/60),net=netH(raw);
+        const canDel=CUR.isAdmin||e.memberId===CUR.id;
         return `<tr>
           <td style="font-family:'DM Mono',monospace;font-size:12px">${e.date}</td>
           <td><div class="mbadge"><span class="tl-dot" style="background:${m.color}"></span>${m.name}</div></td>
           <td style="font-family:'DM Mono',monospace">${e.start}</td>
           <td style="font-family:'DM Mono',monospace">${e.end}</td>
-          <td><span class="hcell" style="background:rgba(79,142,247,.15);color:var(--accent)">${h}h</span></td>
-          <td><button class="btn sm red" data-del="${e.id}">삭제</button></td></tr>`;
+          <td><span class="hcell" style="background:rgba(79,142,247,.12);color:var(--accent)">${raw.toFixed(1)}h</span></td>
+          <td><span class="hcell" style="background:var(--green-dim);color:var(--green)">${net.toFixed(1)}h</span></td>
+          <td>${canDel?`<button class="btn sm red" data-del="${e.id}">삭제</button>`:''}</td></tr>`;
       }).join('')+`</tbody>`;
   }
 
-  // 삭제 버튼 이벤트
-  document.querySelectorAll('[data-del]').forEach(btn => {
-    btn.addEventListener('click', function() {
-      S.entries = S.entries.filter(e=>e.id!==parseInt(this.getAttribute('data-del')));
-      saveS(); renderAll(); renderPasteData();
+  document.querySelectorAll('[data-del]').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const eid=parseInt(this.getAttribute('data-del'));
+      const e=S.entries.find(x=>x.id===eid);if(!e)return;
+      if(!CUR.isAdmin&&e.memberId!==CUR.id){toast('본인 데이터만 삭제 가능합니다');return}
+      S.entries=S.entries.filter(x=>x.id!==eid);
+      saveS();renderAll();renderPasteData();
     });
   });
 }
 
-// ═══════════════════════════════════
-// 팀원 관리
-// ═══════════════════════════════════
-function updateMCnt() {
-  document.getElementById('mcnt').textContent = S.members.length;
+function delFiltered(){
+  const fMid=parseInt(document.getElementById('filter-member')?.value)||0;
+  const fFrom=document.getElementById('filter-from')?.value||'';
+  const fTo=document.getElementById('filter-to')?.value||'';
+  if(!fMid&&!fFrom&&!fTo){toast('삭제할 조건을 먼저 설정하세요');return}
+  let target=S.entries.filter(e=>{
+    if(!CUR.isAdmin&&e.memberId!==CUR.id)return false;
+    if(fMid&&e.memberId!==fMid)return false;
+    if(fFrom&&e.date<fFrom)return false;
+    if(fTo&&e.date>fTo)return false;
+    return true;
+  });
+  if(!target.length){toast('해당 조건의 데이터가 없습니다');return}
+  const mn=fMid?mById(fMid)?.name||'':'전체';
+  if(!confirm(`${mn} ${fFrom||''}~${fTo||''} ${target.length}건 삭제할까요?`))return;
+  const ids=new Set(target.map(e=>e.id));
+  S.entries=S.entries.filter(e=>!ids.has(e.id));
+  saveS();renderAll();renderPasteData();toast(`${target.length}건 삭제했습니다`,'g');
 }
 
-function renderMembers() {
+// ═══════════════════════════
+// 팀원 관리
+// ═══════════════════════════
+function updateMCnt(){document.getElementById('mcnt').textContent=S.members.length}
+
+function renderMembers(){
+  if(!CUR.isAdmin)return;
   updateMCnt();
-  document.getElementById('mlist').innerHTML = S.members.map(m => `
-    <div class="mitem" data-mid="${m.id}">
-      <div class="mdot-lg" style="background:${m.color}"></div>
-      <input class="mname-inp" value="${m.name}" data-mid="${m.id}" placeholder="이름">
-      <div class="color-picks">
-        ${COLORS.map(c=>`<div class="cpick${c===m.color?' sel':''}" style="background:${c}" data-mid="${m.id}" data-color="${c}"></div>`).join('')}
+  document.getElementById('mlist').innerHTML=S.members.map(m=>`
+    <div class="mitem">
+      <div style="width:24px;height:24px;border-radius:50%;background:${m.color};margin-top:4px"></div>
+      <div>
+        <input class="mname-inp" value="${m.name}" data-mid="${m.id}" placeholder="이름" style="margin-bottom:6px">
+        <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px">${COLS.map(c=>`<div class="cpick${c===m.color?' sel':''}" style="background:${c}" data-mid="${m.id}" data-color="${c}"></div>`).join('')}</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:12px;color:var(--text2)">PIN</span>
+          <input type="password" value="${m.pin||''}" data-mid="${m.id}" data-field="pin" placeholder="PIN" style="width:100px;font-family:'DM Mono',monospace;letter-spacing:4px">
+          <span style="font-size:11px;color:var(--text3)">숫자 4~6자리</span>
+        </div>
       </div>
-      <button class="btn sm red" data-del-m="${m.id}">삭제</button>
+      <div></div>
+      <button class="btn sm red" data-del-m="${m.id}" style="margin-top:4px">삭제</button>
     </div>`).join('');
 
-  // 기본 스케줄
-  document.getElementById('sched-list').innerHTML = S.members.map(m => `
+  document.getElementById('sched-list').innerHTML=S.members.map(m=>`
     <div style="display:grid;grid-template-columns:110px 1fr 1fr;gap:10px;align-items:center;margin-bottom:8px">
       <div class="mbadge"><span class="tl-dot" style="background:${m.color}"></span>${m.name}</div>
       <div style="display:flex;align-items:center;gap:6px"><span style="font-size:11px;color:var(--text3);width:28px">출근</span><input type="time" value="${m.ds?.s||'09:00'}" data-mid="${m.id}" data-sk="s"></div>
       <div style="display:flex;align-items:center;gap:6px"><span style="font-size:11px;color:var(--text3);width:28px">퇴근</span><input type="time" value="${m.ds?.e||'18:00'}" data-mid="${m.id}" data-sk="e"></div>
     </div>`).join('');
 
-  // 이벤트
-  document.querySelectorAll('.mname-inp').forEach(inp => {
-    inp.addEventListener('change', function() {
+  document.querySelectorAll('.mname-inp').forEach(inp=>{
+    inp.addEventListener('change',function(){
       const m=S.members.find(x=>x.id===parseInt(this.getAttribute('data-mid')));
       if(m){m.name=this.value;saveS();updateMCnt();renderPaste();}
     });
   });
-  document.querySelectorAll('.cpick').forEach(el => {
-    el.addEventListener('click', function() {
-      const mid=parseInt(this.getAttribute('data-mid'));
-      const color=this.getAttribute('data-color');
+  document.querySelectorAll('[data-field="pin"]').forEach(inp=>{
+    inp.addEventListener('change',function(){
+      const m=S.members.find(x=>x.id===parseInt(this.getAttribute('data-mid')));
+      if(m){m.pin=this.value;saveS();toast('PIN 저장됐습니다','g');}
+    });
+  });
+  document.querySelectorAll('.cpick').forEach(el=>{
+    el.addEventListener('click',function(){
+      const mid=parseInt(this.getAttribute('data-mid')),color=this.getAttribute('data-color');
       const m=S.members.find(x=>x.id===mid);
       if(m){m.color=color;saveS();renderMembers();}
     });
   });
-  document.querySelectorAll('[data-del-m]').forEach(btn => {
-    btn.addEventListener('click', function() {
-      if(!confirm('팀원을 삭제할까요?')) return;
+  document.querySelectorAll('[data-del-m]').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      if(!confirm('팀원을 삭제할까요?'))return;
       const id=parseInt(this.getAttribute('data-del-m'));
       S.members=S.members.filter(m=>m.id!==id);
       S.entries=S.entries.filter(e=>e.memberId!==id);
       saveS();renderAll();renderPaste();
     });
   });
-  document.querySelectorAll('[data-sk]').forEach(inp => {
-    inp.addEventListener('change', function() {
-      const mid=parseInt(this.getAttribute('data-mid'));
-      const sk=this.getAttribute('data-sk');
+  document.querySelectorAll('[data-sk]').forEach(inp=>{
+    inp.addEventListener('change',function(){
+      const mid=parseInt(this.getAttribute('data-mid')),sk=this.getAttribute('data-sk');
       const m=S.members.find(x=>x.id===mid);
       if(m){if(!m.ds)m.ds={};m.ds[sk]=this.value;saveS();}
     });
   });
 }
 
-function addMember() {
-  if(S.members.length>=14){toast('최대 14명까지 가능합니다');return;}
+function addMember(){
+  if(!CUR.isAdmin){toast('관리자만 추가 가능합니다');return}
+  if(S.members.length>=14){toast('최대 14명까지 가능합니다');return}
   const idx=S.members.length;
-  S.members.push({id:S.nid++,name:`팀원${idx+1}`,color:COLORS[idx%COLORS.length],ds:{s:'09:00',e:'18:00'}});
+  S.members.push({id:S.nid++,name:`팀원${idx+1}`,color:COLS[idx%COLS.length],pin:'0000',ds:{s:'09:00',e:'18:00'}});
   saveS();renderMembers();updateMCnt();renderPaste();
 }
 
-// ═══════════════════════════════════
+// ═══════════════════════════
 // 내보내기
-// ═══════════════════════════════════
-function exportData() {
-  const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);a.download='workdash_backup.json';a.click();
-  toast('내보내기 완료','g');
+// ═══════════════════════════
+function exportData(){
+  const b=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='workdash_backup.json';a.click();
+  toast('백업 완료','g');
 }
 
-// ═══════════════════════════════════
+// ═══════════════════════════
 // 시작
-// ═══════════════════════════════════
+// ═══════════════════════════
 init();
 </script>
 </body>
