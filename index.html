@@ -541,7 +541,8 @@ function initNav(){
 function init(){
   initNav();initEvents();setWkLabel();
   document.getElementById('di-date').value=toDate(new Date());
-  loadS();
+  renderLoginGrid(); // 기본 멤버로 먼저 렌더 (Firebase 수신 전에도 표시)
+  loadS();           // Firebase 수신 후 자동으로 renderLoginGrid() 재호출
 }
 
 function renderAll(){
