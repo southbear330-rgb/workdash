@@ -574,36 +574,90 @@ function detectChanges(prev, next, members){
 }
 
 // ── 중복/오버 감지 ──
-function checkDuplicates(){
+function checkDuplicates(showPopup=false){
   const banner=document.getElementById('warn-banner');
   const now=new Date(),y=now.getFullYear(),mo=now.getMonth();
   const mDates=getWorkDays(y,mo);
-  const warnings=[];
 
-  // 1. 월간 팀원 실근무 200h 초과 체크
+  // 1. 200h 초과 팀원
+  const overMembers=[];
   S.members.forEach(m=>{
     const mEnt=S.entries.filter(e=>mDates.includes(e.date)&&e.memberId===m.id);
     const total=mEnt.reduce((s,e)=>s+(e.note?noteH(e.note):netH(Math.max(0,(toMin(e.end)-toMin(e.start))/60))),0);
-    if(total>=200) warnings.push(`⚠ ${m.name}의 이번달 실근무가 ${total.toFixed(0)}h — 중복 일정을 확인하세요`);
+    if(total>=200) overMembers.push({name:m.name,total});
   });
 
-  // 2. 같은날 같은 팀원 데이터 중복 체크
+  // 2. 중복 입력 날짜 (팀원별로 묶기)
   const dupMap={};
   S.entries.forEach(e=>{
     const k=`${e.memberId}_${e.date}`;
     dupMap[k]=(dupMap[k]||0)+1;
   });
+  const dupByMember={};
   Object.entries(dupMap).forEach(([k,cnt])=>{
     if(cnt>1){
       const [mid,date]=k.split('_');
       const m=mById(parseInt(mid));
-      if(m) warnings.push(`⚠ ${m.name} ${date} 중복 입력 (${cnt}건)`);
+      if(!m) return;
+      if(!dupByMember[m.name]) dupByMember[m.name]=[];
+      dupByMember[m.name].push(date);
     }
   });
 
-  if(!warnings.length){banner.style.display='none';return;}
-  banner.textContent=warnings.join('  |  ');
+  const hasDup=Object.keys(dupByMember).length>0;
+  const hasOver=overMembers.length>0;
+
+  if(!hasDup&&!hasOver){banner.style.display='none';return;}
+
+  // 배너: 간략 요약
+  const bannerParts=[];
+  if(hasOver) bannerParts.push(`⚠ ${overMembers.map(m=>m.name).join(', ')} 이번달 200h 초과`);
+  if(hasDup) bannerParts.push(`⚠ 중복 입력 ${Object.keys(dupByMember).length}명`);
+  banner.textContent=bannerParts.join('  |  ')+'  (클릭하여 상세 보기)';
   banner.style.display='block';
+  banner._detail={overMembers,dupByMember};
+
+  // 200h 초과 팝업 (데이터 저장 직후 호출 시)
+  if(showPopup && hasOver){
+    showDupPopup(overMembers, dupByMember);
+  }
+}
+
+function showDupDetail(){
+  const banner=document.getElementById('warn-banner');
+  if(!banner._detail) return;
+  showDupPopup(banner._detail.overMembers, banner._detail.dupByMember);
+}
+
+function showDupPopup(overMembers, dupByMember){
+  const title=document.getElementById('update-modal-title');
+  const body=document.getElementById('update-modal-body');
+  const modal=document.getElementById('update-modal');
+  title.textContent='⚠ 데이터 이상 감지';
+  let html='';
+
+  if(overMembers.length){
+    html+=`<div style="margin-bottom:14px;padding:10px 12px;background:rgba(220,38,38,.07);border-radius:var(--radius-sm);border-left:3px solid var(--red)">
+      <div style="font-size:12px;font-weight:700;color:var(--red);margin-bottom:6px">월간 200h 초과</div>`;
+    overMembers.forEach(m=>{
+      html+=`<div style="font-size:13px;padding:2px 0">${m.name} — <strong>${m.total.toFixed(0)}h</strong> <span style="color:var(--text3);font-size:11px">중복 데이터가 있을 수 있습니다</span></div>`;
+    });
+    html+='</div>';
+  }
+
+  if(Object.keys(dupByMember).length){
+    html+=`<div style="padding:10px 12px;background:rgba(217,119,6,.07);border-radius:var(--radius-sm);border-left:3px solid var(--amber)">
+      <div style="font-size:12px;font-weight:700;color:var(--amber);margin-bottom:6px">중복 입력된 날짜</div>`;
+    Object.entries(dupByMember).forEach(([name,dates])=>{
+      const preview=dates.slice(0,3).join(', ')+(dates.length>3?` 외 ${dates.length-3}일`:'');
+      html+=`<div style="font-size:13px;padding:3px 0;border-bottom:1px solid var(--border)">${name} <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text2)">${preview}</span> <span style="color:var(--red);font-size:11px">(${dates.length}일)</span></div>`;
+    });
+    html+='<div style="font-size:11px;color:var(--text3);margin-top:8px">데이터 입력 탭에서 해당 날짜를 검색해 중복 항목을 삭제하세요.</div>';
+    html+='</div>';
+  }
+
+  body.innerHTML=html;
+  modal.style.display='block';
 }
 
 function saveS(){
@@ -611,7 +665,7 @@ function saveS(){
   REF.set({members:S.members,entries:S.entries,nid:S.nid})
     .then(()=>syncStatus('ok'))
     .catch(()=>{syncStatus('err');toast('저장 실패')});
-  setTimeout(checkDuplicates, 1000);
+  setTimeout(()=>checkDuplicates(true), 1000);
 }
 
 // ═══════════════════════════
@@ -788,7 +842,7 @@ function initEvents(){
   document.getElementById('notify-cancel').addEventListener('click',()=>{document.getElementById('notify-modal').style.display='none'});
   document.getElementById('update-modal-close').addEventListener('click',()=>{document.getElementById('update-modal').style.display='none'});
   document.getElementById('update-modal-ok').addEventListener('click',()=>{document.getElementById('update-modal').style.display='none'});
-  document.getElementById('warn-banner').addEventListener('click',()=>{document.getElementById('warn-banner').style.display='none'});
+  document.getElementById('warn-banner').addEventListener('click',showDupDetail);
   document.getElementById('notify-send').addEventListener('click',doSendNotify);
   document.getElementById('pin-input').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
 }
@@ -907,24 +961,35 @@ function renderTLInto(cid,entries){
   S.members.forEach(m=>{
     const me=entries.filter(e=>e.memberId===m.id);
     html+=`<div class="tl-row"><div class="tl-name"><span class="tl-dot" style="background:${m.color}"></span>${m.name}</div><div class="tl-track">${stdL}`;
+
+    // 날짜별로 그룹화 — note 있는 날은 시간 막대 무시
+    const byDate={};
     me.forEach(e=>{
-      if(e.note){
-        // 특이사항: 색상 없이 08:30~17:30 기준선 사이 가운데에 텍스트만 표시
-        const noteLeft = sPct;
-        const noteWidth = ePct - sPct;
-        html+=`<div style="position:absolute;left:${noteLeft}%;width:${noteWidth}%;top:0;bottom:0;z-index:3;display:flex;align-items:center;justify-content:center;pointer-events:none">
-          <span style="font-size:11px;font-weight:700;color:#1a1d2e;font-family:'DM Mono',monospace;white-space:nowrap">${e.note}</span>
-        </div>`;
-        return;
-      }
-      const s=toMin(e.start),en=toMin(e.end);
-      const left=(s-T_S*60)/tot*100,w=(en-s)/tot*100;
-      const raw=(en-s)/60,net=netH(raw);
-      if(left<0||w<=0)return;
-      html+=`<div style="position:absolute;left:${left}%;width:${w}%;top:0;bottom:0;background:${m.color};border-radius:3px;z-index:3">
-        <span class="tl-lbl">${e.start}~${e.end} (${net.toFixed(1)}h)</span>
-      </div>`;
+      if(!byDate[e.date]) byDate[e.date]={note:null,times:[]};
+      if(e.note) byDate[e.date].note=e.note;
+      else byDate[e.date].times.push(e);
     });
+
+    Object.values(byDate).forEach(day=>{
+      if(day.note){
+        // 특이사항: 텍스트만 기준선 사이 가운데 표시, 막대 없음
+        html+=`<div style="position:absolute;left:${sPct}%;width:${ePct-sPct}%;top:0;bottom:0;z-index:3;display:flex;align-items:center;justify-content:center;pointer-events:none">
+          <span style="font-size:11px;font-weight:700;color:#1a1d2e;font-family:'DM Mono',monospace;white-space:nowrap">${day.note}</span>
+        </div>`;
+      } else {
+        // 일반 근무 막대
+        day.times.forEach(e=>{
+          const s=toMin(e.start),en=toMin(e.end);
+          const left=(s-T_S*60)/tot*100,w=(en-s)/tot*100;
+          const raw=(en-s)/60,net=netH(raw);
+          if(left<0||w<=0) return;
+          html+=`<div style="position:absolute;left:${left}%;width:${w}%;top:0;bottom:0;background:${m.color};border-radius:3px;z-index:3">
+            <span class="tl-lbl">${e.start}~${e.end} (${net.toFixed(1)}h)</span>
+          </div>`;
+        });
+      }
+    });
+
     html+=`</div></div>`;
   });
 
@@ -1110,6 +1175,7 @@ function importPaste(){
   saveS();renderAll();renderPasteData();
   document.getElementById('paste-txt').value='';pv.innerHTML='';pv._parsed=null;
   toast(`${cnt}건 가져왔습니다`,'g');
+  setTimeout(()=>checkDuplicates(true), 800);
 }
 
 function addDirect(){
@@ -1122,6 +1188,7 @@ function addDirect(){
   if(toMin(end)<=toMin(start)){toast('퇴근시간이 출근시간보다 늦어야 합니다');return}
   S.entries.push({id:S.nid++,memberId:mid,date,start,end});
   saveS();renderAll();renderPasteData();toast('추가됐습니다','g');
+  setTimeout(()=>checkDuplicates(true), 800);
 }
 
 function renderPasteData(){
