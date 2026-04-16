@@ -638,8 +638,9 @@ function detectChanges(prev, next, members){
 }
 
 async function sendChangeNotifyEmail(changer, added, modified, removed, members){
-  const allWithEmail = members.filter(m=>m.email);
-  if(!allWithEmail.length) return;
+  // 변경 알림 수신자 고정 (변경 시 이 이메일만 수정)
+  const NOTIFY_TO = 'tj.yun@hansol.com';
+  const allWithEmail = [{name:'', email:NOTIFY_TO}];
 
   const mById2=id=>members.find(m=>m.id===id);
   const fmtEntry=e=>e.note||`${e.start}~${e.end}`;
@@ -680,7 +681,7 @@ async function sendChangeNotifyEmail(changer, added, modified, removed, members)
         change_summary: changeText,
       });
     }
-    console.log('변경 알림 메일 발송 완료');
+    console.log('변경 알림 발송 완료');
   } catch(e){
     console.error('변경 알림 메일 실패:', e);
   }
