@@ -358,7 +358,8 @@ const T_S=7,T_E=21;
 const STD_S='08:30',STD_E='17:30';
 const ADMIN_PIN='7179'; // ← 관리자 PIN 여기서 변경
 const EJS_SERVICE  = 'service_27ahus5';
-const EJS_TEMPLATE = 'template_wffefdl';
+const EJS_TEMPLATE = 'template_wffefdl'; // 미입력 알림
+const EJS_TEMPLATE_CHANGE = 'template_r64q7v1'; // 변경 알림
 const EJS_PUBKEY   = 'kW4y8XJ5vUbhThB0v';
 const DASHBOARD_URL = window.location.href; // 현재 URL 자동 사용
 
@@ -515,62 +516,116 @@ function loadS(){
 
 // ── 변경 감지 ──
 function detectChanges(prev, next, members){
-  const prevMap = {};
+  const prevMap={};
   prev.forEach(e=>prevMap[e.id]=e);
-  const nextMap = {};
+  const nextMap={};
   next.forEach(e=>nextMap[e.id]=e);
 
   const added=[], removed=[], modified=[];
   next.forEach(e=>{
     if(!prevMap[e.id]) added.push(e);
-    else if(JSON.stringify(e)!==JSON.stringify(prevMap[e.id])) modified.push(e);
+    else if(JSON.stringify(e)!==JSON.stringify(prevMap[e.id])) modified.push({before:prevMap[e.id],after:e});
   });
-  prev.forEach(e=>{ if(!nextMap[e.id]) removed.push(e); });
+  prev.forEach(e=>{if(!nextMap[e.id]) removed.push(e)});
 
-  const allChanged=[...added,...modified,...removed];
-  if(!allChanged.length) return;
+  if(!added.length&&!modified.length&&!removed.length) return;
 
   const mById2=id=>members.find(m=>m.id===id);
-  const fmt=e=>{const m=mById2(e.memberId);return `${m?m.name:'?'} ${e.date} ${e.note||e.start+'~'+e.end}`;};
+  const fmtEntry=e=>e.note||`${e.start}~${e.end}`;
+  const total=added.length+modified.length+removed.length;
 
+  // ── 알림 모달 ──
   const title=document.getElementById('update-modal-title');
   const body=document.getElementById('update-modal-body');
   const modal=document.getElementById('update-modal');
-
-  // 하루치(5건 이하): 상세 표시 / 그 이상: 요약
-  const total=allChanged.length;
-  const DETAIL_LIMIT=5;
+  title.textContent=`🔔 일정 업데이트 (${total}건)`;
 
   let html='';
-  if(total<=DETAIL_LIMIT){
+  const changer = CUR.name||'누군가';
+
+  if(total<=5){
     if(added.length){
-      html+=`<div style="margin-bottom:10px"><div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:4px;letter-spacing:.04em">▲ 추가 ${added.length}건</div>`;
-      added.forEach(e=>html+=`<div style="padding:4px 0;border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;font-size:12px">${fmt(e)}</div>`);
+      html+=`<div style="margin-bottom:10px"><div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:4px">▲ 추가 ${added.length}건</div>`;
+      added.forEach(e=>{const m=mById2(e.memberId);html+=`<div style="padding:4px 0;border-bottom:1px solid var(--border);font-size:12px;font-family:'DM Mono',monospace"><b>${m?.name||'?'}</b> ${e.date} ${fmtEntry(e)}</div>`});
       html+='</div>';
     }
     if(modified.length){
-      html+=`<div style="margin-bottom:10px"><div style="font-size:11px;font-weight:700;color:var(--amber);margin-bottom:4px;letter-spacing:.04em">✎ 수정 ${modified.length}건</div>`;
-      modified.forEach(e=>html+=`<div style="padding:4px 0;border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;font-size:12px">${fmt(e)}</div>`);
+      html+=`<div style="margin-bottom:10px"><div style="font-size:11px;font-weight:700;color:var(--amber);margin-bottom:4px">✎ 수정 ${modified.length}건</div>`;
+      modified.forEach(({before:b,after:a})=>{const m=mById2(a.memberId);html+=`<div style="padding:4px 0;border-bottom:1px solid var(--border);font-size:12px"><b>${m?.name||'?'}</b> ${a.date}<br><span style="font-family:'DM Mono',monospace;color:var(--text3);text-decoration:line-through">${fmtEntry(b)}</span> → <span style="font-family:'DM Mono',monospace;color:var(--accent)">${fmtEntry(a)}</span></div>`});
       html+='</div>';
     }
     if(removed.length){
-      html+=`<div style="margin-bottom:10px"><div style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:4px;letter-spacing:.04em">✕ 삭제 ${removed.length}건</div>`;
-      removed.forEach(e=>html+=`<div style="padding:4px 0;border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;font-size:12px;text-decoration:line-through;color:var(--text3)">${fmt(e)}</div>`);
+      html+=`<div style="margin-bottom:10px"><div style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:4px">✕ 삭제 ${removed.length}건</div>`;
+      removed.forEach(e=>{const m=mById2(e.memberId);html+=`<div style="padding:4px 0;border-bottom:1px solid var(--border);font-size:12px;font-family:'DM Mono',monospace;color:var(--text3);text-decoration:line-through"><b style="color:var(--text)">${m?.name||'?'}</b> ${e.date} ${fmtEntry(e)}</div>`});
       html+='</div>';
     }
-    title.textContent=`데이터가 업데이트됐습니다 (${total}건)`;
   } else {
-    // 요약: 첫 번째 변경 기준으로
-    const first=allChanged[0];
-    const firstName=mById2(first.memberId)?.name||'?';
-    title.textContent='데이터가 업데이트됐습니다';
-    html=`<div style="color:var(--text2);line-height:1.8">
-      <span style="font-weight:600;color:var(--text)">${firstName}</span> 외 ${total-1}건이 변경됐습니다.<br>
-      <span style="font-size:12px;color:var(--text3)">(추가 ${added.length}건 · 수정 ${modified.length}건 · 삭제 ${removed.length}건)</span>
+    const names=[...new Set([...added,...modified.map(x=>x.after),...removed].map(e=>mById2(e.memberId)?.name||'?'))];
+    html=`<div style="color:var(--text2);line-height:1.9">
+      <span style="font-weight:600;color:var(--text)">${names[0]}</span>${names.length>1?` 외 ${names.length-1}명의`:''} 일정이 변경됐습니다.<br>
+      <span style="font-size:12px;color:var(--text3)">추가 ${added.length}건 · 수정 ${modified.length}건 · 삭제 ${removed.length}건</span>
     </div>`;
   }
   body.innerHTML=html;
   modal.style.display='block';
+
+  // ── 변경 알림 메일 발송: 수정/삭제 있을 때만 (신규 입력 제외) ──
+  if(modified.length||removed.length){
+    sendChangeNotifyEmail(changer, added, modified, removed, members);
+  }
+}
+
+async function sendChangeNotifyEmail(changer, added, modified, removed, members){
+  // ★ 테스트 모드: 관리자 메일로만 발송. 전체 발송 시 아래 TEST_EMAIL 줄 삭제
+  const TEST_EMAIL = 'mcpark3@hansol.com';
+  const allWithEmail = TEST_EMAIL
+    ? [{name:'관리자', email:TEST_EMAIL}]
+    : members.filter(m=>m.email);
+  if(!allWithEmail.length) return;
+
+  const mById2=id=>members.find(m=>m.id===id);
+  const fmtEntry=e=>e.note||`${e.start}~${e.end}`;
+  const total=added.length+modified.length+removed.length;
+
+  // 변경 내역 텍스트 생성
+  let changeText='';
+  if(added.length){
+    changeText+='[추가]\n';
+    added.slice(0,5).forEach(e=>{const m=mById2(e.memberId);changeText+=`  ${m?.name||'?'} ${e.date} ${fmtEntry(e)}\n`});
+    if(added.length>5) changeText+=`  ...외 ${added.length-5}건\n`;
+  }
+  if(modified.length){
+    changeText+='[수정]\n';
+    modified.slice(0,5).forEach(({before:b,after:a})=>{const m=mById2(a.memberId);changeText+=`  ${m?.name||'?'} ${a.date}: ${fmtEntry(b)} → ${fmtEntry(a)}\n`});
+    if(modified.length>5) changeText+=`  ...외 ${modified.length-5}건\n`;
+  }
+  if(removed.length){
+    changeText+='[삭제]\n';
+    removed.slice(0,5).forEach(e=>{const m=mById2(e.memberId);changeText+=`  ${m?.name||'?'} ${e.date} ${fmtEntry(e)}\n`});
+    if(removed.length>5) changeText+=`  ...외 ${removed.length-5}건\n`;
+  }
+
+  // 중복 발송 방지 (같은 변경 내역은 30초 내 1회만)
+  const changeKey='change_mail_'+JSON.stringify({added:added.map(e=>e.id),removed:removed.map(e=>e.id)}).slice(0,80);
+  if(sessionStorage.getItem(changeKey)) return;
+  sessionStorage.setItem(changeKey,'1');
+
+  try{
+    emailjs.init(EJS_PUBKEY);
+    for(const m of allWithEmail){
+      await emailjs.send(EJS_SERVICE, EJS_TEMPLATE_CHANGE,{
+        to_email: m.email,
+        member_name: m.name,
+        changer: changer,
+        date: toDate(new Date()),
+        dashboard_url: window.location.href,
+        change_summary: changeText,
+      });
+    }
+    console.log('변경 알림 메일 발송 완료');
+  } catch(e){
+    console.error('변경 알림 메일 실패:', e);
+  }
 }
 
 // ── 중복/오버 감지 ──
@@ -1164,6 +1219,14 @@ function importPaste(){
   const pv=document.getElementById('paste-preview');
   const parsed=pv._parsed;
   if(!parsed||!parsed.length){toast('먼저 데이터를 붙여넣으세요');return}
+
+  // 새로 입력된 날짜 목록
+  const newDates=new Set(parsed.map(p=>p.date));
+
+  // 해당 팀원의 새 날짜에 해당하는 기존 데이터만 삭제 (다른 날짜 유지)
+  S.entries=S.entries.filter(e=>!(e.memberId===mid && newDates.has(e.date)));
+
+  // 새 데이터 추가
   let cnt=0;
   parsed.forEach(p=>{
     if(p.note){
@@ -1174,7 +1237,7 @@ function importPaste(){
   });
   saveS();renderAll();renderPasteData();
   document.getElementById('paste-txt').value='';pv.innerHTML='';pv._parsed=null;
-  toast(`${cnt}건 가져왔습니다`,'g');
+  toast(`${cnt}건 가져왔습니다 (해당 날짜 기존 데이터 교체)`,'g');
   setTimeout(()=>checkDuplicates(true), 800);
 }
 
