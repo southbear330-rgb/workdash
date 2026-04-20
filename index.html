@@ -959,8 +959,8 @@ function initEvents(){
   document.getElementById('logo-click').addEventListener('click',()=>{
     _logoClicks++;
     clearTimeout(_logoTimer);
-    _logoTimer=setTimeout(()=>{_logoClicks=0},2000);
-    if(_logoClicks>=5){
+    _logoTimer=setTimeout(()=>{_logoClicks=0},3000);
+    if(_logoClicks>=3){
       _logoClicks=0;
       const g=document.getElementById('login-grid');
       const existing=g.querySelector('[data-lid="admin"]');
