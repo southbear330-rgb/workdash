@@ -191,7 +191,7 @@ label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px}
       <button class="guide-tab"    data-gtab="input"   style="padding:12px 20px;border:none;background:none;cursor:pointer;font-size:13px;font-weight:500;font-family:inherit;color:var(--text2);border-bottom:2px solid transparent">📥 데이터 입력</button>
       <button class="guide-tab"    data-gtab="timeline"style="padding:12px 20px;border:none;background:none;cursor:pointer;font-size:13px;font-weight:500;font-family:inherit;color:var(--text2);border-bottom:2px solid transparent">⏱ 타임라인</button>
       <button class="guide-tab"    data-gtab="special" style="padding:12px 20px;border:none;background:none;cursor:pointer;font-size:13px;font-weight:500;font-family:inherit;color:var(--text2);border-bottom:2px solid transparent">📋 특이사항</button>
-      <button class="guide-tab"    data-gtab="admin"   style="padding:12px 20px;border:none;background:none;cursor:pointer;font-size:13px;font-weight:500;font-family:inherit;color:var(--text2);border-bottom:2px solid transparent">🔑 관리자</button>
+
     </div>
 
     <!-- 콘텐츠 -->
@@ -288,29 +288,55 @@ label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px}
       <div class="guide-content" id="gc-timeline" style="display:none">
         <div style="margin-bottom:20px">
           <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:12px">타임라인 읽는 법</div>
-          <!-- 타임라인 예시 시각화 -->
+          <!-- 타임라인 예시 시각화 (하드코딩) -->
           <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:16px;margin-bottom:14px">
-            <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-left:80px;margin-bottom:4px;display:flex;justify-content:space-between;padding-right:10px">
+            <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-left:80px;margin-bottom:6px;display:flex;justify-content:space-between;padding-right:10px">
               <span>7</span><span>9</span><span>11</span><span>13</span><span>15</span><span>17</span><span>19</span>
             </div>
-            ${['김민준','이서연','박지호'].map((n,i)=>{
-              const colors=['#4f8ef7','#f87171','#a78bfa'];
-              const starts=[15,25,8]; const widths=[42,35,38];
-              return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-                <div style="width:72px;font-size:11px;color:var(--text2)">${n}</div>
-                <div style="flex:1;height:22px;background:var(--surface3);border-radius:3px;position:relative">
-                  <div style="position:absolute;left:2px;top:0;bottom:0;width:2px;background:#ef4444;border-radius:1px"></div>
-                  <div style="position:absolute;left:73%;top:0;bottom:0;width:2px;background:#ef4444;border-radius:1px"></div>
-                  <div style="position:absolute;left:${starts[i]}%;width:${widths[i]}%;top:0;bottom:0;background:${colors[i]};border-radius:3px;opacity:.85;display:flex;align-items:center;justify-content:center">
-                    <span style="font-size:9px;color:#fff;font-weight:500">실근무 7.5h</span>
-                  </div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+              <div style="width:72px;font-size:11px;color:var(--text2)">김민준</div>
+              <div style="flex:1;height:22px;background:var(--surface3);border-radius:3px;position:relative">
+                <div style="position:absolute;left:2%;top:0;bottom:0;width:2px;background:#ef4444"></div>
+                <div style="position:absolute;left:73%;top:0;bottom:0;width:2px;background:#ef4444"></div>
+                <div style="position:absolute;left:15%;width:42%;top:0;bottom:0;background:#4f8ef7;border-radius:3px;opacity:.85;display:flex;align-items:center;justify-content:center">
+                  <span style="font-size:9px;color:#fff">08:30~17:30 (7.5h)</span>
                 </div>
-              </div>`;
-            }).join('')}
-            <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+              <div style="width:72px;font-size:11px;color:var(--text2)">이서연</div>
+              <div style="flex:1;height:22px;background:var(--surface3);border-radius:3px;position:relative">
+                <div style="position:absolute;left:2%;top:0;bottom:0;width:2px;background:#ef4444"></div>
+                <div style="position:absolute;left:73%;top:0;bottom:0;width:2px;background:#ef4444"></div>
+                <div style="position:absolute;left:25%;width:35%;top:0;bottom:0;background:#f87171;border-radius:3px;opacity:.85;display:flex;align-items:center;justify-content:center">
+                  <span style="font-size:9px;color:#fff">09:30~17:30 (7.0h)</span>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+              <div style="width:72px;font-size:11px;color:var(--text2)">박지호</div>
+              <div style="flex:1;height:22px;background:var(--surface3);border-radius:3px;position:relative">
+                <div style="position:absolute;left:2%;top:0;bottom:0;width:2px;background:#ef4444"></div>
+                <div style="position:absolute;left:73%;top:0;bottom:0;width:2px;background:#ef4444"></div>
+                <div style="position:absolute;left:2%;width:73%;top:0;bottom:0;background:#a78bfa;border-radius:3px;opacity:.85;display:flex;align-items:center;justify-content:center">
+                  <span style="font-size:9px;color:#fff">07:00~19:00 (10.5h)</span>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+              <div style="width:72px;font-size:11px;color:var(--text2)">최유진</div>
+              <div style="flex:1;height:22px;background:var(--surface3);border-radius:3px;position:relative">
+                <div style="position:absolute;left:2%;top:0;bottom:0;width:2px;background:#ef4444"></div>
+                <div style="position:absolute;left:73%;top:0;bottom:0;width:2px;background:#ef4444"></div>
+                <div style="position:absolute;left:15%;width:38%;top:0;bottom:0;background:rgba(156,163,175,.3);border-radius:3px;display:flex;align-items:center;justify-content:center">
+                  <span style="font-size:9px;font-weight:700;color:#1a1d2e">연차</span>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:6px">
               <div style="width:72px;font-size:10px;color:var(--text3)">겹침</div>
               <div style="flex:1;height:10px;background:var(--surface3);border-radius:3px;position:relative">
-                <div style="position:absolute;left:25%;width:25%;top:0;bottom:0;background:rgba(52,211,153,.5);border-radius:3px"></div>
+                <div style="position:absolute;left:25%;width:22%;top:0;bottom:0;background:rgba(52,211,153,.5);border-radius:3px"></div>
               </div>
             </div>
           </div>
@@ -347,21 +373,15 @@ label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px}
           해당 날짜의 근무 시간 막대는 표시되지 않으며, 실근무는 아래 기준으로 계산됩니다.
         </div>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px">
-          ${[
-            {k:'공가',h:'8h',c:'#10b981'},
-            {k:'휴가',h:'8h',c:'#10b981'},
-            {k:'연차',h:'8h',c:'#10b981'},
-            {k:'반차',h:'8h',c:'#10b981'},
-            {k:'교육',h:'8h',c:'#10b981'},
-            {k:'출장',h:'8h',c:'#10b981'},
-            {k:'병가',h:'8h',c:'#10b981'},
-            {k:'조퇴',h:'8h',c:'#10b981'},
-            {k:'무급휴가',h:'0h',c:'#ef4444'},
-          ].map(item=>`
-            <div style="padding:10px 12px;background:var(--surface2);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:space-between">
-              <span style="font-size:13px;font-weight:600">${item.k}</span>
-              <span style="font-size:12px;font-weight:700;color:${item.c};font-family:'DM Mono',monospace">${item.h} 반영</span>
-            </div>`).join('')}
+          <div style="padding:10px 12px;background:var(--surface2);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:space-between"><span style="font-size:13px;font-weight:600">공가</span><span style="font-size:12px;font-weight:700;color:#10b981;font-family:'DM Mono',monospace">8h 반영</span></div>
+          <div style="padding:10px 12px;background:var(--surface2);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:space-between"><span style="font-size:13px;font-weight:600">휴가</span><span style="font-size:12px;font-weight:700;color:#10b981;font-family:'DM Mono',monospace">8h 반영</span></div>
+          <div style="padding:10px 12px;background:var(--surface2);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:space-between"><span style="font-size:13px;font-weight:600">연차</span><span style="font-size:12px;font-weight:700;color:#10b981;font-family:'DM Mono',monospace">8h 반영</span></div>
+          <div style="padding:10px 12px;background:var(--surface2);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:space-between"><span style="font-size:13px;font-weight:600">반차</span><span style="font-size:12px;font-weight:700;color:#10b981;font-family:'DM Mono',monospace">8h 반영</span></div>
+          <div style="padding:10px 12px;background:var(--surface2);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:space-between"><span style="font-size:13px;font-weight:600">교육</span><span style="font-size:12px;font-weight:700;color:#10b981;font-family:'DM Mono',monospace">8h 반영</span></div>
+          <div style="padding:10px 12px;background:var(--surface2);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:space-between"><span style="font-size:13px;font-weight:600">출장</span><span style="font-size:12px;font-weight:700;color:#10b981;font-family:'DM Mono',monospace">8h 반영</span></div>
+          <div style="padding:10px 12px;background:var(--surface2);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:space-between"><span style="font-size:13px;font-weight:600">병가</span><span style="font-size:12px;font-weight:700;color:#10b981;font-family:'DM Mono',monospace">8h 반영</span></div>
+          <div style="padding:10px 12px;background:var(--surface2);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:space-between"><span style="font-size:13px;font-weight:600">조퇴</span><span style="font-size:12px;font-weight:700;color:#10b981;font-family:'DM Mono',monospace">8h 반영</span></div>
+          <div style="padding:10px 12px;background:var(--surface2);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:space-between"><span style="font-size:13px;font-weight:600">무급휴가</span><span style="font-size:12px;font-weight:700;color:#ef4444;font-family:'DM Mono',monospace">0h 반영</span></div>
         </div>
         <div style="background:#1e293b;border-radius:var(--radius-sm);padding:14px;font-family:'DM Mono',monospace;font-size:12px;color:#94a3b8;line-height:2">
           <div style="color:#64748b;margin-bottom:4px"># 특이사항 입력 예시</div>
@@ -371,27 +391,7 @@ label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px}
         </div>
       </div>
 
-      <!-- 관리자 -->
-      <div class="guide-content" id="gc-admin" style="display:none">
-        <div style="margin-bottom:16px;padding:12px 16px;background:rgba(59,130,246,.07);border-radius:var(--radius-sm);border-left:3px solid var(--accent)">
-          <div style="font-size:13px;font-weight:600;color:var(--accent);margin-bottom:4px">관리자 로그인 방법</div>
-          <div style="font-size:13px;color:var(--text2)">로그인 화면에서 <b>"WorkDash"</b> 텍스트를 <b>3초 안에 3번</b> 클릭하면 관리자 버튼이 나타납니다.</div>
-        </div>
-        <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:12px">관리자 전용 기능</div>
-        <div style="display:flex;flex-direction:column;gap:10px">
-          ${[
-            {t:'팀원 관리',      d:'팀원 추가·삭제, 이름·색상·이메일·PIN 설정, 기본 출퇴근 시간 설정'},
-            {t:'PIN 초기화',     d:'팀원이 PIN을 잊었을 경우 관리자가 초기화. 다음 로그인 시 재설정'},
-            {t:'전체 데이터 관리',d:'모든 팀원의 데이터를 조회·수정·삭제 가능'},
-            {t:'📧 미입력 알림', d:'오늘 데이터 미입력 팀원을 선택해서 이메일 알림 발송 (하루 1회/팀원)'},
-            {t:'변경 알림 메일', d:'팀원이 데이터를 수정·삭제하면 tj.yun@hansol.com으로 자동 발송'},
-          ].map(item=>`
-            <div style="display:flex;gap:12px;padding:12px 14px;background:var(--surface2);border-radius:var(--radius-sm)">
-              <div style="font-size:13px;font-weight:600;color:var(--text);width:130px;flex-shrink:0">${item.t}</div>
-              <div style="font-size:12px;color:var(--text2);line-height:1.7">${item.d}</div>
-            </div>`).join('')}
-        </div>
-      </div>
+
 
     </div>
 
