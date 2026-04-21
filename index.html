@@ -167,6 +167,239 @@ label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px}
       <button class="btn pri w100" style="margin-top:10px" id="btn-set-pin">PIN 설정 완료</button>
       <p id="pin-set-err" style="color:var(--red);font-size:12px;margin-top:8px;min-height:18px;text-align:left"></p>
     </div>
+    <div style="margin-top:14px;text-align:center">
+      <button id="btn-guide" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--text3);font-family:inherit;text-decoration:underline;padding:4px">
+        📖 사용 설명서 보기
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 사용 가이드 모달 -->
+<div id="guide-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9500;align-items:center;justify-content:center;overflow-y:auto;padding:20px">
+  <div style="background:var(--surface);border-radius:var(--radius);width:100%;max-width:780px;margin:auto;box-shadow:0 16px 48px rgba(0,0,0,.2);overflow:hidden">
+    <!-- 헤더 -->
+    <div style="background:var(--accent);padding:24px 28px;position:relative">
+      <div style="font-size:22px;font-weight:700;color:#fff;margin-bottom:4px">📖 WorkDash 사용 설명서</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.75)">유연근무제 근무 형태 가시화 시스템</div>
+      <button id="guide-close" style="position:absolute;top:16px;right:20px;background:rgba(255,255,255,.15);border:none;color:#fff;width:32px;height:32px;border-radius:50%;font-size:18px;cursor:pointer;line-height:1">×</button>
+    </div>
+
+    <!-- 탭 -->
+    <div style="display:flex;border-bottom:1px solid var(--border);background:var(--surface2)">
+      <button class="guide-tab on" data-gtab="start"   style="padding:12px 20px;border:none;background:none;cursor:pointer;font-size:13px;font-weight:500;font-family:inherit;color:var(--accent);border-bottom:2px solid var(--accent)">🚀 시작하기</button>
+      <button class="guide-tab"    data-gtab="input"   style="padding:12px 20px;border:none;background:none;cursor:pointer;font-size:13px;font-weight:500;font-family:inherit;color:var(--text2);border-bottom:2px solid transparent">📥 데이터 입력</button>
+      <button class="guide-tab"    data-gtab="timeline"style="padding:12px 20px;border:none;background:none;cursor:pointer;font-size:13px;font-weight:500;font-family:inherit;color:var(--text2);border-bottom:2px solid transparent">⏱ 타임라인</button>
+      <button class="guide-tab"    data-gtab="special" style="padding:12px 20px;border:none;background:none;cursor:pointer;font-size:13px;font-weight:500;font-family:inherit;color:var(--text2);border-bottom:2px solid transparent">📋 특이사항</button>
+      <button class="guide-tab"    data-gtab="admin"   style="padding:12px 20px;border:none;background:none;cursor:pointer;font-size:13px;font-weight:500;font-family:inherit;color:var(--text2);border-bottom:2px solid transparent">🔑 관리자</button>
+    </div>
+
+    <!-- 콘텐츠 -->
+    <div style="padding:28px;max-height:65vh;overflow-y:auto">
+
+      <!-- 시작하기 -->
+      <div class="guide-content on" id="gc-start">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+          <div style="background:rgba(59,130,246,.07);border-radius:var(--radius-sm);padding:16px;border-left:3px solid var(--accent)">
+            <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:8px">1단계 · 팀원 선택</div>
+            <div style="font-size:13px;color:var(--text2);line-height:1.7">로그인 화면에서 본인 이름을 선택하세요.</div>
+          </div>
+          <div style="background:rgba(59,130,246,.07);border-radius:var(--radius-sm);padding:16px;border-left:3px solid var(--accent)">
+            <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:8px">2단계 · PIN 설정</div>
+            <div style="font-size:13px;color:var(--text2);line-height:1.7">처음 로그인 시 PIN을 직접 설정합니다. 숫자 4~6자리로 설정하세요.</div>
+          </div>
+          <div style="background:rgba(59,130,246,.07);border-radius:var(--radius-sm);padding:16px;border-left:3px solid var(--accent)">
+            <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:8px">3단계 · 데이터 입력</div>
+            <div style="font-size:13px;color:var(--text2);line-height:1.7">전산 시스템에서 근무 데이터를 복사해서 <b>데이터 입력</b> 탭에 붙여넣으세요.</div>
+          </div>
+          <div style="background:rgba(59,130,246,.07);border-radius:var(--radius-sm);padding:16px;border-left:3px solid var(--accent)">
+            <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:8px">4단계 · 확인</div>
+            <div style="font-size:13px;color:var(--text2);line-height:1.7"><b>타임라인</b>과 <b>대시보드</b>에서 팀 전체 근무 현황을 확인하세요.</div>
+          </div>
+        </div>
+        <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:16px">
+          <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px">💡 권한 안내</div>
+          <table style="width:100%;border-collapse:collapse;font-size:12px">
+            <thead><tr style="background:var(--surface3)">
+              <th style="padding:8px 12px;text-align:left;font-weight:600;color:var(--text2)">구분</th>
+              <th style="padding:8px 12px;text-align:left;font-weight:600;color:var(--text2)">할 수 있는 것</th>
+              <th style="padding:8px 12px;text-align:left;font-weight:600;color:var(--text2)">할 수 없는 것</th>
+            </tr></thead>
+            <tbody>
+              <tr style="border-top:1px solid var(--border)">
+                <td style="padding:8px 12px;font-weight:600">팀원</td>
+                <td style="padding:8px 12px;color:var(--text2)">본인 데이터 입력·삭제, 전체 현황 조회</td>
+                <td style="padding:8px 12px;color:var(--text3)">타인 데이터 수정, 팀원 관리</td>
+              </tr>
+              <tr style="border-top:1px solid var(--border)">
+                <td style="padding:8px 12px;font-weight:600;color:var(--accent)">관리자</td>
+                <td style="padding:8px 12px;color:var(--text2)">전체 데이터 관리, 팀원 추가·삭제, 알림 발송</td>
+                <td style="padding:8px 12px;color:var(--text3)">-</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 데이터 입력 -->
+      <div class="guide-content" id="gc-input" style="display:none">
+        <div style="margin-bottom:20px">
+          <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:12px">전산 데이터 붙여넣기</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.8;margin-bottom:12px">
+            전산 시스템에서 근무 데이터를 <b>Ctrl+C</b>로 복사한 후, 데이터 입력 탭의 붙여넣기 영역에 <b>Ctrl+V</b>로 붙여넣으세요.<br>
+            날짜·출근시간·퇴근시간이 있는 행을 자동으로 인식합니다.
+          </div>
+          <div style="background:#1e293b;border-radius:var(--radius-sm);padding:16px;font-family:'DM Mono',monospace;font-size:12px;color:#94a3b8;line-height:1.9">
+            <div style="color:#64748b;margin-bottom:6px"># 전산 데이터 예시 (이 형태를 그대로 붙여넣으면 됩니다)</div>
+            <div><span style="color:#34d399">2026.04.01</span>	수요일		<span style="color:#60a5fa">07:52</span>	<span style="color:#f87171">19:23</span></div>
+            <div><span style="color:#34d399">2026.04.02</span>	목요일		<span style="color:#60a5fa">08:00</span>	<span style="color:#f87171">17:00</span></div>
+            <div><span style="color:#34d399">2026.04.03</span>	금요일		<span style="color:#60a5fa">07:00</span>	<span style="color:#f87171">15:00</span></div>
+            <div style="color:#475569">2026.04.04	토요일					</div>
+            <div style="color:#475569">2026.04.05	일요일					</div>
+            <div><span style="color:#34d399">2026.04.07</span>	화요일		<span style="color:#60a5fa">08:30</span>	<span style="color:#f87171">17:30</span>	<span style="color:#fbbf24">공가(1d)</span></div>
+          </div>
+          <div style="margin-top:10px;padding:10px 14px;background:rgba(5,150,105,.07);border-radius:var(--radius-sm);border-left:3px solid var(--green)">
+            <div style="font-size:12px;color:var(--green);font-weight:600;margin-bottom:4px">✓ 자동 처리 내용</div>
+            <div style="font-size:12px;color:var(--text2);line-height:1.8">
+              • 주말(토·일)은 자동 제외<br>
+              • 기존 입력된 날짜는 새 데이터로 자동 교체 (없는 날짜는 유지)<br>
+              • 공가·연차·교육 등 특이사항 자동 인식
+            </div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:12px">점심시간 공제 기준</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px">
+            <div style="padding:12px;background:var(--surface2);border-radius:var(--radius-sm);text-align:center">
+              <div style="font-size:20px;font-weight:700;color:var(--accent);font-family:'DM Mono',monospace">≤ 9h 근무</div>
+              <div style="color:var(--text2);margin-top:4px">점심 <b>1시간</b> 공제</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:2px">예) 9h 근무 → 실근무 8h</div>
+            </div>
+            <div style="padding:12px;background:var(--surface2);border-radius:var(--radius-sm);text-align:center">
+              <div style="font-size:20px;font-weight:700;color:var(--accent);font-family:'DM Mono',monospace">> 9h 근무</div>
+              <div style="color:var(--text2);margin-top:4px">점심 <b>1시간 30분</b> 공제</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:2px">예) 10h 근무 → 실근무 8.5h</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 타임라인 -->
+      <div class="guide-content" id="gc-timeline" style="display:none">
+        <div style="margin-bottom:20px">
+          <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:12px">타임라인 읽는 법</div>
+          <!-- 타임라인 예시 시각화 -->
+          <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:16px;margin-bottom:14px">
+            <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-left:80px;margin-bottom:4px;display:flex;justify-content:space-between;padding-right:10px">
+              <span>7</span><span>9</span><span>11</span><span>13</span><span>15</span><span>17</span><span>19</span>
+            </div>
+            ${['김민준','이서연','박지호'].map((n,i)=>{
+              const colors=['#4f8ef7','#f87171','#a78bfa'];
+              const starts=[15,25,8]; const widths=[42,35,38];
+              return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                <div style="width:72px;font-size:11px;color:var(--text2)">${n}</div>
+                <div style="flex:1;height:22px;background:var(--surface3);border-radius:3px;position:relative">
+                  <div style="position:absolute;left:2px;top:0;bottom:0;width:2px;background:#ef4444;border-radius:1px"></div>
+                  <div style="position:absolute;left:73%;top:0;bottom:0;width:2px;background:#ef4444;border-radius:1px"></div>
+                  <div style="position:absolute;left:${starts[i]}%;width:${widths[i]}%;top:0;bottom:0;background:${colors[i]};border-radius:3px;opacity:.85;display:flex;align-items:center;justify-content:center">
+                    <span style="font-size:9px;color:#fff;font-weight:500">실근무 7.5h</span>
+                  </div>
+                </div>
+              </div>`;
+            }).join('')}
+            <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
+              <div style="width:72px;font-size:10px;color:var(--text3)">겹침</div>
+              <div style="flex:1;height:10px;background:var(--surface3);border-radius:3px;position:relative">
+                <div style="position:absolute;left:25%;width:25%;top:0;bottom:0;background:rgba(52,211,153,.5);border-radius:3px"></div>
+              </div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px">
+            <div style="padding:10px 12px;background:var(--surface2);border-radius:var(--radius-sm)">
+              <span style="display:inline-block;width:12px;height:12px;background:#4f8ef7;border-radius:2px;margin-right:6px;vertical-align:middle"></span>
+              <b>색상 막대</b> — 팀원별 실근무 시간<br>
+              <span style="color:var(--text3);margin-left:18px">막대 안에 실근무시간 표시</span>
+            </div>
+            <div style="padding:10px 12px;background:var(--surface2);border-radius:var(--radius-sm)">
+              <span style="display:inline-block;width:12px;height:12px;background:#ef4444;border-radius:2px;margin-right:6px;vertical-align:middle"></span>
+              <b>빨간 세로선</b> — 기준 출퇴근 시간<br>
+              <span style="color:var(--text3);margin-left:18px">08:30 / 17:30</span>
+            </div>
+            <div style="padding:10px 12px;background:var(--surface2);border-radius:var(--radius-sm)">
+              <span style="display:inline-block;width:12px;height:12px;background:rgba(52,211,153,.5);border-radius:2px;margin-right:6px;vertical-align:middle"></span>
+              <b>초록 겹침 구간</b> — 2명 이상 동시 근무<br>
+              <span style="color:var(--text3);margin-left:18px">진할수록 더 많은 인원</span>
+            </div>
+            <div style="padding:10px 12px;background:var(--surface2);border-radius:var(--radius-sm)">
+              <span style="font-size:11px;font-weight:700;color:var(--amber);margin-right:6px">공가(1d)</span>
+              <b>특이사항</b> — 공가·연차·교육 등<br>
+              <span style="color:var(--text3);margin-left:18px">막대 없이 텍스트로 표시</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 특이사항 -->
+      <div class="guide-content" id="gc-special" style="display:none">
+        <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:12px">특이사항 인식 키워드</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.8;margin-bottom:16px">
+          전산 데이터에 아래 키워드가 포함된 경우 자동으로 특이사항으로 처리됩니다.<br>
+          해당 날짜의 근무 시간 막대는 표시되지 않으며, 실근무는 아래 기준으로 계산됩니다.
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px">
+          ${[
+            {k:'공가',h:'8h',c:'#10b981'},
+            {k:'휴가',h:'8h',c:'#10b981'},
+            {k:'연차',h:'8h',c:'#10b981'},
+            {k:'반차',h:'8h',c:'#10b981'},
+            {k:'교육',h:'8h',c:'#10b981'},
+            {k:'출장',h:'8h',c:'#10b981'},
+            {k:'병가',h:'8h',c:'#10b981'},
+            {k:'조퇴',h:'8h',c:'#10b981'},
+            {k:'무급휴가',h:'0h',c:'#ef4444'},
+          ].map(item=>`
+            <div style="padding:10px 12px;background:var(--surface2);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:space-between">
+              <span style="font-size:13px;font-weight:600">${item.k}</span>
+              <span style="font-size:12px;font-weight:700;color:${item.c};font-family:'DM Mono',monospace">${item.h} 반영</span>
+            </div>`).join('')}
+        </div>
+        <div style="background:#1e293b;border-radius:var(--radius-sm);padding:14px;font-family:'DM Mono',monospace;font-size:12px;color:#94a3b8;line-height:2">
+          <div style="color:#64748b;margin-bottom:4px"># 특이사항 입력 예시</div>
+          <div><span style="color:#34d399">2026.04.07</span>	화요일		<span style="color:#60a5fa">08:30</span>	<span style="color:#f87171">17:30</span>	<span style="color:#fbbf24">공가(1d)</span>   <span style="color:#475569">← 8h 반영</span></div>
+          <div><span style="color:#34d399">2026.04.14</span>	화요일		<span style="color:#60a5fa">08:00</span>	<span style="color:#f87171">12:00</span>	<span style="color:#fbbf24">반차</span>        <span style="color:#475569">← 8h 반영</span></div>
+          <div><span style="color:#34d399">2026.04.21</span>	화요일		 	<span style="color:#ef4444">무급휴가</span>              <span style="color:#475569">← 0h 반영</span></div>
+        </div>
+      </div>
+
+      <!-- 관리자 -->
+      <div class="guide-content" id="gc-admin" style="display:none">
+        <div style="margin-bottom:16px;padding:12px 16px;background:rgba(59,130,246,.07);border-radius:var(--radius-sm);border-left:3px solid var(--accent)">
+          <div style="font-size:13px;font-weight:600;color:var(--accent);margin-bottom:4px">관리자 로그인 방법</div>
+          <div style="font-size:13px;color:var(--text2)">로그인 화면에서 <b>"WorkDash"</b> 텍스트를 <b>3초 안에 3번</b> 클릭하면 관리자 버튼이 나타납니다.</div>
+        </div>
+        <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:12px">관리자 전용 기능</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          ${[
+            {t:'팀원 관리',      d:'팀원 추가·삭제, 이름·색상·이메일·PIN 설정, 기본 출퇴근 시간 설정'},
+            {t:'PIN 초기화',     d:'팀원이 PIN을 잊었을 경우 관리자가 초기화. 다음 로그인 시 재설정'},
+            {t:'전체 데이터 관리',d:'모든 팀원의 데이터를 조회·수정·삭제 가능'},
+            {t:'📧 미입력 알림', d:'오늘 데이터 미입력 팀원을 선택해서 이메일 알림 발송 (하루 1회/팀원)'},
+            {t:'변경 알림 메일', d:'팀원이 데이터를 수정·삭제하면 tj.yun@hansol.com으로 자동 발송'},
+          ].map(item=>`
+            <div style="display:flex;gap:12px;padding:12px 14px;background:var(--surface2);border-radius:var(--radius-sm)">
+              <div style="font-size:13px;font-weight:600;color:var(--text);width:130px;flex-shrink:0">${item.t}</div>
+              <div style="font-size:12px;color:var(--text2);line-height:1.7">${item.d}</div>
+            </div>`).join('')}
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 하단 -->
+    <div style="padding:16px 28px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:var(--surface2)">
+      <div style="font-size:12px;color:var(--text3)">WorkDash v1.4 · 설비부품사업팀</div>
+      <button id="guide-close2" class="btn pri">닫기</button>
+    </div>
   </div>
 </div>
 
@@ -950,6 +1183,21 @@ function initEvents(){
   });
   document.getElementById('btn-add-member').addEventListener('click',addMember);
   document.getElementById('btn-login').addEventListener('click',doLogin);
+  // 가이드 모달
+  document.getElementById('btn-guide').addEventListener('click',()=>{document.getElementById('guide-modal').style.display='flex'});
+  document.getElementById('guide-close').addEventListener('click',()=>{document.getElementById('guide-modal').style.display='none'});
+  document.getElementById('guide-close2').addEventListener('click',()=>{document.getElementById('guide-modal').style.display='none'});
+  document.querySelectorAll('.guide-tab').forEach(tab=>{
+    tab.addEventListener('click',function(){
+      document.querySelectorAll('.guide-tab').forEach(t=>{
+        t.style.color='var(--text2)';t.style.borderBottom='2px solid transparent';
+      });
+      this.style.color='var(--accent)';this.style.borderBottom='2px solid var(--accent)';
+      const tid=this.getAttribute('data-gtab');
+      document.querySelectorAll('.guide-content').forEach(c=>c.style.display='none');
+      document.getElementById('gc-'+tid).style.display='block';
+    });
+  });
   document.getElementById('btn-set-pin').addEventListener('click',doSetPin);
   document.getElementById('pin-new2').addEventListener('keydown',e=>{if(e.key==='Enter')doSetPin()});
   document.getElementById('btn-logout').addEventListener('click',doLogout);
