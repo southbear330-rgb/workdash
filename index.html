@@ -779,6 +779,7 @@ function checkVersion(){
 }
 
 let _prevEntries = null; // 이전 entries 스냅샷 (변경 감지용)
+let _isSaving = false;    // 내가 직접 저장 중인지 여부 (이 경우 메일 발송 안 함)
 let _isFirstLoad = true;
 
 function loadS(){
@@ -836,7 +837,10 @@ function detectChanges(prev, next, members){
   title.textContent=`🔔 일정 업데이트 (${total}건)`;
 
   let html='';
-  const changer = CUR.name||'누군가';
+  // 변경된 데이터에서 누가 바꿨는지 추론 (변경된 항목의 memberId 기준)
+  const changedItems=[...added,...modified.map(x=>x.after),...removed];
+  const changerMember=changedItems.length>0?mById2(changedItems[0].memberId):null;
+  const changer=changerMember?.name||CUR.name||'누군가';
 
   if(total<=5){
     if(added.length){
@@ -864,8 +868,8 @@ function detectChanges(prev, next, members){
   body.innerHTML=html;
   modal.style.display='block';
 
-  // ── 변경 알림 메일 발송: 수정/삭제 있을 때만 (신규 입력 제외) ──
-  if(modified.length||removed.length){
+  // ── 변경 알림 메일 발송: 수정/삭제 있을 때 + 타인이 변경했을 때만 ──
+  if((modified.length||removed.length) && !_isSaving){
     sendChangeNotifyEmail(changer, added, modified, removed, members);
   }
 }
@@ -897,10 +901,15 @@ async function sendChangeNotifyEmail(changer, added, modified, removed, members)
     if(removed.length>5) changeText+=`  ...외 ${removed.length-5}건\n`;
   }
 
-  // 중복 발송 방지 (같은 변경 내역은 30초 내 1회만)
-  const changeKey='change_mail_'+JSON.stringify({added:added.map(e=>e.id),removed:removed.map(e=>e.id)}).slice(0,80);
+  // 중복 발송 방지: 같은 변경 내역은 60초 내 1회만 발송
+  const changeKey='chg_'+[
+    ...added.map(e=>'+'+e.id),
+    ...modified.map(x=>x.after.id+'m'),
+    ...removed.map(e=>'-'+e.id)
+  ].sort().join('_').slice(0,100);
   if(sessionStorage.getItem(changeKey)) return;
   sessionStorage.setItem(changeKey,'1');
+  setTimeout(()=>sessionStorage.removeItem(changeKey), 60000);
 
   try{
     emailjs.init(EJS_PUBKEY);
@@ -1009,9 +1018,10 @@ function showDupPopup(overMembers, dupByMember){
 
 function saveS(){
   syncStatus('syncing');
+  _isSaving = true; // 내가 저장 중임을 표시
   REF.set({members:S.members,entries:S.entries,nid:S.nid})
-    .then(()=>syncStatus('ok'))
-    .catch(()=>{syncStatus('err');toast('저장 실패')});
+    .then(()=>{syncStatus('ok'); setTimeout(()=>{_isSaving=false},3000);})
+    .catch(()=>{syncStatus('err');toast('저장 실패');_isSaving=false;});
   setTimeout(()=>checkDuplicates(true), 1000);
 }
 
